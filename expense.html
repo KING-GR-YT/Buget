@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bank Entry Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#001f1f,#000814);
+    color:white;
+}
+.glass-card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(0,255,255,0.2);
+    border-radius:15px;
+    padding:20px;
+    margin:20px;
+}
+input,select{
+    padding:8px;
+    margin:5px;
+    border-radius:8px;
+    border:none;
+}
+button{
+    background:#00ffff;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+th,td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+th{
+    background:rgba(0,255,255,0.2);
+}
+.total-container{
+    display:flex;
+    flex-wrap:wrap;      /* allow multiple bank columns */
+    gap:20px;
+}
+
+
+.total-card{
+    background:rgba(0,255,255,0.1);
+    padding:15px;
+    border-radius:12px;
+    min-width:200px;     /* fixed column width */
+    text-align:left;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.home-link{
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:0.3s ease;
+    font-weight:500;
+}
+
+.home-link:hover{
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="glass-card">
+<div class="card-header">
+    <h2>🔥 Bank Dashboard</h2>
+    <a href="Index.html" class="home-link">🏠 Home</a>
+</div>
+
+
+<input type="month" id="month">
+
+<select id="bank">
+<option>YES BANK</option>
+<option>HDFC</option>
+<option>ONE CARD</option>
+<option>ICICI</option>
+</select>
+
+<input type="number" id="amount" placeholder="Amount">
+
+<select id="person">
+<option>PARDEEP</option>
+<option>SANDEEP</option>
+</select>
+
+<button id="addBtn">Add Entry</button>
+
+<select id="monthFilter">
+    <option value="all">All Months</option>
+</select>
+</div>
+
+
+<div id="totals"></div>
+
+<table id="dataTable">
+<thead>
+<tr>
+<th>Month</th>
+<th>Bank</th>
+<th>Amount</th>
+<th>Person</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+
+<!-- Firebase SDK -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import { 
+    getFirestore,
+    collection,
+    addDoc,
+    onSnapshot,
+    deleteDoc,
+    doc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+};
+
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 PUT YOUR UID
+
+
+/* INITIALIZE */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+
+/* 🔐 PAGE PROTECTION */
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+    if (!user || user.uid !== ADMIN_UID) {
+        window.location.href = "login.html";
+    } else {
+        document.body.style.display = "block";
+    }
+});
+
+
+/* ===== EXPENSE LOGIC ===== */
+
+const bankCollection = collection(db, "bankEntries");
+
+let data = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("addBtn").addEventListener("click", addEntry);
+    document.getElementById("monthFilter").addEventListener("change", renderTable);
+
+    onSnapshot(bankCollection,(snapshot)=>{
+        data=[];
+        snapshot.forEach(docItem=>{
+            data.push({id:docItem.id,...docItem.data()});
+        });
+        populateMonthFilter();
+        renderTable();
+    });
+});
+
+
+/* ADD ENTRY */
+async function addEntry(){
+
+    const month = document.getElementById("month").value;
+    const bank = document.getElementById("bank").value;
+    const amount = parseFloat(document.getElementById("amount").value);
+    const person = document.getElementById("person").value;
+
+    if(!month || isNaN(amount)){
+        alert("Enter Month & Valid Amount");
+        return;
+    }
+
+    await addDoc(bankCollection,{
+        month,
+        bank,
+        amount,
+        person
+    });
+
+    document.getElementById("amount").value="";
+}
+
+
+/* DELETE ENTRY */
+window.deleteEntry = async function(id){
+    await deleteDoc(doc(db,"bankEntries",id));
+}
+
+
+/* POPULATE MONTH FILTER */
+function populateMonthFilter(){
+
+    const filter = document.getElementById("monthFilter");
+    const months = [...new Set(data.map(item => item.month))];
+
+    filter.innerHTML = `<option value="all">All Months</option>`;
+
+    months.sort().forEach(month=>{
+        filter.innerHTML += `<option value="${month}">${month}</option>`;
+    });
+}
+
+
+function renderTable(){
+
+    const tbody = document.querySelector("#dataTable tbody");
+    const selectedMonth = document.getElementById("monthFilter").value;
+
+    tbody.innerHTML="";
+
+    let bankPersonTotals = {};
+    let bankTotals = {};
+
+    const filteredData = selectedMonth === "all"
+        ? data
+        : data.filter(item => item.month === selectedMonth);
+
+    filteredData.forEach(item=>{
+
+        const amount = Number(item.amount) || 0;
+
+        tbody.innerHTML+=`
+        <tr>
+            <td>${item.month}</td>
+            <td>${item.bank}</td>
+            <td>₹ ${amount.toFixed(2)}</td>
+            <td>${item.person}</td>
+            <td>
+                <button onclick="deleteEntry('${item.id}')">
+                    Delete
+                </button>
+            </td>
+        </tr>`;
+
+        const bpKey = item.bank + " - " + item.person;
+        bankPersonTotals[bpKey] = (bankPersonTotals[bpKey] || 0) + amount;
+
+        bankTotals[item.bank] = (bankTotals[item.bank] || 0) + amount;
+    });
+
+    showTotals(bankPersonTotals, bankTotals);
+}
+
+
+/* SHOW TOTALS */
+function showTotals(bankPersonTotals, bankTotals){
+
+    const div = document.getElementById("totals");
+
+    let output = `<h3>📊 Totals</h3>
+                  <div class='total-container'>`;
+
+    for(let bank in bankTotals){
+
+        output += `<div class="total-card">`;
+
+        output += `<b>${bank} - TOTAL</b><br>
+                   ₹ ${bankTotals[bank].toFixed(2)}
+                   <hr style="border:0.5px solid rgba(255,255,255,0.2); margin:8px 0;">`;
+
+        for(let key in bankPersonTotals){
+            if(key.startsWith(bank + " -")){
+                const person = key.split(" - ")[1];
+                output += `
+                    <div>
+                        ${person} : ₹ ${bankPersonTotals[key].toFixed(2)}
+                    </div>`;
+            }
+        }
+
+        output += `</div>`;
+    }
+
+    output += `</div>`;
+    div.innerHTML = output;
+}
+
+</script>
+</body>
+</html>

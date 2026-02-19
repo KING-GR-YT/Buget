@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Finance Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+}
+
+/* HEADER */
+.header{
+    text-align:center;
+    padding:20px;
+    font-size:22px;
+    font-weight:600;
+    background:rgba(0,0,0,0.3);
+    backdrop-filter:blur(10px);
+}
+
+/* GRID */
+.dashboard{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    padding:25px;
+}
+
+@media(max-width:1000px){
+    .dashboard{
+        grid-template-columns:1fr;
+    }
+}
+
+/* CARD */
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:15px;
+    padding:20px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+/* SECTION TITLE */
+.title{
+    text-align:center;
+    font-weight:600;
+    margin-bottom:15px;
+    font-size:18px;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:8px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+th{
+    background:rgba(0,255,255,0.2);
+}
+
+/* INPUT */
+input{
+    width:90%;
+    padding:6px;
+    border-radius:6px;
+    border:1px solid rgba(255,255,255,0.2);
+    background:rgba(0,0,0,0.4);
+    color:#00ffff;
+    text-align:center;
+}
+
+input:focus{
+    outline:none;
+    box-shadow:0 0 8px #00ffff;
+}
+
+/* HIGHLIGHTS */
+.highlight-yellow{ background:#ffc107; color:black; font-weight:600; }
+.highlight-blue{ background:#00bcd4; color:black; font-weight:600; }
+.highlight-green{ background:#4caf50; color:black; font-weight:600; }
+
+.net{
+    margin-top:10px;
+    padding:10px;
+    text-align:center;
+    font-weight:600;
+    border-radius:8px;
+    background:#ffc107;
+    color:black;
+}
+
+/* RIGHT SIDE TABLE */
+.side-table td{
+    background:rgba(255,255,255,0.05);
+}
+
+.total-box{
+    margin-top:10px;
+    padding:10px;
+    background:#4caf50;
+    color:black;
+    text-align:center;
+    font-weight:600;
+    border-radius:8px;
+}
+
+.flex{
+    display:flex;
+    gap:20px;
+}
+
+@media(max-width:1000px){
+    .flex{
+        flex-direction:column;
+    }
+}
+
+.left{ flex:2; }
+.right{ flex:1; }
+
+
+
+.home-link{
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:0.3s ease;
+    font-weight:500;
+    float: right;
+}
+
+.home-link:hover{
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">⚡ SALARY DASHBOARD ⚡
+	<a href="Index.html" class="home-link">🏠 Home</a>
+
+</div>
+
+<div class="dashboard">
+
+<!-- ===== FEBRUARY ===== -->
+<div class="card" id="febCard">
+<div class="title">Current Month</div>
+
+<div class="flex">
+<div class="left">
+
+<table>
+<tr>
+<td>EXTRA</td>
+<td><input type="number" id="febExtra"></td>
+</tr>
+<tr>
+<td>SALARY</td>
+<td><input type="number" id="febSalary" value="25000"></td>
+</tr>
+<tr class="highlight-blue">
+<td>BANK BALANCE</td>
+<td id="febBankBalance"></td>
+</tr>
+</table>
+
+<br>
+
+<table>
+<tr>
+<th></th>
+<th>PARDEEP</th>
+<th>SANDEEP</th>
+<th>Total</th>
+</tr>
+
+<tr><td>YES Bank</td>
+<td><input type="number" class="febP"></td>
+<td><input type="number" class="febS"></td>
+<td class="febRow"></td></tr>
+
+<tr><td>HDFC</td>
+<td><input type="number" class="febP"></td>
+<td><input type="number" class="febS"></td>
+<td class="febRow"></td></tr>
+
+<tr><td>ONE CARD</td>
+<td><input type="number" class="febP"></td>
+<td><input type="number" class="febS"></td>
+<td class="febRow"></td></tr>
+
+<tr><td>ICICI</td>
+<td><input type="number" class="febP"></td>
+<td><input type="number" class="febS"></td>
+<td class="febRow"></td></tr>
+
+<tr class="highlight-yellow">
+<td>TOTAL</td>
+<td id="febTotalP"></td>
+<td id="febTotalS"></td>
+<td id="febGrand"></td>
+</tr>
+</table>
+
+<div class="net">
+NET BALANCE: ₹ <span id="febNet"></span>
+</div>
+
+</div>
+
+<div class="right">
+
+<table class="side-table">
+<tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
+<tr><td>House</td><td><input type="number" class="febExp"></td></tr>
+<tr><td>Investment</td><td><input type="number" class="febExp"></td></tr>
+<tr><td>Petrol</td><td><input type="number" class="febExp"></td></tr>
+<tr><td>EM Fund</td><td><input type="number" class="febExp"></td></tr>
+<tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
+</table>
+
+<div class="total-box">
+TOTAL: ₹ <span id="febExpTotal"></span>
+</div>
+
+</div>
+</div>
+</div>
+
+
+<!-- ===== JANUARY ===== -->
+<div class="card" id="janCard">
+<div class="title">Previous Month</div>
+
+<div class="flex">
+<div class="left">
+
+<table>
+<tr>
+<td>EXTRA</td>
+<td><input type="number" id="janExtra"></td>
+</tr>
+<tr>
+<td>SALARY</td>
+<td><input type="number" id="janSalary" value="25000"></td>
+</tr>
+<tr class="highlight-blue">
+<td>BANK BALANCE</td>
+<td id="janBankBalance"></td>
+</tr>
+</table>
+
+<br>
+
+<table>
+<tr>
+<th></th>
+<th>PARDEEP</th>
+<th>SANDEEP</th>
+<th>Total</th>
+</tr>
+
+<tr><td>KOTAK</td>
+<td><input type="number" class="janP"></td>
+<td><input type="number" class="janS"></td>
+<td class="janRow"></td></tr>
+
+<tr><td>HDFC</td>
+<td><input type="number" class="janP"></td>
+<td><input type="number" class="janS"></td>
+<td class="janRow"></td></tr>
+
+<tr><td>ONE CARD</td>
+<td><input type="number" class="janP"></td>
+<td><input type="number" class="janS"></td>
+<td class="janRow"></td></tr>
+
+<tr><td>ICICI</td>
+<td><input type="number" class="janP"></td>
+<td><input type="number" class="janS"></td>
+<td class="janRow"></td></tr>
+
+<tr class="highlight-yellow">
+<td>TOTAL</td>
+<td id="janTotalP"></td>
+<td id="janTotalS"></td>
+<td id="janGrand"></td>
+</tr>
+</table>
+
+<div class="net">
+NET BALANCE: ₹ <span id="janNet"></span>
+</div>
+
+</div>
+
+<div class="right">
+
+<table class="side-table">
+<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>House</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>Investment</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>Petrol</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>EM Fund</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
+</table>
+
+<div class="total-box">
+TOTAL: ₹ <span id="janExpTotal"></span>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+
+
+<!-- ================= FIREBASE + AUTO CALC ================= -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+  getAuth, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* 🔥 YOUR FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/* 🔐 ALLOWED ADMIN UID */
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "login.html";
+  }
+});
+
+
+/* 🔐 PROTECT PAGE */
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  } else if (user.email !== ADMIN_EMAIL) {
+    alert("Unauthorized access");
+    auth.signOut();
+    window.location.href = "login.html";
+  }
+});
+
+
+/* ===============================
+   YOUR ORIGINAL BUDGET CODE
+================================= */
+
+function calculate(prefix){
+
+let P = document.querySelectorAll(`.${prefix}P`);
+let S = document.querySelectorAll(`.${prefix}S`);
+let rows = document.querySelectorAll(`.${prefix}Row`);
+let exp = document.querySelectorAll(`.${prefix}Exp`);
+
+let totalP=0,totalS=0,expTotal=0;
+
+for(let i=0;i<P.length;i++){
+let p=Number(P[i].value)||0;
+let s=Number(S[i].value)||0;
+rows[i].innerText=(p+s).toFixed(2);
+totalP+=p;
+totalS+=s;
+}
+
+exp.forEach(e=>expTotal+=Number(e.value)||0);
+
+document.getElementById(prefix+"TotalP").innerText=totalP.toFixed(2);
+document.getElementById(prefix+"TotalS").innerText=totalS.toFixed(2);
+document.getElementById(prefix+"Grand").innerText=(totalP+totalS).toFixed(2);
+document.getElementById(prefix+"ExpTotal").innerText=expTotal.toFixed(2);
+
+let salary=Number(document.getElementById(prefix+"Salary").value)||0;
+let extra=Number(document.getElementById(prefix+"Extra").value)||0;
+let bank=salary+extra;
+
+document.getElementById(prefix+"BankBalance").innerText=bank.toFixed(2);
+
+let net=bank-totalP-expTotal;
+
+document.getElementById(prefix+"Net").innerText=net.toFixed(2);
+
+save(prefix);
+}
+
+async function save(prefix){
+let inputs=document.querySelectorAll(`#${prefix}Card input`);
+let values=[];
+inputs.forEach(i=>values.push(i.value));
+await setDoc(doc(db,"months",prefix),{values});
+}
+
+async function load(prefix){
+let snap=await getDoc(doc(db,"months",prefix));
+if(snap.exists()){
+let values=snap.data().values;
+let inputs=document.querySelectorAll(`#${prefix}Card input`);
+inputs.forEach((i,index)=>i.value=values[index]||"");
+}
+calculate(prefix);
+}
+
+document.addEventListener("input",()=>{
+calculate("feb");
+calculate("jan");
+});
+
+load("feb");
+load("jan");
+
+</script>
+</body>
+</html>

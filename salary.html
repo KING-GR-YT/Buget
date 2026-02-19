@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salary Dashboard</title>
+
+<style>
+body{
+    background:#000;
+    font-family:Arial, sans-serif;
+    color:#00ffff;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    color:#00ffff;
+    margin-bottom:30px;
+}
+
+.container{
+    display:flex;
+    gap:30px;
+    flex-wrap:wrap;
+}
+
+.section{
+    flex:1;
+    min-width:0;      /* allow shrinking */
+    width:100%;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+th,td{
+    border:1px solid #00ffff;
+    padding:8px;
+    text-align:center;
+    font-weight:bold;
+}
+
+th{
+    background:#001f1f;
+}
+
+input{
+    background:#000;
+    border:1px solid #00ffff;
+    color:#00ffff;
+    padding:5px;
+    text-align:center;
+    width:100px;
+}
+
+.good{
+    color:#00ff00;
+}
+
+.bad{
+    color:#ff0000;
+}
+
+.highlight{
+    background:#001f1f;
+}
+
+.redbox{
+    background:#330000;
+    color:#ff4d4d;
+}
+
+.greenbox{
+    background:#003300;
+    color:#00ff00;
+}
+
+.save-wrapper{
+    text-align:center;
+    margin:40px 0 30px 0;   /* Top & bottom spacing */
+}
+
+.save-btn{
+    background:#001f1f;
+    color:#00ffff;
+    border:2px solid #00ffff;
+    padding:10px 30px;
+    font-weight:bold;
+    letter-spacing:1px;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.save-btn:hover{
+    background:#00ffff;
+    color:#000;
+    box-shadow:0 0 15px #00ffff;
+}
+
+/* ========================= */
+/* MOBILE RESPONSIVE DESIGN  */
+/* ========================= */
+
+@media (max-width: 768px){
+
+    body{
+        padding:10px;
+    }
+
+    h1{
+        font-size:20px;
+    }
+
+    .container{
+        flex-direction:column;
+        gap:20px;
+    }
+
+    .section{
+        width:100%;
+        padding:15px;
+    }
+
+    table{
+        font-size:12px;
+    }
+
+    th, td{
+        padding:6px;
+    }
+
+    input{
+        width:80px;
+        font-size:12px;
+    }
+
+    .save-btn{
+        width:100%;
+        padding:12px;
+    }
+}
+
+.home-link{
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:0.3s ease;
+    font-weight:500;
+    float: right;
+}
+
+.home-link:hover{
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Salary Dashboard
+	<a href="Index.html" class="home-link">🏠 Home</a>
+</h1>
+
+<div class="container">
+
+<!-- LEFT SECTION -->
+<div class="section">
+<h2>Salary Overview</h2>
+
+<table>
+<tr>
+<th>Particular</th>
+<th>Amount</th>
+<th>Salary %</th>
+<th>Status</th>
+</tr>
+
+<tr class="highlight">
+<td>SALARY</td>
+<td>₹ <input type="number" id="salary" value=""></td>
+<td id="salaryPercent">100%</td>
+<td></td>
+</tr>
+
+<tr>
+<td>EMI</td>
+<td>₹ <input type="number" id="emi" value=""></td>
+<td id="emiPercent"></td>
+<td id="emiStatus"></td>
+</tr>
+
+<tr>
+<td>Rent</td>
+<td>₹ <input type="number" id="rent" value=""></td>
+<td id="rentPercent"></td>
+<td id="rentStatus"></td>
+</tr>
+
+<tr>
+<td>Petrol</td>
+<td>₹ <input type="number" id="petrol" value=""></td>
+<td id="petrolPercent"></td>
+<td id="petrolStatus"></td>
+</tr>
+
+<tr>
+<td>Investment</td>
+<td>₹ <input type="number" id="other" value=""></td>
+<td id="otherPercent"></td>
+<td id="otherStatus"></td>
+</tr>
+
+<tr>
+<td>Emergency Fund</td>
+<td>₹ <input type="number" id="EXP1" value=""></td>
+<td id="exp1Percent"></td>
+<td id="exp1Status"></td>
+</tr>
+
+<tr>
+<td>Other EXP</td>
+<td>₹ <input type="number" id="EXP2" value=""></td>
+<td id="exp2Percent"></td>
+<td id="exp2Status"></td>
+</tr>
+
+<tr class="greenbox">
+<td>TOTAL EXP</td>
+<td id="totalExp"></td>
+<td id="totalPercent"></td>
+<td id="totalStatus"></td>
+</tr>
+
+<tr class="redbox">
+<td>Balance</td>
+<td id="balance"></td>
+<td id="balancePercent"></td>
+<td id="balanceStatus"></td>
+</tr>
+
+</table>
+</div>
+
+
+<!-- RIGHT SECTION -->
+<div class="section">
+<h2>EMI Calculator</h2>
+
+<table>
+
+<tr>
+<th colspan="2">Loan Details</th>
+</tr>
+
+<tr class="redbox">
+<td>Ready for Loan</td>
+<td id="readyLoan"></td>
+</tr>
+
+<tr class="redbox">
+<td>EMI Balance</td>
+<td id="emiBalance"></td>
+</tr>
+
+<tr>
+<td>Total Amount</td>
+<td>₹ <input type="number" id="totalAmount" value=""></td>
+</tr>
+
+<tr>
+<td>Down Payment</td>
+<td>₹ <input type="number" id="downPayment" value="0"></td>
+</tr>
+
+<tr>
+<td>Loan Amount</td>
+<td id="loanAmount"></td>
+</tr>
+
+<tr>
+<td>Interest Rate %</td>
+<td><input type="number" id="interest" value=""></td>
+</tr>
+
+<tr>
+<td>Tenure Months</td>
+<td><input type="number" id="tenure" value=""></td>
+</tr>
+
+<tr class="greenbox">
+<td>EMI</td>
+<td id="emiCalc"></td>
+</tr>
+
+<tr class="redbox">
+<td>Salary EMI %</td>
+<td id="salaryEmiPercent"></td>
+</tr>
+
+<tr class="redbox">
+<td>Decision</td>
+<td id="decision"></td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<div class="save-wrapper">
+	<button onclick="saveData()" class="save-btn">
+        SAVE DATA
+    	</button>
+</div>
+
+<script type="module">
+
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs,
+  query,
+  orderBy,
+  limit
+} from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+};
+
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 VERY IMPORTANT
+
+/* Initialize */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+
+/* 🔐 PAGE PROTECTION */
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "login.html";
+  } else {
+    document.body.style.display = "block";
+  }
+
+});
+
+
+/* ===== YOUR CALCULATION CODE (UNCHANGED BELOW) ===== */
+
+window.calculate = function(){
+
+let C2=parseFloat(salary.value)||0;
+let C4=parseFloat(emi.value)||0;
+let C5=parseFloat(rent.value)||0;
+let C6=parseFloat(petrol.value)||0;
+let C7=parseFloat(other.value)||0;
+let C8=parseFloat(EXP1.value)||0;
+let C9=parseFloat(EXP2.value)||0;
+
+/* Percentages */
+let D4=(C4/C2)*100||0;
+let D5=(C5/C2)*100||0;
+let D6=(C6/C2)*100||0;
+let D7=(C7/C2)*100||0;
+let D8=(C8/C2)*100||0;
+let D9=(C9/C2)*100||0;
+
+emiPercent.innerHTML=D4.toFixed(2)+"%";
+rentPercent.innerHTML=D5.toFixed(2)+"%";
+petrolPercent.innerHTML=D6.toFixed(2)+"%";
+otherPercent.innerHTML=D7.toFixed(2)+"%";
+exp1Percent.innerHTML=D8.toFixed(2)+"%";
+exp2Percent.innerHTML=D9.toFixed(2)+"%";
+
+emiStatus.innerHTML=D4>40?"Bad":"Good";
+emiStatus.className=D4>40?"bad":"good";
+
+rentStatus.innerHTML=D5>30?"Bad":"Good";
+rentStatus.className=D5>30?"bad":"good";
+
+petrolStatus.innerHTML=D6>5?"Bad":"Good";
+petrolStatus.className=D6>5?"bad":"good";
+
+otherStatus.innerHTML=D7>10?"Bad":"Good";
+otherStatus.className=D7>10?"bad":"good";
+
+exp1Status.innerHTML=D8>10?"Bad":"Good";
+exp1Status.className=D8>10?"bad":"good";
+
+exp2Status.innerHTML=D9>10?"Bad":"Good";
+exp2Status.className=D9>10?"bad":"good";
+
+/* Total */
+let total=C4+C5+C6+C7+C8+C9;
+let D13=(total/C2)*100||0;
+
+totalExp.innerHTML="₹ "+total.toFixed(2);
+totalPercent.innerHTML=D13.toFixed(2)+"%";
+totalStatus.innerHTML=D13>80?"Bad":"Good";
+totalStatus.className=D13>80?"bad":"good";
+
+/* Balance */
+let balanceVal=C2-total;
+let D15=(balanceVal/C2)*100||0;
+
+balance.innerHTML="₹ "+balanceVal.toFixed(2);
+balancePercent.innerHTML=D15.toFixed(2)+"%";
+balanceStatus.innerHTML=D15>20?"Good":"Bad";
+balanceStatus.className=D15>20?"good":"bad";
+
+/* EMI Calculator */
+let H6=parseFloat(totalAmount.value)||0;
+let H7=parseFloat(downPayment.value)||0;
+let H8=H6-H7;
+loanAmount.innerHTML="₹ "+H8.toFixed(2);
+
+let H9=parseFloat(interest.value)||0;
+let H10=parseFloat(tenure.value)||0;
+let r=H9/12/100;
+
+let emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1)||0;
+emiCalc.innerHTML="₹ "+emiValue.toFixed(2);
+
+let salaryEmi=(C4+emiValue)/C2*100||0;
+salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
+
+readyLoan.innerHTML=D4>50?"NO":"YES";
+
+let emiBalanceVal=(C2*0.5)-C4;
+emiBalance.innerHTML="₹ "+emiBalanceVal.toFixed(2);
+
+decision.innerHTML=readyLoan.innerHTML=="YES" && salaryEmi<50 ? "GOOD" : "BAD";
+
+}
+
+
+/* ===== SAVE DATA ===== */
+
+window.saveData = async function(){
+
+let data = {
+  salary: salary.value,
+  emi: emi.value,
+  rent: rent.value,
+  petrol: petrol.value,
+  other: other.value,
+  EXP1: EXP1.value,
+  EXP2: EXP2.value,
+  totalAmount: totalAmount.value,
+  downPayment: downPayment.value,
+  interest: interest.value,
+  tenure: tenure.value,
+  createdAt: new Date()
+};
+
+await addDoc(collection(db, "dashboardData"), data);
+
+alert("Saved Successfully!");
+}
+
+/* ===== LOAD LAST SAVED DATA ===== */
+
+async function loadLastData(){
+
+const q = query(
+  collection(db, "dashboardData"),
+  orderBy("createdAt","desc"),
+  limit(1)
+);
+
+const snapshot = await getDocs(q);
+
+snapshot.forEach((doc)=>{
+
+let d = doc.data();
+
+salary.value = d.salary || 0;
+emi.value = d.emi || 0;
+rent.value = d.rent || 0;
+petrol.value = d.petrol || 0;
+other.value = d.other || 0;
+EXP1.value = d.EXP1 || 0;
+EXP2.value = d.EXP2 || 0;
+
+
+totalAmount.value = d.totalAmount || 0;
+downPayment.value = d.downPayment || 0;
+interest.value = d.interest || 0;
+tenure.value = d.tenure || 0;
+
+});
+
+calculate();
+}
+
+/* Auto Events */
+document.querySelectorAll("input").forEach(i=>{
+i.addEventListener("input",calculate);
+});
+
+calculate();
+loadLastData();
+
+</script>
+
+
+</body>
+</html>
