@@ -24,14 +24,14 @@ const auth = getAuth(app);
 export function protectPage() {
   onAuthStateChanged(auth, (user) => {
     if (!user) {
-      window.location.href = "login.html";
+      window.location.href = "index.html";
       return;
     }
 
     if (user.uid !== ADMIN_UID) {
       alert("Access Denied");
       signOut(auth);
-      window.location.href = "login.html";
+      window.location.href = "index.html";
       return;
     }
 
@@ -52,6 +52,6 @@ export function redirectIfLoggedIn() {
 /* 🚪 Logout Function */
 export function logout() {
  signOut(auth).then(() => {
- window.location.href = "login.html";
+ window.location.href = "main.html";
  });
 }

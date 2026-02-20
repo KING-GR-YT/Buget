@@ -154,7 +154,7 @@ text-shadow:0 0 18px rgba(255,46,99,0.8);
 <div class="container">
 
 <div class="header">⚡ Investment Dashboard
-	<a href="Index.html" class="home-link">🏠 Home</a>
+	<a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 <!-- SUMMARY -->
@@ -274,7 +274,7 @@ document.body.style.display = "none";
 auth.onAuthStateChanged(function(user){
 
   if(!user || user.uid !== ADMIN_UID){
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
   }

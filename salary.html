@@ -167,7 +167,7 @@ input{
 <body>
 
 <h1>Salary Dashboard
-	<a href="Index.html" class="home-link">🏠 Home</a>
+	<a href="main.html" class="home-link">🏠 Home</a>
 </h1>
 
 <div class="container">
@@ -368,7 +368,7 @@ document.body.style.display = "none";
 onAuthStateChanged(auth, (user) => {
 
   if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
   }

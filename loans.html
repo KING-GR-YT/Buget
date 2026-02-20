@@ -53,7 +53,7 @@ body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135de
 </head>
 <body>
 <div class="header">🚀 Loan Summary
-   <a href="Index.html" class="home-link">🏠 Home</a>
+   <a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 <div class="form-box">
@@ -124,7 +124,7 @@ document.body.style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
   if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
   }

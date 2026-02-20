@@ -91,7 +91,7 @@ th{
 <div class="glass-card">
 <div class="card-header">
     <h2>🔥 Bank Dashboard</h2>
-    <a href="Index.html" class="home-link">🏠 Home</a>
+    <a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 
@@ -179,7 +179,7 @@ document.body.style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
     if (!user || user.uid !== ADMIN_UID) {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     } else {
         document.body.style.display = "block";
     }
