@@ -364,225 +364,237 @@ const firebaseConfig = {
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 PUT YOUR UID HERE
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.database();
 const auth = firebase.auth();
 
-
 /* 🔐 PAGE PROTECTION */
 document.body.style.display = "none";
 
 auth.onAuthStateChanged(function(user){
-
   if(!user || user.uid !== ADMIN_UID){
     window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
   }
-
 });
 
+/* ================== UTILS ================== */
 
-/* ===== YOUR ORIGINAL CODE BELOW (UNCHANGED) ===== */
+const INR = n => new Intl.NumberFormat('en-IN',{
+  style:'currency',
+  currency:'INR'
+}).format(n||0);
 
+const NUM = v => Number(String(v).replace(/[^0-9.-]+/g,''))||0;
 
-/* UTILS */
-const INR=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n||0);
-const NUM=v=>Number(String(v).replace(/[^0-9.-]+/g,''))||0;
+/* ================== STATE ================== */
 
-/* STATE */
-let data=[];
+let data = [];
 
-/* LOAD */
+/* ================== LOAD ================== */
+
 db.ref("portfolio").on("value",snap=>{
-const d=snap.val()||{};
-data=d.rows||[];
-document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
-document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
-document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
-// 🔥 HEALTH INSURANCE LOAD
-let healthStatus = d.health ? "yes" : "no";
+  const d = snap.val() || {};
+  data = d.rows || [];
 
-const healthSelect = document.getElementById("healthInsuranceStatus");
-healthSelect.value = healthStatus;
-updateHealthStyle(healthStatus);
+  document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
+  document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
+  document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
 
-render();
+  /* 🔥 HEALTH INSURANCE LOAD */
+  const healthStatus = d.health ? "yes" : "no";
+  const healthSelect = document.getElementById("healthInsuranceStatus");
+  if(healthSelect){
+    healthSelect.value = healthStatus;
+    updateHealthStyle(healthStatus);
+  }
+
+  render();
 });
 
-/* SAVE */
+/* ================== SAVE ================== */
+
 function save(){
-db.ref("portfolio").set({
-target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
-loan: NUM(document.querySelector('[data-id="loan"]').innerText),
-emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
-health: document.getElementById("healthInsuranceStatus").value === "yes",
-rows: data
-});
+  db.ref("portfolio").set({
+    target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+    loan: NUM(document.querySelector('[data-id="loan"]').innerText),
+    emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
+    health: document.getElementById("healthInsuranceStatus").value === "yes",
+    rows: data
+  });
 }
 
-/* ADD */
+/* ================== ADD ================== */
+
 function addInvestment(){
-if(!invName.value) return alert("Enter name");
+  if(!invName.value) return alert("Enter name");
 
-data.push({
-name:invName.value,
-alloc:0, // will be auto calculated
-invested:+invInvested.value||0,
-current:+invCurrent.value||0
-});
+  data.push({
+    name: invName.value,
+    alloc: 0,
+    invested: +invInvested.value || 0,
+    current: +invCurrent.value || 0
+  });
 
-save(); 
-render();
-
-invName.value=invInvested.value=invCurrent.value="";
+  invName.value = invInvested.value = invCurrent.value = "";
+  render();
+  save();
 }
 
-/* DELETE */
+/* ================== DELETE ================== */
+
 function deleteRow(i){
-data.splice(i,1); save(); render();
+  data.splice(i,1);
+  render();
+  save();
 }
 
-/* EDITABLE */
+/* ================== EDITABLE ================== */
+
 function editable(el,isNum){
-el.onclick=()=>{
-let v=isNum?NUM(el.innerText):el.innerText;
-el.innerHTML=`<input class="inline-input" value="${v}">`;
-let input=el.firstChild;
-input.focus();
-input.onblur=()=>{
-el.innerText=isNum?INR(input.value):input.value;
-save(); calculate();
-};
-};
+  el.onclick=()=>{
+    let v = isNum ? NUM(el.innerText) : el.innerText;
+    el.innerHTML=`<input class="inline-input" value="${v}">`;
+    let input=el.firstChild;
+    input.focus();
+    input.onblur=()=>{
+      el.innerText = isNum ? INR(input.value) : input.value;
+      calculate();
+      save();
+    };
+  };
 }
 
-/* RENDER */
+/* ================== RENDER ================== */
+
 function render(){
-// Sort by highest invested (which controls allocation)
-data.sort((a,b) => b.invested - a.invested);
-tbody.innerHTML="";
-data.forEach((r,i)=>{
-tbody.innerHTML+=`
-<tr>
-<td class="editable">${r.name}</td>
-<td>${r.alloc}%</td>
-<td class="editable number">${INR(r.invested)}</td>
-<td class="editable number">${INR(r.current)}</td>
-<td></td>
-<td><button onclick="deleteRow(${i})">🗑</button></td>
-</tr>`;
-});
 
-document.querySelectorAll(".editable").forEach(el=>{
-editable(el,el.classList.contains("number"));
-});
-editable(document.querySelector('[data-id="targetFund"]'),true);
-editable(document.querySelector('[data-id="loan"]'),true);
-editable(document.querySelector('[data-id="emergencyFund"]'), true);
-editable(document.querySelector('[data-id="healthInsurance"]'), true);
+  /* Sort by highest invested */
+  data.sort((a,b) => b.invested - a.invested);
 
-calculate();
+  tbody.innerHTML="";
+
+  data.forEach((r,i)=>{
+    tbody.innerHTML+=`
+    <tr>
+      <td class="editable">${r.name}</td>
+      <td>${r.alloc}%</td>
+      <td class="editable number">${INR(r.invested)}</td>
+      <td class="editable number">${INR(r.current)}</td>
+      <td></td>
+      <td><button onclick="deleteRow(${i})">🗑</button></td>
+    </tr>`;
+  });
+
+  document.querySelectorAll(".editable").forEach(el=>{
+    editable(el,el.classList.contains("number"));
+  });
+
+  editable(document.querySelector('[data-id="targetFund"]'),true);
+  editable(document.querySelector('[data-id="loan"]'),true);
+  editable(document.querySelector('[data-id="emergencyFund"]'),true);
+
+  calculate();
 }
 
-/* CALCULATE */
+/* ================== CALCULATE ================== */
+
 function calculate(){
 
-let totalI=0,totalC=0;
+  let totalI=0,totalC=0;
 
-/* FIRST: calculate total invested */
-data.forEach(r=>{
-totalI += Number(r.invested)||0;
-});
+  /* Calculate total invested */
+  data.forEach(r=>{
+    totalI += Number(r.invested)||0;
+  });
 
-/* SECOND: update allocation automatically */
-data.forEach(r=>{
-if(totalI > 0){
-r.alloc = ((r.invested / totalI) * 100).toFixed(2);
-}else{
-r.alloc = 0;
-}
-});
+  /* Auto allocation */
+  data.forEach(r=>{
+    r.alloc = totalI > 0
+      ? ((r.invested / totalI) * 100).toFixed(2)
+      : 0;
+  });
 
-let totalA=0;
+  let totalA=0;
 
-/* THIRD: update table values */
-[...tbody.rows].forEach((row,index)=>{
+  [...tbody.rows].forEach((row,index)=>{
 
-let r = data[index];
+    let r = data[index];
+    let i = Number(r.invested)||0;
+    let c = Number(r.current)||0;
+    let p = c - i;
 
-let i = Number(r.invested)||0;
-let c = Number(r.current)||0;
-let p = c - i;
+    row.cells[1].innerText = r.alloc + "%";
+    row.cells[2].innerText = INR(i);
+    row.cells[3].innerText = INR(c);
+    row.cells[4].innerText = INR(p);
+    row.cells[4].className = p>=0 ? "positive" : "negative";
 
-row.cells[1].innerText = r.alloc + "%";
-row.cells[2].innerText = INR(i);
-row.cells[3].innerText = INR(c);
-row.cells[4].innerText = INR(p);
-row.cells[4].className = p>=0 ? "positive" : "negative";
+    totalA += Number(r.alloc);
+    totalC += c;
+  });
 
-totalA += Number(r.alloc);
-totalC += c;
-});
+  totalAlloc.innerText = totalA.toFixed(2) + "%";
+  totalInvested.innerText = INR(totalI);
+  totalCurrent.innerText = INR(totalC);
+  totalProfit.innerText = INR(totalC-totalI);
+  currentFund.innerText = INR(totalC);
 
-totalAlloc.innerText = totalA.toFixed(2) + "%";
-totalInvested.innerText = INR(totalI);
-totalCurrent.innerText = INR(totalC);
-totalProfit.innerText = INR(totalC-totalI);
-currentFund.innerText = INR(totalC);
+  let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+  let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
 
-let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
-let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
+  let net = totalC + emergency - loan;
 
-let net = totalC + emergency - loan;
+  networth.innerText = INR(net);
+  networth.className = net >= 0 ? "positive" : "negative";
 
-networth.innerText = INR(net);
-networth.className = net >= 0 ? "positive" : "negative";
-
-let target=NUM(document.querySelector('[data-id="targetFund"]').innerText);
-updateProgress(totalC,target);
-
-save(); // save updated allocation
+  let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+  updateProgress(totalC,target);
 }
 
-/* PROGRESS RING */
+/* ================== PROGRESS RING ================== */
+
 function updateProgress(val,target){
-if(target<=0) return;
-let p=Math.min(val/target*100,100);
-let offset=314-(p/100)*314;
-document.querySelector(".progress").style.strokeDashoffset=offset;
-percent.innerText=p.toFixed(1)+"%";
+  if(target<=0) return;
+  let p=Math.min(val/target*100,100);
+  let offset=314-(p/100)*314;
+  document.querySelector(".progress").style.strokeDashoffset=offset;
+  percent.innerText=p.toFixed(1)+"%";
 }
+
+/* ================== HEALTH STYLE ================== */
+
 function updateHealthStyle(value){
+  const select = document.getElementById("healthInsuranceStatus");
+  if(!select) return;
 
-const select = document.getElementById("healthInsuranceStatus");
-
-if(value === "yes"){
-select.classList.add("yes");
-select.classList.remove("no");
-}else{
-select.classList.add("no");
-select.classList.remove("yes");
+  if(value === "yes"){
+    select.classList.add("yes");
+    select.classList.remove("no");
+  }else{
+    select.classList.add("no");
+    select.classList.remove("yes");
+  }
 }
 
+/* Health change listener */
+const healthSelect = document.getElementById("healthInsuranceStatus");
+if(healthSelect){
+  healthSelect.addEventListener("change", function(){
+    updateHealthStyle(this.value);
+    save();
+  });
 }
 
-// On Change
-document.getElementById("healthInsuranceStatus").addEventListener("change", function(){
-
-updateHealthStyle(this.value);
-
-// Save to Firebase
-db.ref("portfolio/health").set(this.value === "yes");
-
-});
 </script>
 
 
 </body>
 </html>
+
 
 
