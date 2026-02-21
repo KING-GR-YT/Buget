@@ -356,29 +356,13 @@ stroke-dashoffset="314"/>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
 <!-- Firebase SDK -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import { 
-    getFirestore,
-    collection,
-    addDoc,
-    onSnapshot,
-    deleteDoc,
-    doc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
+<script>
 
 /* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "personal-budget-1cbbe",
   storageBucket: "personal-budget-1cbbe.firebasestorage.app",
   messagingSenderId: "133591748262",
@@ -608,6 +592,7 @@ if(healthSelect){
 
 </body>
 </html>
+
 
 
 
