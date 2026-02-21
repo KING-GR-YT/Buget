@@ -90,6 +90,10 @@ th{color:var(--gold);padding:12px;border-bottom:2px solid var(--blue);}
 td{text-align:center;padding:10px;border-bottom:1px solid rgba(255,255,255,.1);}
 .positive{color:var(--green);}
 .negative{color:var(--red);}
+.stat b.zero-loan{
+    color: var(--gold);
+    text-shadow: 0 0 18px rgba(255,200,87,0.9);
+}
 
 /* ===== STAT BLOCK ===== */
 .stat{
@@ -544,7 +548,15 @@ function calculate(){
   totalProfit.innerText = INR(totalC-totalI);
   currentFund.innerText = INR(totalC);
 
-  let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+  let loanElement = document.querySelector('[data-id="loan"]');
+
+if(loan > 0){
+    loanElement.classList.remove("zero-loan");
+    loanElement.classList.add("negative");   // red
+} else {
+    loanElement.classList.remove("negative");
+    loanElement.classList.add("zero-loan");  // yellow
+}
   let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
 
   let net = totalC + emergency - loan;
@@ -595,6 +607,7 @@ if(healthSelect){
 
 </body>
 </html>
+
 
 
 
