@@ -58,45 +58,16 @@
         }
 
         .mini-progress {
-    width: 150px;
-    height: 150px;
-    position: relative;
-    margin: 0 auto;
-}
-
-.mini-progress svg {
     width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
+    text-align: center;
+    padding: 20px 0;
 }
 
-.mini-progress circle {
-    fill: none;
-    stroke-width: 10;
-}
-
-/* Light neutral background ring */
-.bg {
-    stroke: #e5e7eb;
-}
-
-/* Clean professional blue */
-.progress {
-    stroke: #2563eb;
-    stroke-linecap: round;
-    transition: stroke-dashoffset 0.6s ease;
-}
-
-/* Center percentage text */
 .percent {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 600;
-    color: #1f2937;
+    color: #2563eb;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
 }
 
         .editable:hover {
@@ -295,18 +266,7 @@ th, td{
 }
 
 }
-        @media (max-width: 768px) {
-
-    .mini-progress {
-        width: 180px;
-        height: 180px;
-    }
-
-    .percent {
-        font-size: 22px;
-    }
-
-}
+        
     </style>
 </head>
 
@@ -323,12 +283,6 @@ th, td{
         <div class="glass top">
 
             <div class="mini-progress">
-                <svg width="120" height="120">
-                    <circle class="bg" cx="60" cy="60" r="50"/>
-                    <circle class="progress" cx="60" cy="60" r="50"
-                        stroke-dasharray="314"
-                        stroke-dashoffset="314"/>
-                </svg>
                 <div class="percent" id="percent">0%</div>
             </div>
 
@@ -656,6 +610,7 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
 
