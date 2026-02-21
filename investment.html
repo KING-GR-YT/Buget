@@ -58,19 +58,19 @@
         }
 
         .mini-progress {
-    width: 140px;
-    height: 140px;
-    margin: 20px auto;
+    width: 130px;
+    height: 130px;
     border: 4px solid #dc2626;   /* red border */
-    border-radius: 50%;          /* makes it round */
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
+    background: transparent;    /* 🔥 removed white */
+    flex-shrink: 0;
 }
 
 .percent {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 600;
     color: #dc2626;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -625,6 +625,7 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
 
