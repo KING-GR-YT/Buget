@@ -481,7 +481,7 @@ function render(){
   data.forEach((r,i)=>{
     tbody.innerHTML+=`
     <tr>
-      <td class="editable">${r.name}</td>
+      <td>${r.name}</td>
       <td>${r.alloc}%</td>
       <td class="editable number">${INR(r.invested)}</td>
       <td class="editable number">${INR(r.current)}</td>
@@ -595,6 +595,7 @@ if(healthSelect){
 
 </body>
 </html>
+
 
 
 
