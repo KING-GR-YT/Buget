@@ -116,7 +116,7 @@ font-family:Orbitron;
 font-size:20px;
 font-weight:600;
 letter-spacing:1.2px;
-
+color:Chartreuse;
 text-shadow:0 0 14px rgba(0,247,255,0.7);
 }
 
@@ -130,15 +130,7 @@ text-shadow:0 0 18px rgba(0,255,157,0.8);
 color:var(--red);
 text-shadow:0 0 18px rgba(255,46,99,0.8);
 }
-.loan-positive{
-    color:var(--red) !important;
-    text-shadow:0 0 18px rgba(255,46,99,0.9);
-}
 
-.loan-zero{
-    color:var(--gold) !important;
-    text-shadow:0 0 18px rgba(255,200,87,0.9);
-}
 
 .home-link{
     padding:8px 14px;
@@ -556,18 +548,7 @@ function calculate(){
   totalProfit.innerText = INR(totalC-totalI);
   currentFund.innerText = INR(totalC);
 
-  let loanElement = document.querySelector('[data-id="loan"]');
-let loan = NUM(loanElement.innerText);
-
-// Remove old classes
-loanElement.classList.remove("loan-positive","loan-zero");
-
-// Apply new class
-if(loan > 0){
-    loanElement.classList.add("loan-positive");   // RED
-}else{
-    loanElement.classList.add("loan-zero");       // YELLOW
-}
+  let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
 
 /* ================== PROGRESS RING ================== */
 
@@ -608,6 +589,7 @@ if(healthSelect){
 
 </body>
 </html>
+
 
 
 
