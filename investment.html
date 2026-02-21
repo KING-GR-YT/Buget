@@ -1,610 +1,1959 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Investment Control Center</title>
 
-<title>Investment Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <style>
+        :root {
+            --blue:#00f7ff;
+            --green:#00ff9d;
+            --red:#ff2e63;
+            --gold:#ffc857;
+        }
 
-<style>
-:root{
---blue:#00f7ff;
---green:#00ff9d;
---red:#ff2e63;
---gold:#ffc857;
-}
-body{
-margin:0;
-background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
-font-family:Inter;color:white;
-}
-.container{max-width:1400px;margin:auto;padding:30px;}
-.header{
-font-family:Orbitron;
-font-size:30px;
-color:var(--blue);
-text-shadow:0 0 15px var(--blue);
-margin-bottom:25px;
-}
-.glass{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(0,247,255,.3);
-backdrop-filter:blur(15px);
-border-radius:16px;
-padding:25px;
-margin-bottom:30px;
-box-shadow:0 0 25px rgba(0,247,255,.25);
-}
-.top{display:flex;gap:25px;flex-wrap:wrap;align-items:center;}
+        body {
+            margin:0;
+            background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+            font-family:Inter;
+            color:white;
+        }
 
-/* SMALL RING */
-.mini-progress{width:120px;height:120px;position:relative;}
-.mini-progress svg{transform:rotate(-90deg);}
-.mini-progress circle{fill:none;stroke-width:10;}
-.bg{stroke:#1f2937;}
-.progress{
-stroke:var(--blue);
-stroke-linecap:round;
-filter:drop-shadow(0 0 8px var(--blue));
-transition:1s;
-}
-.percent{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-font-family:Orbitron;
-font-size:18px;            /* smaller */
-letter-spacing:1px;
-font-weight:600;
-color:var(--blue);
-text-shadow:0 0 6px rgba(0,247,255,0.6);
-}
+        .container {
+            max-width:1400px;
+            margin:auto;
+            padding:30px;
+        }
 
+        .header {
+            font-family:Orbitron;
+            font-size:30px;
+            color:var(--blue);
+            text-shadow:0 0 15px var(--blue);
+            margin-bottom:25px;
+        }
 
-.editable:hover{background:rgba(0,247,255,.15);cursor:pointer;}
-.inline-input{
-background:transparent;border:none;
-color:white;font:inherit;width:100%;
-text-align:center;outline:none;
-}
-input,button{
-background:#081321;
-border:1px solid var(--blue);
-color:white;
-padding:10px;
-border-radius:8px;
-font-family:Orbitron;
-}
-button{cursor:pointer;}
-button:hover{background:var(--green);color:black;}
+        .glass {
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(0,247,255,.3);
+            backdrop-filter:blur(15px);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:30px;
+            box-shadow:0 0 25px rgba(0,247,255,.25);
+        }
 
-table{width:100%;border-collapse:collapse;}
-th{color:var(--gold);padding:12px;border-bottom:2px solid var(--blue);}
-td{text-align:center;padding:10px;border-bottom:1px solid rgba(255,255,255,.1);}
-.positive{color:var(--green);}
-.negative{color:var(--red);}
-.stat b.zero-loan{
-    color: var(--gold);
-    text-shadow: 0 0 18px rgba(255,200,87,0.9);
-}
+        .top {
+            display:flex;
+            gap:25px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
 
-/* ===== STAT BLOCK ===== */
-.stat{
-display:flex;
-flex-direction:column;
-gap:15px;
-min-width:150px;
-}
+        .mini-progress {
+            width:120px;
+            height:120px;
+            position:relative;
+        }
 
-/* Label */
-.stat span{
-font-size:20px;
-color:#9fb7c7;
-letter-spacing:0.8px;
-}
+        .mini-progress svg {
+            transform:rotate(-90deg);
+        }
 
-/* Value */
-.stat b{
-font-family:Orbitron;
-font-size:20px;
-font-weight:600;
-letter-spacing:1.2px;
-color:Chartreuse;
-text-shadow:0 0 14px rgba(0,247,255,0.7);
-}
+        .mini-progress circle {
+            fill:none;
+            stroke-width:10;
+        }
 
-/* Positive / Negative */
-.stat b.positive{
-color:var(--green);
-text-shadow:0 0 18px rgba(0,255,157,0.8);
-}
+        .bg { stroke:#1f2937; }
 
-.stat b.negative{
-color:var(--red);
-text-shadow:0 0 18px rgba(255,46,99,0.8);
-}
+        .progress {
+            stroke:var(--blue);
+            stroke-linecap:round;
+            filter:drop-shadow(0 0 8px var(--blue));
+            transition:1s;
+        }
 
+        .percent {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-family:Orbitron;
+            font-size:18px;
+            letter-spacing:1px;
+            font-weight:600;
+            color:var(--blue);
+            text-shadow:0 0 6px rgba(0,247,255,0.6);
+        }
 
-.home-link{
-    padding:8px 14px;
-    border-radius:8px;
-    text-decoration:none;
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    border:1px solid rgba(0,255,255,0.4);
-    transition:0.3s ease;
-    font-weight:500;
-    float: right;
-}
+        .editable:hover {
+            background:rgba(0,247,255,.15);
+            cursor:pointer;
+        }
 
-.home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 10px #00ffff;
-}
+        .inline-input {
+            background:transparent;
+            border:none;
+            color:white;
+            font:inherit;
+            width:100%;
+            text-align:center;
+            outline:none;
+        }
 
-.neon-select{
-background:transparent;
-border:none;
-outline:none;
-appearance:none;
--webkit-appearance:none;
--moz-appearance:none;
+        input, button {
+            background:#081321;
+            border:1px solid var(--blue);
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            font-family:Orbitron;
+        }
 
-font-family:Orbitron;
-font-size:20px;
-font-weight:600;
-letter-spacing:1.2px;
+        button { cursor:pointer; }
 
-cursor:pointer;
-padding:0;
-text-align:center;
-}
+        button:hover {
+            background:var(--green);
+            color:black;
+        }
 
-/* YES Style */
-.neon-select.yes{
-color:var(--green);
-text-shadow:0 0 18px rgba(0,255,157,0.9);
-}
+        table {
+            width:100%;
+            border-collapse:collapse;
+        }
 
-/* NO Style */
-.neon-select.no{
-color:var(--red);
-text-shadow:0 0 18px rgba(255,46,99,0.9);
-}
-/* ============================= */
-/* 📱 MOBILE RESPONSIVE DESIGN  */
-/* ============================= */
+        th {
+            color:var(--gold);
+            padding:12px;
+            border-bottom:2px solid var(--blue);
+        }
 
-@media (max-width: 900px){
+        td {
+            text-align:center;
+            padding:10px;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
 
-.container{
-    padding:15px;
-}
+        .positive { color:var(--green); }
+        .negative { color:var(--red); }
 
-.header{
-    font-size:22px;
-    text-align:center;
-}
+        .stat {
+            display:flex;
+            flex-direction:column;
+            gap:25px;
+            min-width:170px;
+        }
 
-.home-link{
-    float:none;
-    display:inline-block;
-    margin-top:10px;
-}
+        .stat span {
+            font-size:20px;
+            color:#9fb7c7;
+            letter-spacing:0.8px;
+        }
 
-/* SUMMARY SECTION STACK */
-.top{
-    flex-direction:column;
-    align-items:center;
-    text-align:center;
-}
+        .stat b {
+            font-family:Orbitron;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:1.2px;
+            color:Chartreuse;
+            text-shadow:0 0 14px rgba(0,247,255,0.7);
+        }
 
-/* Smaller progress ring */
-.mini-progress{
-    width:100px;
-    height:100px;
-}
+        .stat b.positive {
+            color:var(--green);
+            text-shadow:0 0 18px rgba(0,255,157,0.8);
+        }
 
-.mini-progress svg{
-    width:100px;
-    height:100px;
-}
+        .stat b.negative {
+            color:var(--red);
+            text-shadow:0 0 18px rgba(255,46,99,0.8);
+        }
 
-.percent{
-    font-size:16px;
-}
+        .home-link {
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            background:rgba(0,255,255,0.15);
+            color:#00ffff;
+            border:1px solid rgba(0,255,255,0.4);
+            transition:0.3s ease;
+            font-weight:500;
+            float:right;
+        }
 
-/* Stats full width */
-.stat{
-    width:100%;
-    align-items:center;
-    gap:10px;
-}
-
-/* Add Investment section */
-.glass input,
-.glass button{
-    width:100%;
-    margin-bottom:10px;
-}
-
-/* Table responsive scroll */
-.glass{
-    overflow-x:auto;
-}
-
-table{
-    min-width:700px;
-}
-
-/* Reduce table font size */
-th, td{
-    font-size:13px;
-    padding:8px;
-}
-
-}
-</style>
+        .home-link:hover {
+            background:#00ffff;
+            color:#001f1f;
+            box-shadow:0 0 10px #00ffff;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
-
-<div class="header">⚡ Investment Dashboard
-	<a href="main.html" class="home-link">🏠 Home</a>
-</div>
-
-<!-- SUMMARY -->
-<div class="glass top">
-
-<div class="mini-progress">
-<svg width="120" height="120">
-<circle class="bg" cx="60" cy="60" r="50"/>
-<circle class="progress" cx="60" cy="60" r="50"
-stroke-dasharray="314"
-stroke-dashoffset="314"/>
-</svg>
-<div class="percent" id="percent">0%</div>
-</div>
-
-<div class="stat">
-<span>Current Net Worth</span>
-<b id="networth">₹0.00</b>
-</div>
-
-<div class="stat">
-<span>Current Fund</span>
-<b id="currentFund">₹0.00</b>
-</div>
-
-<div class="stat">
-<span>Pending Loan</span>
-<b class="editable" data-id="loan">₹0.00</b>
-</div>
-
-<div class="stat">
-<span>Target Fund</span>
-<b class="editable" data-id="targetFund">₹0</b>
-</div>
-
-<div class="stat">
-<span>Emergency Fund</span>
-<b class="editable" data-id="emergencyFund">₹0</b>
-</div>
-
-<div class="stat">
-<span>Health Insurance</span>
-<select id="healthInsuranceStatus" class="neon-select">
-<option value="no">NO</option>
-<option value="yes">YES</option>
-</select>
-</div>
-
-
-
-</div>
-
-<!-- ADD INVESTMENT -->
-<div class="glass">
-<h3 style="font-family:Orbitron;color:var(--green)">➕ Add Investment</h3>
-<input id="invName" placeholder="Investment Name">
-<input id="invInvested" type="number" placeholder="Invested Amount">
-<input id="invCurrent" type="number" placeholder="Current Value">
-<button onclick="addInvestment()">Add Investment</button>
-</div>
-
-<!-- TABLE -->
-<div class="glass">
-<table>
-<thead>
-<tr>
-<th>Investment</th>
-<th>Alloc %</th>
-<th>Invested</th>
-<th>Current</th>
-<th>Profit</th>
-<th>Delete</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-<tfoot>
-<tr>
-<th>Total</th>
-<th id="totalAlloc"></th>
-<th id="totalInvested"></th>
-<th id="totalCurrent"></th>
-<th id="totalProfit"></th>
-<th></th>
-</tr>
-</tfoot>
-</table>
-</div>
-
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<!-- Firebase SDK -->
-<script>
-
-/* 🔥 FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
-};
-
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 PUT YOUR UID
-
-
-/* INITIALIZE */
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.database();
-const auth = firebase.auth();
-
-
-/* 🔐 PAGE PROTECTION */
-document.body.style.display = "none";
-
-onAuthStateChanged(auth, (user) => {
-    if (!user || user.uid !== ADMIN_UID) {
-        window.location.href = "index.html";
-    } else {
-        document.body.style.display = "block";
-    }
-});
-
-/* ================== UTILS ================== */
-
-const INR = n => new Intl.NumberFormat('en-IN',{
-  style:'currency',
-  currency:'INR'
-}).format(n||0);
-
-const NUM = v => Number(String(v).replace(/[^0-9.-]+/g,''))||0;
-
-/* ================== STATE ================== */
-
-let data = [];
-
-/* ================== LOAD ================== */
-
-db.ref("portfolio").on("value",snap=>{
-  const d = snap.val() || {};
-  data = d.rows || [];
-
-  document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
-  document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
-  document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
-
-  /* 🔥 HEALTH INSURANCE LOAD */
-  const healthStatus = d.health ? "yes" : "no";
-  const healthSelect = document.getElementById("healthInsuranceStatus");
-  if(healthSelect){
-    healthSelect.value = healthStatus;
-    updateHealthStyle(healthStatus);
-  }
-
-  render();
-});
-
-/* ================== SAVE ================== */
-
-function save(){
-  db.ref("portfolio").set({
-    target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
-    loan: NUM(document.querySelector('[data-id="loan"]').innerText),
-    emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
-    health: document.getElementById("healthInsuranceStatus").value === "yes",
-    rows: data
-  });
-}
-
-/* ================== ADD ================== */
-
-function addInvestment(){
-  if(!invName.value) return alert("Enter name");
-
-  data.push({
-    name: invName.value,
-    alloc: 0,
-    invested: +invInvested.value || 0,
-    current: +invCurrent.value || 0
-  });
-
-  invName.value = invInvested.value = invCurrent.value = "";
-  render();
-  save();
-}
-
-/* ================== DELETE ================== */
-
-function deleteRow(i){
-  data.splice(i,1);
-  render();
-  save();
-}
-
-/* ================== EDITABLE ================== */
-
-function editable(el,isNum){
-  el.onclick=()=>{
-    let v = isNum ? NUM(el.innerText) : el.innerText;
-    el.innerHTML=`<input class="inline-input" value="${v}">`;
-    let input=el.firstChild;
-    input.focus();
-    input.onblur=()=>{
-      el.innerText = isNum ? INR(input.value) : input.value;
-      calculate();
-      save();
-    };
-  };
-}
-
-/* ================== RENDER ================== */
-
-function render(){
-
-  /* Sort by highest invested */
-  data.sort((a,b) => b.invested - a.invested);
-
-  tbody.innerHTML="";
-
-  data.forEach((r,i)=>{
-    tbody.innerHTML+=`
-    <tr>
-      <td>${r.name}</td>
-      <td>${r.alloc}%</td>
-      <td class="editable number">${INR(r.invested)}</td>
-      <td class="editable number">${INR(r.current)}</td>
-      <td></td>
-      <td><button onclick="deleteRow(${i})">🗑</button></td>
-    </tr>`;
-  });
-
-  document.querySelectorAll(".editable").forEach(el=>{
-    editable(el,el.classList.contains("number"));
-  });
-
-  editable(document.querySelector('[data-id="targetFund"]'),true);
-  editable(document.querySelector('[data-id="loan"]'),true);
-  editable(document.querySelector('[data-id="emergencyFund"]'),true);
-
-  calculate();
-}
-
-/* ================== CALCULATE ================== */
-
-function calculate(){
-
-  let totalI=0,totalC=0;
-
-  /* Calculate total invested */
-  data.forEach(r=>{
-    totalI += Number(r.invested)||0;
-  });
-
-  /* Auto allocation */
-  data.forEach(r=>{
-    r.alloc = totalI > 0
-      ? ((r.invested / totalI) * 100).toFixed(2)
-      : 0;
-  });
-
-  let totalA=0;
-
-  [...tbody.rows].forEach((row,index)=>{
-
-    let r = data[index];
-    let i = Number(r.invested)||0;
-    let c = Number(r.current)||0;
-    let p = c - i;
-
-    row.cells[1].innerText = r.alloc + "%";
-    row.cells[2].innerText = INR(i);
-    row.cells[3].innerText = INR(c);
-    row.cells[4].innerText = INR(p);
-    row.cells[4].className = p>=0 ? "positive" : "negative";
-
-    totalA += Number(r.alloc);
-    totalC += c;
-  });
-
-  totalAlloc.innerText = totalA.toFixed(2) + "%";
-  totalInvested.innerText = INR(totalI);
-  totalCurrent.innerText = INR(totalC);
-  totalProfit.innerText = INR(totalC-totalI);
-  currentFund.innerText = INR(totalC);
-
-  let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
-
-/* ================== PROGRESS RING ================== */
-
-function updateProgress(val,target){
-  if(target<=0) return;
-  let p=Math.min(val/target*100,100);
-  let offset=314-(p/100)*314;
-  document.querySelector(".progress").style.strokeDashoffset=offset;
-  percent.innerText=p.toFixed(1)+"%";
-}
-
-/* ================== HEALTH STYLE ================== */
-
-function updateHealthStyle(value){
-  const select = document.getElementById("healthInsuranceStatus");
-  if(!select) return;
-
-  if(value === "yes"){
-    select.classList.add("yes");
-    select.classList.remove("no");
-  }else{
-    select.classList.add("no");
-    select.classList.remove("yes");
-  }
-}
-
-/* Health change listener */
-const healthSelect = document.getElementById("healthInsuranceStatus");
-if(healthSelect){
-  healthSelect.addEventListener("change", function(){
-    updateHealthStyle(this.value);
-    save();
-  });
-}
-
-</script>
-
+    <div class="container">
+
+        <div class="header">
+            ⚡ Investment Dashboard
+            <a href="main.html" class="home-link">🏠 Home</a>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="glass top">
+
+            <div class="mini-progress">
+                <svg width="120" height="120">
+                    <circle class="bg" cx="60" cy="60" r="50"/>
+                    <circle class="progress" cx="60" cy="60" r="50"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="314"/>
+                </svg>
+                <div class="percent" id="percent">0%</div>
+            </div>
+
+            <div class="stat">
+                <span>Net Worth</span>
+                <b id="networth">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Current Fund</span>
+                <b id="currentFund">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Pending Loan</span>
+                <b class="editable" data-id="loan">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Target Fund</span>
+                <b class="editable" data-id="targetFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Emergency Fund</span>
+                <b class="editable" data-id="emergencyFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Health Insurance</span>
+                <b class="editable" data-id="healthInsurance">₹0</b>
+            </div>
+
+        </div>
+        <!-- ADD INVESTMENT -->
+        <div class="glass">
+            <h3 style="font-family:Orbitron;color:var(--green)">
+                ➕ Add Investment
+            </h3>
+
+            <input id="invName" placeholder="Investment Name">
+            <input id="invAlloc" type="number" placeholder="Allocation %">
+            <input id="invInvested" type="number" placeholder="Invested Amount">
+            <input id="invCurrent" type="number" placeholder="Current Value">
+            <button onclick="addInvestment()">Add Investment</button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="glass">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Alloc %</th>
+                        <th>Invested</th>
+                        <th>Current</th>
+                        <th>Profit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="totalAlloc"></th>
+                        <th id="totalInvested"></th>
+                        <th id="totalCurrent"></th>
+                        <th id="totalProfit"></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+
+        /* 🔥 FIREBASE CONFIG */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+            authDomain: "personal-budget-1cbbe.firebaseapp.com",
+            databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "personal-budget-1cbbe",
+            storageBucket: "personal-budget-1cbbe.appspot.com",
+            messagingSenderId: "133591748262",
+            appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+        };
+
+        const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        /* 🔐 PAGE PROTECTION */
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Investment Control Center</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --blue:#00f7ff;
+            --green:#00ff9d;
+            --red:#ff2e63;
+            --gold:#ffc857;
+        }
+
+        body {
+            margin:0;
+            background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+            font-family:Inter;
+            color:white;
+        }
+
+        .container {
+            max-width:1400px;
+            margin:auto;
+            padding:30px;
+        }
+
+        .header {
+            font-family:Orbitron;
+            font-size:30px;
+            color:var(--blue);
+            text-shadow:0 0 15px var(--blue);
+            margin-bottom:25px;
+        }
+
+        .glass {
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(0,247,255,.3);
+            backdrop-filter:blur(15px);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:30px;
+            box-shadow:0 0 25px rgba(0,247,255,.25);
+        }
+
+        .top {
+            display:flex;
+            gap:25px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .mini-progress {
+            width:120px;
+            height:120px;
+            position:relative;
+        }
+
+        .mini-progress svg {
+            transform:rotate(-90deg);
+        }
+
+        .mini-progress circle {
+            fill:none;
+            stroke-width:10;
+        }
+
+        .bg { stroke:#1f2937; }
+
+        .progress {
+            stroke:var(--blue);
+            stroke-linecap:round;
+            filter:drop-shadow(0 0 8px var(--blue));
+            transition:1s;
+        }
+
+        .percent {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-family:Orbitron;
+            font-size:18px;
+            letter-spacing:1px;
+            font-weight:600;
+            color:var(--blue);
+            text-shadow:0 0 6px rgba(0,247,255,0.6);
+        }
+
+        .editable:hover {
+            background:rgba(0,247,255,.15);
+            cursor:pointer;
+        }
+
+        .inline-input {
+            background:transparent;
+            border:none;
+            color:white;
+            font:inherit;
+            width:100%;
+            text-align:center;
+            outline:none;
+        }
+
+        input, button {
+            background:#081321;
+            border:1px solid var(--blue);
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            font-family:Orbitron;
+        }
+
+        button { cursor:pointer; }
+
+        button:hover {
+            background:var(--green);
+            color:black;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th {
+            color:var(--gold);
+            padding:12px;
+            border-bottom:2px solid var(--blue);
+        }
+
+        td {
+            text-align:center;
+            padding:10px;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
+
+        .positive { color:var(--green); }
+        .negative { color:var(--red); }
+
+        .stat {
+            display:flex;
+            flex-direction:column;
+            gap:25px;
+            min-width:170px;
+        }
+
+        .stat span {
+            font-size:20px;
+            color:#9fb7c7;
+            letter-spacing:0.8px;
+        }
+
+        .stat b {
+            font-family:Orbitron;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:1.2px;
+            color:Chartreuse;
+            text-shadow:0 0 14px rgba(0,247,255,0.7);
+        }
+
+        .stat b.positive {
+            color:var(--green);
+            text-shadow:0 0 18px rgba(0,255,157,0.8);
+        }
+
+        .stat b.negative {
+            color:var(--red);
+            text-shadow:0 0 18px rgba(255,46,99,0.8);
+        }
+
+        .home-link {
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            background:rgba(0,255,255,0.15);
+            color:#00ffff;
+            border:1px solid rgba(0,255,255,0.4);
+            transition:0.3s ease;
+            font-weight:500;
+            float:right;
+        }
+
+        .home-link:hover {
+            background:#00ffff;
+            color:#001f1f;
+            box-shadow:0 0 10px #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            ⚡ Investment Dashboard
+            <a href="main.html" class="home-link">🏠 Home</a>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="glass top">
+
+            <div class="mini-progress">
+                <svg width="120" height="120">
+                    <circle class="bg" cx="60" cy="60" r="50"/>
+                    <circle class="progress" cx="60" cy="60" r="50"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="314"/>
+                </svg>
+                <div class="percent" id="percent">0%</div>
+            </div>
+
+            <div class="stat">
+                <span>Net Worth</span>
+                <b id="networth">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Current Fund</span>
+                <b id="currentFund">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Pending Loan</span>
+                <b class="editable" data-id="loan">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Target Fund</span>
+                <b class="editable" data-id="targetFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Emergency Fund</span>
+                <b class="editable" data-id="emergencyFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Health Insurance</span>
+                <b class="editable" data-id="healthInsurance">₹0</b>
+            </div>
+
+        </div>
+        <!-- ADD INVESTMENT -->
+        <div class="glass">
+            <h3 style="font-family:Orbitron;color:var(--green)">
+                ➕ Add Investment
+            </h3>
+
+            <input id="invName" placeholder="Investment Name">
+            <input id="invAlloc" type="number" placeholder="Allocation %">
+            <input id="invInvested" type="number" placeholder="Invested Amount">
+            <input id="invCurrent" type="number" placeholder="Current Value">
+            <button onclick="addInvestment()">Add Investment</button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="glass">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Alloc %</th>
+                        <th>Invested</th>
+                        <th>Current</th>
+                        <th>Profit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="totalAlloc"></th>
+                        <th id="totalInvested"></th>
+                        <th id="totalCurrent"></th>
+                        <th id="totalProfit"></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+
+        /* 🔥 FIREBASE CONFIG */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+            authDomain: "personal-budget-1cbbe.firebaseapp.com",
+            databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "personal-budget-1cbbe",
+            storageBucket: "personal-budget-1cbbe.appspot.com",
+            messagingSenderId: "133591748262",
+            appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+        };
+
+        const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        /* 🔐 PAGE PROTECTION */
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Investment Control Center</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --blue:#00f7ff;
+            --green:#00ff9d;
+            --red:#ff2e63;
+            --gold:#ffc857;
+        }
+
+        body {
+            margin:0;
+            background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+            font-family:Inter;
+            color:white;
+        }
+
+        .container {
+            max-width:1400px;
+            margin:auto;
+            padding:30px;
+        }
+
+        .header {
+            font-family:Orbitron;
+            font-size:30px;
+            color:var(--blue);
+            text-shadow:0 0 15px var(--blue);
+            margin-bottom:25px;
+        }
+
+        .glass {
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(0,247,255,.3);
+            backdrop-filter:blur(15px);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:30px;
+            box-shadow:0 0 25px rgba(0,247,255,.25);
+        }
+
+        .top {
+            display:flex;
+            gap:25px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .mini-progress {
+            width:120px;
+            height:120px;
+            position:relative;
+        }
+
+        .mini-progress svg {
+            transform:rotate(-90deg);
+        }
+
+        .mini-progress circle {
+            fill:none;
+            stroke-width:10;
+        }
+
+        .bg { stroke:#1f2937; }
+
+        .progress {
+            stroke:var(--blue);
+            stroke-linecap:round;
+            filter:drop-shadow(0 0 8px var(--blue));
+            transition:1s;
+        }
+
+        .percent {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-family:Orbitron;
+            font-size:18px;
+            letter-spacing:1px;
+            font-weight:600;
+            color:var(--blue);
+            text-shadow:0 0 6px rgba(0,247,255,0.6);
+        }
+
+        .editable:hover {
+            background:rgba(0,247,255,.15);
+            cursor:pointer;
+        }
+
+        .inline-input {
+            background:transparent;
+            border:none;
+            color:white;
+            font:inherit;
+            width:100%;
+            text-align:center;
+            outline:none;
+        }
+
+        input, button {
+            background:#081321;
+            border:1px solid var(--blue);
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            font-family:Orbitron;
+        }
+
+        button { cursor:pointer; }
+
+        button:hover {
+            background:var(--green);
+            color:black;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th {
+            color:var(--gold);
+            padding:12px;
+            border-bottom:2px solid var(--blue);
+        }
+
+        td {
+            text-align:center;
+            padding:10px;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
+
+        .positive { color:var(--green); }
+        .negative { color:var(--red); }
+
+        .stat {
+            display:flex;
+            flex-direction:column;
+            gap:25px;
+            min-width:170px;
+        }
+
+        .stat span {
+            font-size:20px;
+            color:#9fb7c7;
+            letter-spacing:0.8px;
+        }
+
+        .stat b {
+            font-family:Orbitron;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:1.2px;
+            color:Chartreuse;
+            text-shadow:0 0 14px rgba(0,247,255,0.7);
+        }
+
+        .stat b.positive {
+            color:var(--green);
+            text-shadow:0 0 18px rgba(0,255,157,0.8);
+        }
+
+        .stat b.negative {
+            color:var(--red);
+            text-shadow:0 0 18px rgba(255,46,99,0.8);
+        }
+
+        .home-link {
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            background:rgba(0,255,255,0.15);
+            color:#00ffff;
+            border:1px solid rgba(0,255,255,0.4);
+            transition:0.3s ease;
+            font-weight:500;
+            float:right;
+        }
+
+        .home-link:hover {
+            background:#00ffff;
+            color:#001f1f;
+            box-shadow:0 0 10px #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            ⚡ Investment Dashboard
+            <a href="main.html" class="home-link">🏠 Home</a>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="glass top">
+
+            <div class="mini-progress">
+                <svg width="120" height="120">
+                    <circle class="bg" cx="60" cy="60" r="50"/>
+                    <circle class="progress" cx="60" cy="60" r="50"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="314"/>
+                </svg>
+                <div class="percent" id="percent">0%</div>
+            </div>
+
+            <div class="stat">
+                <span>Net Worth</span>
+                <b id="networth">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Current Fund</span>
+                <b id="currentFund">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Pending Loan</span>
+                <b class="editable" data-id="loan">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Target Fund</span>
+                <b class="editable" data-id="targetFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Emergency Fund</span>
+                <b class="editable" data-id="emergencyFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Health Insurance</span>
+                <b class="editable" data-id="healthInsurance">₹0</b>
+            </div>
+
+        </div>
+        <!-- ADD INVESTMENT -->
+        <div class="glass">
+            <h3 style="font-family:Orbitron;color:var(--green)">
+                ➕ Add Investment
+            </h3>
+
+            <input id="invName" placeholder="Investment Name">
+            <input id="invAlloc" type="number" placeholder="Allocation %">
+            <input id="invInvested" type="number" placeholder="Invested Amount">
+            <input id="invCurrent" type="number" placeholder="Current Value">
+            <button onclick="addInvestment()">Add Investment</button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="glass">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Alloc %</th>
+                        <th>Invested</th>
+                        <th>Current</th>
+                        <th>Profit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="totalAlloc"></th>
+                        <th id="totalInvested"></th>
+                        <th id="totalCurrent"></th>
+                        <th id="totalProfit"></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+
+        /* 🔥 FIREBASE CONFIG */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+            authDomain: "personal-budget-1cbbe.firebaseapp.com",
+            databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "personal-budget-1cbbe",
+            storageBucket: "personal-budget-1cbbe.appspot.com",
+            messagingSenderId: "133591748262",
+            appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+        };
+
+        const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+        /* 🔐 PAGE PROTECTION */
+      
+
+        /* UTILS */
+        const INR = n =>
+            new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(n || 0);
+
+        const NUM = v =>
+            Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
+
+        /* STATE */
+        let data = [];
+
+        /* LOAD */
+        db.ref("portfolio").on("value", snap => {
+            const d = snap.val() || {};
+            data = d.rows || [];
+
+            document.querySelector('[data-id="targetFund"]').innerText = INR(d.target || 0);
+            document.querySelector('[data-id="loan"]').innerText = INR(d.loan || 0);
+            document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency || 0);
+            document.querySelector('[data-id="healthInsurance"]').innerText = INR(d.health || 0);
+
+            render();
+        });
+
+        /* SAVE */
+        function save() {
+            db.ref("portfolio").set({
+                target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+                loan: NUM(document.querySelector('[data-id="loan"]').innerText),
+                emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
+                health: NUM(document.querySelector('[data-id="healthInsurance"]').innerText),
+                rows: data
+            });
+        }
+
+        /* ADD */
+        function addInvestment() {
+            if (!invName.value) return alert("Enter name");
+
+            data.push({
+                name: invName.value,
+                alloc: +invAlloc.value || 0,
+                invested: +invInvested.value || 0,
+                current: +invCurrent.value || 0
+            });
+
+            save();
+            render();
+
+            invName.value =
+                invAlloc.value =
+                invInvested.value =
+                invCurrent.value = "";
+        }
+
+        /* DELETE */
+        function deleteRow(i) {
+            data.splice(i, 1);
+            save();
+            render();
+        }
+
+        /* EDITABLE */
+        function editable(el, isNum) {
+            el.onclick = () => {
+                let v = isNum ? NUM(el.innerText) : el.innerText;
+
+                el.innerHTML = `<input class="inline-input" value="${v}">`;
+
+                let input = el.firstChild;
+                input.focus();
+
+                input.onblur = () => {
+                    el.innerText = isNum ? INR(input.value) : input.value;
+                    save();
+                    calculate();
+                };
+            };
+        }
+
+        /* RENDER */
+        function render() {
+            tbody.innerHTML = "";
+
+            data.forEach((r, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="editable">${r.name}</td>
+                        <td class="editable">${r.alloc}%</td>
+                        <td class="editable number">${INR(r.invested)}</td>
+                        <td class="editable number">${INR(r.current)}</td>
+                        <td></td>
+                        <td><button onclick="deleteRow(${i})">🗑</button></td>
+                    </tr>
+                `;
+            });
+
+            document.querySelectorAll(".editable").forEach(el => {
+                editable(el, el.classList.contains("number"));
+            });
+
+            editable(document.querySelector('[data-id="targetFund"]'), true);
+            editable(document.querySelector('[data-id="loan"]'), true);
+            editable(document.querySelector('[data-id="emergencyFund"]'), true);
+            editable(document.querySelector('[data-id="healthInsurance"]'), true);
+
+            calculate();
+        }
+
+        /* CALCULATE */
+        function calculate() {
+            let totalA = 0,
+                totalI = 0,
+                totalC = 0;
+
+            [...tbody.rows].forEach(r => {
+                let a = NUM(r.cells[1].innerText);
+                let i = NUM(r.cells[2].innerText);
+                let c = NUM(r.cells[3].innerText);
+                let p = c - i;
+
+                r.cells[4].innerText = INR(p);
+                r.cells[4].className = p >= 0 ? "positive" : "negative";
+
+                totalA += a;
+                totalI += i;
+                totalC += c;
+            });
+
+            totalAlloc.innerText = totalA + "%";
+            totalInvested.innerText = INR(totalI);
+            totalCurrent.innerText = INR(totalC);
+            totalProfit.innerText = INR(totalC - totalI);
+            currentFund.innerText = INR(totalC);
+
+            let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+            let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
+
+            let net = totalC + emergency - loan;
+
+            networth.innerText = INR(net);
+            networth.className = net >= 0 ? "positive" : "negative";
+
+            let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+            updateProgress(totalC, target);
+        }
+
+        /* PROGRESS RING */
+        function updateProgress(val, target) {
+            if (target <= 0) return;
+
+            let p = Math.min((val / target) * 100, 100);
+            let offset = 314 - (p / 100) * 314;
+
+            document.querySelector(".progress").style.strokeDashoffset = offset;
+            percent.innerText = p.toFixed(1) + "%";
+        }
+
+    </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Investment Control Center</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --blue:#00f7ff;
+            --green:#00ff9d;
+            --red:#ff2e63;
+            --gold:#ffc857;
+        }
+
+        body {
+            margin:0;
+            background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+            font-family:Inter;
+            color:white;
+        }
+
+        .container {
+            max-width:1400px;
+            margin:auto;
+            padding:30px;
+        }
+
+        .header {
+            font-family:Orbitron;
+            font-size:30px;
+            color:var(--blue);
+            text-shadow:0 0 15px var(--blue);
+            margin-bottom:25px;
+        }
+
+        .glass {
+            background:rgba(255,255,255,.05);
+            border:1px solid rgba(0,247,255,.3);
+            backdrop-filter:blur(15px);
+            border-radius:16px;
+            padding:25px;
+            margin-bottom:30px;
+            box-shadow:0 0 25px rgba(0,247,255,.25);
+        }
+
+        .top {
+            display:flex;
+            gap:25px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .mini-progress {
+            width:120px;
+            height:120px;
+            position:relative;
+        }
+
+        .mini-progress svg {
+            transform:rotate(-90deg);
+        }
+
+        .mini-progress circle {
+            fill:none;
+            stroke-width:10;
+        }
+
+        .bg { stroke:#1f2937; }
+
+        .progress {
+            stroke:var(--blue);
+            stroke-linecap:round;
+            filter:drop-shadow(0 0 8px var(--blue));
+            transition:1s;
+        }
+
+        .percent {
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform:translate(-50%,-50%);
+            font-family:Orbitron;
+            font-size:18px;
+            letter-spacing:1px;
+            font-weight:600;
+            color:var(--blue);
+            text-shadow:0 0 6px rgba(0,247,255,0.6);
+        }
+
+        .editable:hover {
+            background:rgba(0,247,255,.15);
+            cursor:pointer;
+        }
+
+        .inline-input {
+            background:transparent;
+            border:none;
+            color:white;
+            font:inherit;
+            width:100%;
+            text-align:center;
+            outline:none;
+        }
+
+        input, button {
+            background:#081321;
+            border:1px solid var(--blue);
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            font-family:Orbitron;
+        }
+
+        button { cursor:pointer; }
+
+        button:hover {
+            background:var(--green);
+            color:black;
+        }
+
+        table {
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th {
+            color:var(--gold);
+            padding:12px;
+            border-bottom:2px solid var(--blue);
+        }
+
+        td {
+            text-align:center;
+            padding:10px;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
+
+        .positive { color:var(--green); }
+        .negative { color:var(--red); }
+
+        .stat {
+            display:flex;
+            flex-direction:column;
+            gap:25px;
+            min-width:170px;
+        }
+
+        .stat span {
+            font-size:20px;
+            color:#9fb7c7;
+            letter-spacing:0.8px;
+        }
+
+        .stat b {
+            font-family:Orbitron;
+            font-size:20px;
+            font-weight:600;
+            letter-spacing:1.2px;
+            color:Chartreuse;
+            text-shadow:0 0 14px rgba(0,247,255,0.7);
+        }
+
+        .stat b.positive {
+            color:var(--green);
+            text-shadow:0 0 18px rgba(0,255,157,0.8);
+        }
+
+        .stat b.negative {
+            color:var(--red);
+            text-shadow:0 0 18px rgba(255,46,99,0.8);
+        }
+
+        .home-link {
+            padding:8px 14px;
+            border-radius:8px;
+            text-decoration:none;
+            background:rgba(0,255,255,0.15);
+            color:#00ffff;
+            border:1px solid rgba(0,255,255,0.4);
+            transition:0.3s ease;
+            font-weight:500;
+            float:right;
+        }
+
+        .home-link:hover {
+            background:#00ffff;
+            color:#001f1f;
+            box-shadow:0 0 10px #00ffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            ⚡ Investment Dashboard
+            <a href="main.html" class="home-link">🏠 Home</a>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="glass top">
+
+            <div class="mini-progress">
+                <svg width="120" height="120">
+                    <circle class="bg" cx="60" cy="60" r="50"/>
+                    <circle class="progress" cx="60" cy="60" r="50"
+                        stroke-dasharray="314"
+                        stroke-dashoffset="314"/>
+                </svg>
+                <div class="percent" id="percent">0%</div>
+            </div>
+
+            <div class="stat">
+                <span>Net Worth</span>
+                <b id="networth">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Current Fund</span>
+                <b id="currentFund">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Pending Loan</span>
+                <b class="editable" data-id="loan">₹0.00</b>
+            </div>
+
+            <div class="stat">
+                <span>Target Fund</span>
+                <b class="editable" data-id="targetFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Emergency Fund</span>
+                <b class="editable" data-id="emergencyFund">₹0</b>
+            </div>
+
+            <div class="stat">
+                <span>Health Insurance</span>
+                <b class="editable" data-id="healthInsurance">₹0</b>
+            </div>
+
+        </div>
+        <!-- ADD INVESTMENT -->
+        <div class="glass">
+            <h3 style="font-family:Orbitron;color:var(--green)">
+                ➕ Add Investment
+            </h3>
+
+            <input id="invName" placeholder="Investment Name">
+            <input id="invAlloc" type="number" placeholder="Allocation %">
+            <input id="invInvested" type="number" placeholder="Invested Amount">
+            <input id="invCurrent" type="number" placeholder="Current Value">
+            <button onclick="addInvestment()">Add Investment</button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="glass">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Alloc %</th>
+                        <th>Invested</th>
+                        <th>Current</th>
+                        <th>Profit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th id="totalAlloc"></th>
+                        <th id="totalInvested"></th>
+                        <th id="totalCurrent"></th>
+                        <th id="totalProfit"></th>
+                        <th></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Firebase v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+
+        /* 🔥 FIREBASE CONFIG */
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+            authDomain: "personal-budget-1cbbe.firebaseapp.com",
+            databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "personal-budget-1cbbe",
+            storageBucket: "personal-budget-1cbbe.appspot.com",
+            messagingSenderId: "133591748262",
+            appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+        };
+
+        const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+        firebase.initializeApp(firebaseConfig);
+
+        const db = firebase.database();
+        const auth = firebase.auth();
+
+
+        /* 🔐 PAGE PROTECTION */
+      document.body.style.display = "none";
+
+        auth.onAuthStateChanged(function(user) {
+            if (!user || user.uid !== ADMIN_UID) {
+                window.location.href = "index.html";
+            } else {
+                document.body.style.display = "block";
+            }
+        });
+
+
+        /* UTILS */
+        const INR = n =>
+            new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(n || 0);
+
+        const NUM = v =>
+            Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
+
+        /* STATE */
+        let data = [];
+
+        /* LOAD */
+        db.ref("portfolio").on("value", snap => {
+            const d = snap.val() || {};
+            data = d.rows || [];
+
+            document.querySelector('[data-id="targetFund"]').innerText = INR(d.target || 0);
+            document.querySelector('[data-id="loan"]').innerText = INR(d.loan || 0);
+            document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency || 0);
+            document.querySelector('[data-id="healthInsurance"]').innerText = INR(d.health || 0);
+
+            render();
+        });
+
+        /* SAVE */
+        function save() {
+            db.ref("portfolio").set({
+                target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+                loan: NUM(document.querySelector('[data-id="loan"]').innerText),
+                emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
+                health: NUM(document.querySelector('[data-id="healthInsurance"]').innerText),
+                rows: data
+            });
+        }
+
+        /* ADD */
+        function addInvestment() {
+            if (!invName.value) return alert("Enter name");
+
+            data.push({
+                name: invName.value,
+                alloc: +invAlloc.value || 0,
+                invested: +invInvested.value || 0,
+                current: +invCurrent.value || 0
+            });
+
+            save();
+            render();
+
+            invName.value =
+                invAlloc.value =
+                invInvested.value =
+                invCurrent.value = "";
+        }
+
+        /* DELETE */
+        function deleteRow(i) {
+            data.splice(i, 1);
+            save();
+            render();
+        }
+
+        /* EDITABLE */
+        function editable(el, isNum) {
+            el.onclick = () => {
+                let v = isNum ? NUM(el.innerText) : el.innerText;
+
+                el.innerHTML = `<input class="inline-input" value="${v}">`;
+
+                let input = el.firstChild;
+                input.focus();
+
+                input.onblur = () => {
+                    el.innerText = isNum ? INR(input.value) : input.value;
+                    save();
+                    calculate();
+                };
+            };
+        }
+
+        /* RENDER */
+        function render() {
+            tbody.innerHTML = "";
+
+            data.forEach((r, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="editable">${r.name}</td>
+                        <td class="editable">${r.alloc}%</td>
+                        <td class="editable number">${INR(r.invested)}</td>
+                        <td class="editable number">${INR(r.current)}</td>
+                        <td></td>
+                        <td><button onclick="deleteRow(${i})">🗑</button></td>
+                    </tr>
+                `;
+            });
+
+            document.querySelectorAll(".editable").forEach(el => {
+                editable(el, el.classList.contains("number"));
+            });
+
+            editable(document.querySelector('[data-id="targetFund"]'), true);
+            editable(document.querySelector('[data-id="loan"]'), true);
+            editable(document.querySelector('[data-id="emergencyFund"]'), true);
+            editable(document.querySelector('[data-id="healthInsurance"]'), true);
+
+            calculate();
+        }
+
+        /* CALCULATE */
+        function calculate() {
+            let totalA = 0,
+                totalI = 0,
+                totalC = 0;
+
+            [...tbody.rows].forEach(r => {
+                let a = NUM(r.cells[1].innerText);
+                let i = NUM(r.cells[2].innerText);
+                let c = NUM(r.cells[3].innerText);
+                let p = c - i;
+
+                r.cells[4].innerText = INR(p);
+                r.cells[4].className = p >= 0 ? "positive" : "negative";
+
+                totalA += a;
+                totalI += i;
+                totalC += c;
+            });
+
+            totalAlloc.innerText = totalA + "%";
+            totalInvested.innerText = INR(totalI);
+            totalCurrent.innerText = INR(totalC);
+            totalProfit.innerText = INR(totalC - totalI);
+            currentFund.innerText = INR(totalC);
+
+            let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+            let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
+
+            let net = totalC + emergency - loan;
+
+            networth.innerText = INR(net);
+            networth.className = net >= 0 ? "positive" : "negative";
+
+            let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+            updateProgress(totalC, target);
+        }
+
+        /* PROGRESS RING */
+        function updateProgress(val, target) {
+            if (target <= 0) return;
+
+            let p = Math.min((val / target) * 100, 100);
+            let offset = 314 - (p / 100) * 314;
+
+            document.querySelector(".progress").style.strokeDashoffset = offset;
+            percent.innerText = p.toFixed(1) + "%";
+        }
+
+    </script>
 
 </body>
 </html>
 
+        /* UTILS */
+        const INR = n =>
+            new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(n || 0);
 
+        const NUM = v =>
+            Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
 
+        /* STATE */
+        let data = [];
 
+        /* LOAD */
+        db.ref("portfolio").on("value", snap => {
+            const d = snap.val() || {};
+            data = d.rows || [];
 
+            document.querySelector('[data-id="targetFund"]').innerText = INR(d.target || 0);
+            document.querySelector('[data-id="loan"]').innerText = INR(d.loan || 0);
+            document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency || 0);
+            document.querySelector('[data-id="healthInsurance"]').innerText = INR(d.health || 0);
 
+            render();
+        });
 
+        /* SAVE */
+        function save() {
+            db.ref("portfolio").set({
+                target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+                loan: NUM(document.querySelector('[data-id="loan"]').innerText),
+                emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
+                health: NUM(document.querySelector('[data-id="healthInsurance"]').innerText),
+                rows: data
+            });
+        }
 
+        /* ADD */
+        function addInvestment() {
+            if (!invName.value) return alert("Enter name");
 
+            data.push({
+                name: invName.value,
+                alloc: +invAlloc.value || 0,
+                invested: +invInvested.value || 0,
+                current: +invCurrent.value || 0
+            });
 
+            save();
+            render();
 
+            invName.value =
+                invAlloc.value =
+                invInvested.value =
+                invCurrent.value = "";
+        }
 
+        /* DELETE */
+        function deleteRow(i) {
+            data.splice(i, 1);
+            save();
+            render();
+        }
 
+        /* EDITABLE */
+        function editable(el, isNum) {
+            el.onclick = () => {
+                let v = isNum ? NUM(el.innerText) : el.innerText;
 
+                el.innerHTML = `<input class="inline-input" value="${v}">`;
 
+                let input = el.firstChild;
+                input.focus();
+
+                input.onblur = () => {
+                    el.innerText = isNum ? INR(input.value) : input.value;
+                    save();
+                    calculate();
+                };
+            };
+        }
+
+        /* RENDER */
+        function render() {
+            tbody.innerHTML = "";
+
+            data.forEach((r, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="editable">${r.name}</td>
+                        <td class="editable">${r.alloc}%</td>
+                        <td class="editable number">${INR(r.invested)}</td>
+                        <td class="editable number">${INR(r.current)}</td>
+                        <td></td>
+                        <td><button onclick="deleteRow(${i})">🗑</button></td>
+                    </tr>
+                `;
+            });
+
+            document.querySelectorAll(".editable").forEach(el => {
+                editable(el, el.classList.contains("number"));
+            });
+
+            editable(document.querySelector('[data-id="targetFund"]'), true);
+            editable(document.querySelector('[data-id="loan"]'), true);
+            editable(document.querySelector('[data-id="emergencyFund"]'), true);
+            editable(document.querySelector('[data-id="healthInsurance"]'), true);
+
+            calculate();
+        }
+
+        /* CALCULATE */
+        function calculate() {
+            let totalA = 0,
+                totalI = 0,
+                totalC = 0;
+
+            [...tbody.rows].forEach(r => {
+                let a = NUM(r.cells[1].innerText);
+                let i = NUM(r.cells[2].innerText);
+                let c = NUM(r.cells[3].innerText);
+                let p = c - i;
+
+                r.cells[4].innerText = INR(p);
+                r.cells[4].className = p >= 0 ? "positive" : "negative";
+
+                totalA += a;
+                totalI += i;
+                totalC += c;
+            });
+
+            totalAlloc.innerText = totalA + "%";
+            totalInvested.innerText = INR(totalI);
+            totalCurrent.innerText = INR(totalC);
+            totalProfit.innerText = INR(totalC - totalI);
+            currentFund.innerText = INR(totalC);
+
+            let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+            let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
+
+            let net = totalC + emergency - loan;
+
+            networth.innerText = INR(net);
+            networth.className = net >= 0 ? "positive" : "negative";
+
+            let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+            updateProgress(totalC, target);
+        }
+
+        /* PROGRESS RING */
+        function updateProgress(val, target) {
+            if (target <= 0) return;
+
+            let p = Math.min((val / target) * 100, 100);
+            let offset = 314 - (p / 100) * 314;
+
+            document.querySelector(".progress").style.strokeDashoffset = offset;
+            percent.innerText = p.toFixed(1) + "%";
+        }
+
+    </script>
+
+</body>
+</html>
+
+        /* UTILS */
+        const INR = n =>
+            new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR'
+            }).format(n || 0);
+
+        const NUM = v =>
+            Number(String(v).replace(/[^0-9.-]+/g, '')) || 0;
+
+        /* STATE */
+        let data = [];
+
+        /* LOAD */
+        db.ref("portfolio").on("value", snap => {
+            const d = snap.val() || {};
+            data = d.rows || [];
+
+            document.querySelector('[data-id="targetFund"]').innerText = INR(d.target || 0);
+            document.querySelector('[data-id="loan"]').innerText = INR(d.loan || 0);
+            document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency || 0);
+            document.querySelector('[data-id="healthInsurance"]').innerText = INR(d.health || 0);
+
+            render();
+        });
+
+        /* SAVE */
+        function save() {
+            db.ref("portfolio").set({
+                target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+                loan: NUM(document.querySelector('[data-id="loan"]').innerText),
+                emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
+                health: NUM(document.querySelector('[data-id="healthInsurance"]').innerText),
+                rows: data
+            });
+        }
+
+        /* ADD */
+        function addInvestment() {
+            if (!invName.value) return alert("Enter name");
+
+            data.push({
+                name: invName.value,
+                alloc: +invAlloc.value || 0,
+                invested: +invInvested.value || 0,
+                current: +invCurrent.value || 0
+            });
+
+            save();
+            render();
+
+            invName.value =
+                invAlloc.value =
+                invInvested.value =
+                invCurrent.value = "";
+        }
+
+        /* DELETE */
+        function deleteRow(i) {
+            data.splice(i, 1);
+            save();
+            render();
+        }
+
+        /* EDITABLE */
+        function editable(el, isNum) {
+            el.onclick = () => {
+                let v = isNum ? NUM(el.innerText) : el.innerText;
+
+                el.innerHTML = `<input class="inline-input" value="${v}">`;
+
+                let input = el.firstChild;
+                input.focus();
+
+                input.onblur = () => {
+                    el.innerText = isNum ? INR(input.value) : input.value;
+                    save();
+                    calculate();
+                };
+            };
+        }
+
+        /* RENDER */
+        function render() {
+            tbody.innerHTML = "";
+
+            data.forEach((r, i) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="editable">${r.name}</td>
+                        <td class="editable">${r.alloc}%</td>
+                        <td class="editable number">${INR(r.invested)}</td>
+                        <td class="editable number">${INR(r.current)}</td>
+                        <td></td>
+                        <td><button onclick="deleteRow(${i})">🗑</button></td>
+                    </tr>
+                `;
+            });
+
+            document.querySelectorAll(".editable").forEach(el => {
+                editable(el, el.classList.contains("number"));
+            });
+
+            editable(document.querySelector('[data-id="targetFund"]'), true);
+            editable(document.querySelector('[data-id="loan"]'), true);
+            editable(document.querySelector('[data-id="emergencyFund"]'), true);
+            editable(document.querySelector('[data-id="healthInsurance"]'), true);
+
+            calculate();
+        }
+
+        /* CALCULATE */
+        function calculate() {
+            let totalA = 0,
+                totalI = 0,
+                totalC = 0;
+
+            [...tbody.rows].forEach(r => {
+                let a = NUM(r.cells[1].innerText);
+                let i = NUM(r.cells[2].innerText);
+                let c = NUM(r.cells[3].innerText);
+                let p = c - i;
+
+                r.cells[4].innerText = INR(p);
+                r.cells[4].className = p >= 0 ? "positive" : "negative";
+
+                totalA += a;
+                totalI += i;
+                totalC += c;
+            });
+
+            totalAlloc.innerText = totalA + "%";
+            totalInvested.innerText = INR(totalI);
+            totalCurrent.innerText = INR(totalC);
+            totalProfit.innerText = INR(totalC - totalI);
+            currentFund.innerText = INR(totalC);
+
+            let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
+            let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
+
+            let net = totalC + emergency - loan;
+
+            networth.innerText = INR(net);
+            networth.className = net >= 0 ? "positive" : "negative";
+
+            let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+            updateProgress(totalC, target);
+        }
+
+        /* PROGRESS RING */
+        function updateProgress(val, target) {
+            if (target <= 0) return;
+
+            let p = Math.min((val / target) * 100, 100);
+            let offset = 314 - (p / 100) * 314;
+
+            document.querySelector(".progress").style.strokeDashoffset = offset;
+            percent.innerText = p.toFixed(1) + "%";
+        }
+
+    </script>
+
+</body>
+</html>
