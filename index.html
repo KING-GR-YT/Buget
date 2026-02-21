@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cyber Terminal Admin</title>
+<title>Admin Terminal </title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f2027">
 
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
@@ -338,7 +340,15 @@ function animate(){
 animate();
 
 </script>
-
+  <!-- PWA Script -->
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+</script>
 </body>
 </html>
+
 
