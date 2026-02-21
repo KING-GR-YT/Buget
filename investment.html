@@ -146,6 +146,79 @@ text-shadow:0 0 18px rgba(255,46,99,0.8);
     box-shadow:0 0 10px #00ffff;
 }
 
+/* ============================= */
+/* 📱 MOBILE RESPONSIVE DESIGN  */
+/* ============================= */
+
+@media (max-width: 900px){
+
+.container{
+    padding:15px;
+}
+
+.header{
+    font-size:22px;
+    text-align:center;
+}
+
+.home-link{
+    float:none;
+    display:inline-block;
+    margin-top:10px;
+}
+
+/* SUMMARY SECTION STACK */
+.top{
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+}
+
+/* Smaller progress ring */
+.mini-progress{
+    width:100px;
+    height:100px;
+}
+
+.mini-progress svg{
+    width:100px;
+    height:100px;
+}
+
+.percent{
+    font-size:16px;
+}
+
+/* Stats full width */
+.stat{
+    width:100%;
+    align-items:center;
+    gap:10px;
+}
+
+/* Add Investment section */
+.glass input,
+.glass button{
+    width:100%;
+    margin-bottom:10px;
+}
+
+/* Table responsive scroll */
+.glass{
+    overflow-x:auto;
+}
+
+table{
+    min-width:700px;
+}
+
+/* Reduce table font size */
+th, td{
+    font-size:13px;
+    padding:8px;
+}
+
+}
 </style>
 </head>
 
@@ -197,7 +270,10 @@ stroke-dashoffset="314"/>
 
 <div class="stat">
 <span>Health Insurance</span>
-<b class="editable" data-id="healthInsurance">₹0</b>
+<select id="healthInsuranceStatus">
+<option value="no">NO</option>
+<option value="yes">YES</option>
+</select>
 </div>
 
 
@@ -208,7 +284,6 @@ stroke-dashoffset="314"/>
 <div class="glass">
 <h3 style="font-family:Orbitron;color:var(--green)">➕ Add Investment</h3>
 <input id="invName" placeholder="Investment Name">
-<input id="invAlloc" type="number" placeholder="Allocation %">
 <input id="invInvested" type="number" placeholder="Invested Amount">
 <input id="invCurrent" type="number" placeholder="Current Value">
 <button onclick="addInvestment()">Add Investment</button>
@@ -299,7 +374,12 @@ data=d.rows||[];
 document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
 document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
 document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
-document.querySelector('[data-id="healthInsurance"]').innerText = INR(d.health||0);
+// 🔥 HEALTH INSURANCE LOAD
+let healthStatus = d.health ? "yes" : "no";
+
+const healthSelect = document.getElementById("healthInsuranceStatus");
+healthSelect.value = healthStatus;
+updateHealthStyle(healthStatus);
 
 render();
 });
@@ -310,7 +390,7 @@ db.ref("portfolio").set({
 target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
 loan: NUM(document.querySelector('[data-id="loan"]').innerText),
 emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
-health: NUM(document.querySelector('[data-id="healthInsurance"]').innerText),
+health: document.getElementById("healthInsuranceStatus").value === "yes",
 rows: data
 });
 }
@@ -318,14 +398,18 @@ rows: data
 /* ADD */
 function addInvestment(){
 if(!invName.value) return alert("Enter name");
+
 data.push({
 name:invName.value,
-alloc:+invAlloc.value||0,
+alloc:0, // will be auto calculated
 invested:+invInvested.value||0,
 current:+invCurrent.value||0
 });
-save(); render();
-invName.value=invAlloc.value=invInvested.value=invCurrent.value="";
+
+save(); 
+render();
+
+invName.value=invInvested.value=invCurrent.value="";
 }
 
 /* DELETE */
@@ -349,12 +433,14 @@ save(); calculate();
 
 /* RENDER */
 function render(){
+// Sort by highest invested (which controls allocation)
+data.sort((a,b) => b.invested - a.invested);
 tbody.innerHTML="";
 data.forEach((r,i)=>{
 tbody.innerHTML+=`
 <tr>
 <td class="editable">${r.name}</td>
-<td class="editable">${r.alloc}%</td>
+<td>${r.alloc}%</td>
 <td class="editable number">${INR(r.invested)}</td>
 <td class="editable number">${INR(r.current)}</td>
 <td></td>
@@ -375,25 +461,49 @@ calculate();
 
 /* CALCULATE */
 function calculate(){
-let totalA=0,totalI=0,totalC=0;
 
-[...tbody.rows].forEach(r=>{
-let a=NUM(r.cells[1].innerText);
-let i=NUM(r.cells[2].innerText);
-let c=NUM(r.cells[3].innerText);
-let p=c-i;
+let totalI=0,totalC=0;
 
-r.cells[4].innerText=INR(p);
-r.cells[4].className=p>=0?"positive":"negative";
-
-totalA+=a; totalI+=i; totalC+=c;
+/* FIRST: calculate total invested */
+data.forEach(r=>{
+totalI += Number(r.invested)||0;
 });
 
-totalAlloc.innerText=totalA+"%";
-totalInvested.innerText=INR(totalI);
-totalCurrent.innerText=INR(totalC);
-totalProfit.innerText=INR(totalC-totalI);
-currentFund.innerText=INR(totalC);
+/* SECOND: update allocation automatically */
+data.forEach(r=>{
+if(totalI > 0){
+r.alloc = ((r.invested / totalI) * 100).toFixed(2);
+}else{
+r.alloc = 0;
+}
+});
+
+let totalA=0;
+
+/* THIRD: update table values */
+[...tbody.rows].forEach((row,index)=>{
+
+let r = data[index];
+
+let i = Number(r.invested)||0;
+let c = Number(r.current)||0;
+let p = c - i;
+
+row.cells[1].innerText = r.alloc + "%";
+row.cells[2].innerText = INR(i);
+row.cells[3].innerText = INR(c);
+row.cells[4].innerText = INR(p);
+row.cells[4].className = p>=0 ? "positive" : "negative";
+
+totalA += Number(r.alloc);
+totalC += c;
+});
+
+totalAlloc.innerText = totalA.toFixed(2) + "%";
+totalInvested.innerText = INR(totalI);
+totalCurrent.innerText = INR(totalC);
+totalProfit.innerText = INR(totalC-totalI);
+currentFund.innerText = INR(totalC);
 
 let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
 let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
@@ -405,6 +515,8 @@ networth.className = net >= 0 ? "positive" : "negative";
 
 let target=NUM(document.querySelector('[data-id="targetFund"]').innerText);
 updateProgress(totalC,target);
+
+save(); // save updated allocation
 }
 
 /* PROGRESS RING */
@@ -415,9 +527,32 @@ let offset=314-(p/100)*314;
 document.querySelector(".progress").style.strokeDashoffset=offset;
 percent.innerText=p.toFixed(1)+"%";
 }
+function updateHealthStyle(value){
 
+const select = document.getElementById("healthInsuranceStatus");
+
+if(value === "yes"){
+select.classList.add("yes");
+select.classList.remove("no");
+}else{
+select.classList.add("no");
+select.classList.remove("yes");
+}
+
+}
+
+// On Change
+document.getElementById("healthInsuranceStatus").addEventListener("change", function(){
+
+updateHealthStyle(this.value);
+
+// Save to Firebase
+db.ref("portfolio/health").set(this.value === "yes");
+
+});
 </script>
 
 
 </body>
 </html>
+
