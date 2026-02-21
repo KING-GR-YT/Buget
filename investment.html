@@ -373,9 +373,10 @@ const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 PUT YOUR UID
 
 
 /* INITIALIZE */
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+const auth = firebase.auth();
 
 
 /* 🔐 PAGE PROTECTION */
@@ -592,6 +593,7 @@ if(healthSelect){
 
 </body>
 </html>
+
 
 
 
