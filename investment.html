@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Neon Investment Control Center</title>
+<title>Investment Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -146,6 +146,35 @@ text-shadow:0 0 18px rgba(255,46,99,0.8);
     box-shadow:0 0 10px #00ffff;
 }
 
+.neon-select{
+background:transparent;
+border:none;
+outline:none;
+appearance:none;
+-webkit-appearance:none;
+-moz-appearance:none;
+
+font-family:Orbitron;
+font-size:20px;
+font-weight:600;
+letter-spacing:1.2px;
+
+cursor:pointer;
+padding:0;
+text-align:center;
+}
+
+/* YES Style */
+.neon-select.yes{
+color:var(--green);
+text-shadow:0 0 18px rgba(0,255,157,0.9);
+}
+
+/* NO Style */
+.neon-select.no{
+color:var(--red);
+text-shadow:0 0 18px rgba(255,46,99,0.9);
+}
 /* ============================= */
 /* 📱 MOBILE RESPONSIVE DESIGN  */
 /* ============================= */
@@ -270,7 +299,7 @@ stroke-dashoffset="314"/>
 
 <div class="stat">
 <span>Health Insurance</span>
-<select id="healthInsuranceStatus">
+<select id="healthInsuranceStatus" class="neon-select">
 <option value="no">NO</option>
 <option value="yes">YES</option>
 </select>
@@ -555,4 +584,5 @@ db.ref("portfolio/health").set(this.value === "yes");
 
 </body>
 </html>
+
 
