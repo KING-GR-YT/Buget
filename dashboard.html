@@ -17,7 +17,9 @@ body{
 
 /* HEADER */
 .header{
-    text-align:center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
     padding:20px;
     font-size:22px;
     font-weight:600;
@@ -39,6 +41,40 @@ body{
     }
 }
 
+/* MOBILE IMPROVEMENTS */
+@media(max-width:600px){
+    .dashboard{
+        padding:15px;
+        gap:15px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .header{
+        font-size:18px;
+        padding:15px;
+    }
+
+    table{
+        font-size:12px;
+    }
+
+    th,td{
+        padding:6px;
+    }
+
+    .flex{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .left,.right{
+        width:100%;
+    }
+}
+
 /* CARD */
 .card{
     background:rgba(255,255,255,0.05);
@@ -56,10 +92,17 @@ body{
     font-size:18px;
 }
 
+/* TABLE WRAPPER FOR MOBILE SCROLL */
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
 /* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
+    font-size:14px;
 }
 
 th,td{
@@ -74,13 +117,15 @@ th{
 
 /* INPUT */
 input{
-    width:90%;
-    padding:6px;
+    width:100%;
+    box-sizing:border-box;
+    padding:8px;
     border-radius:6px;
     border:1px solid rgba(255,255,255,0.2);
     background:rgba(0,0,0,0.4);
     color:#00ffff;
     text-align:center;
+    font-size:14px;
 }
 
 input:focus{
@@ -89,9 +134,7 @@ input:focus{
 }
 
 /* HIGHLIGHTS */
-.highlight-yellow{ background:#ffc107; color:black; font-weight:600; }
 .highlight-blue{ background:#00bcd4; color:black; font-weight:600; }
-.highlight-green{ background:#4caf50; color:black; font-weight:600; }
 
 .net{
     margin-top:10px;
@@ -103,7 +146,6 @@ input:focus{
     color:black;
 }
 
-/* RIGHT SIDE TABLE */
 .side-table td{
     background:rgba(255,255,255,0.05);
 }
@@ -123,16 +165,8 @@ input:focus{
     gap:20px;
 }
 
-@media(max-width:1000px){
-    .flex{
-        flex-direction:column;
-    }
-}
-
 .left{ flex:2; }
 .right{ flex:1; }
-
-
 
 .home-link{
     padding:4px 8px;
@@ -143,7 +177,6 @@ input:focus{
     border:1px solid rgba(0,255,255,0.4);
     transition:0.3s ease;
     font-weight:500;
-    float: right;
 }
 
 .home-link:hover{
@@ -156,37 +189,31 @@ input:focus{
 </head>
 <body>
 
-<div class="header">⚡ Monthly Dashboard ⚡
-	<a href="main.html" class="home-link">🏠 Home</a>
-
+<div class="header">
+    <div>⚡ Monthly Dashboard ⚡</div>
+    <a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 <div class="dashboard">
 
-<!-- ===== FEBRUARY ===== -->
+<!-- ===== CURRENT MONTH ===== -->
 <div class="card" id="febCard">
 <div class="title">Current Month</div>
 
 <div class="flex">
 <div class="left">
 
+<div class="table-wrapper">
 <table>
-<tr>
-<td>EXTRA</td>
-<td><input type="number" id="febExtra"></td>
-</tr>
-<tr>
-<td>SALARY</td>
-<td><input type="number" id="febSalary" value="25000"></td>
-</tr>
-<tr class="highlight-blue">
-<td>BANK BALANCE</td>
-<td id="febBankBalance"></td>
-</tr>
+<tr><td>EXTRA</td><td><input type="number" id="febExtra"></td></tr>
+<tr><td>SALARY</td><td><input type="number" id="febSalary" value="25000"></td></tr>
+<tr class="highlight-blue"><td>BANK BALANCE</td><td id="febBankBalance"></td></tr>
 </table>
+</div>
 
 <br>
 
+<div class="table-wrapper">
 <table>
 <tr>
 <th></th>
@@ -222,6 +249,7 @@ input:focus{
 <td id="febGrand"></td>
 </tr>
 </table>
+</div>
 
 <div class="net">
 NET BALANCE: ₹ <span id="febNet"></span>
@@ -231,6 +259,7 @@ NET BALANCE: ₹ <span id="febNet"></span>
 
 <div class="right">
 
+<div class="table-wrapper">
 <table class="side-table">
 <tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
 <tr><td>House</td><td><input type="number" class="febExp"></td></tr>
@@ -239,6 +268,7 @@ NET BALANCE: ₹ <span id="febNet"></span>
 <tr><td>EM Fund</td><td><input type="number" class="febExp"></td></tr>
 <tr><td>Other EXP</td><td><input type="number" class="febExp"></td></tr>
 </table>
+</div>
 
 <div class="total-box">
 TOTAL: ₹ <span id="febExpTotal"></span>
@@ -248,212 +278,7 @@ TOTAL: ₹ <span id="febExpTotal"></span>
 </div>
 </div>
 
-
-<!-- ===== JANUARY ===== -->
-<div class="card" id="janCard">
-<div class="title">Previous Month</div>
-
-<div class="flex">
-<div class="left">
-
-<table>
-<tr>
-<td>EXTRA</td>
-<td><input type="number" id="janExtra"></td>
-</tr>
-<tr>
-<td>SALARY</td>
-<td><input type="number" id="janSalary" value="25000"></td>
-</tr>
-<tr class="highlight-blue">
-<td>BANK BALANCE</td>
-<td id="janBankBalance"></td>
-</tr>
-</table>
-
-<br>
-
-<table>
-<tr>
-<th></th>
-<th>PARDEEP</th>
-<th>SANDEEP</th>
-<th>Total</th>
-</tr>
-
-<tr><td>KOTAK</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>HDFC</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>ONE CARD</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>ICICI</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr class="highlight-blue">
-<td>TOTAL</td>
-<td id="janTotalP"></td>
-<td id="janTotalS"></td>
-<td id="janGrand"></td>
-</tr>
-</table>
-
-<div class="net">
-NET BALANCE: ₹ <span id="janNet"></span>
 </div>
 
-</div>
-
-<div class="right">
-
-<table class="side-table">
-<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>House</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Investment</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Petrol</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>EM Fund</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
-</table>
-
-<div class="total-box">
-TOTAL: ₹ <span id="janExpTotal"></span>
-</div>
-
-</div>
-</div>
-</div>
-
-</div>
-
-
-<!-- ================= FIREBASE + AUTO CALC ================= -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { 
-  getAuth, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/* 🔥 YOUR FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* 🔐 ALLOWED ADMIN UID */
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "index.html";
-  }
-});
-
-
-/* 🔐 PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  } else if (user.email !== ADMIN_EMAIL) {
-    alert("Unauthorized access");
-    auth.signOut();
-    window.location.href = "index.html";
-  }
-});
-
-
-/* ===============================
-   YOUR ORIGINAL BUDGET CODE
-================================= */
-
-function calculate(prefix){
-
-let P = document.querySelectorAll(`.${prefix}P`);
-let S = document.querySelectorAll(`.${prefix}S`);
-let rows = document.querySelectorAll(`.${prefix}Row`);
-let exp = document.querySelectorAll(`.${prefix}Exp`);
-
-let totalP=0,totalS=0,expTotal=0;
-
-for(let i=0;i<P.length;i++){
-let p=Number(P[i].value)||0;
-let s=Number(S[i].value)||0;
-rows[i].innerText=(p+s).toFixed(2);
-totalP+=p;
-totalS+=s;
-}
-
-exp.forEach(e=>expTotal+=Number(e.value)||0);
-
-document.getElementById(prefix+"TotalP").innerText=totalP.toFixed(2);
-document.getElementById(prefix+"TotalS").innerText=totalS.toFixed(2);
-document.getElementById(prefix+"Grand").innerText=(totalP+totalS).toFixed(2);
-document.getElementById(prefix+"ExpTotal").innerText=expTotal.toFixed(2);
-
-let salary=Number(document.getElementById(prefix+"Salary").value)||0;
-let extra=Number(document.getElementById(prefix+"Extra").value)||0;
-let bank=salary+extra;
-
-document.getElementById(prefix+"BankBalance").innerText=bank.toFixed(2);
-
-let net=bank-totalP-expTotal;
-
-document.getElementById(prefix+"Net").innerText=net.toFixed(2);
-
-save(prefix);
-}
-
-async function save(prefix){
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-let values=[];
-inputs.forEach(i=>values.push(i.value));
-await setDoc(doc(db,"months",prefix),{values});
-}
-
-async function load(prefix){
-let snap=await getDoc(doc(db,"months",prefix));
-if(snap.exists()){
-let values=snap.data().values;
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-inputs.forEach((i,index)=>i.value=values[index]||"");
-}
-calculate(prefix);
-}
-
-document.addEventListener("input",()=>{
-calculate("feb");
-calculate("jan");
-});
-
-load("feb");
-load("jan");
-
-</script>
 </body>
 </html>
-
-
-
-
-
