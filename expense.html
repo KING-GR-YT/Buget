@@ -251,7 +251,7 @@ function populateMonthFilter(){
     });
 }
 
-
+/* Render Table */
 function renderTable(){
 
     const tbody = document.querySelector("#dataTable tbody");
@@ -262,9 +262,27 @@ function renderTable(){
     let bankPersonTotals = {};
     let bankTotals = {};
 
-    const filteredData = selectedMonth === "all"
+    let filteredData = selectedMonth === "all"
         ? data
         : data.filter(item => item.month === selectedMonth);
+
+    /* 🔥 SORTING LOGIC */
+    filteredData.sort((a,b)=>{
+
+        // 1️⃣ Sort by Bank name (A-Z)
+        if(a.bank < b.bank) return -1;
+        if(a.bank > b.bank) return 1;
+
+        // 2️⃣ Sort by Month (Newest first)
+        if(a.month > b.month) return -1;
+        if(a.month < b.month) return 1;
+
+        // 3️⃣ Same month → newest Firestore entry first
+        if(a.id > b.id) return -1;
+        if(a.id < b.id) return 1;
+
+        return 0;
+    });
 
     filteredData.forEach(item=>{
 
@@ -329,4 +347,5 @@ function showTotals(bankPersonTotals, bankTotals){
 </script>
 </body>
 </html>
+
 
