@@ -194,7 +194,8 @@ input, select{
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 import { 
   getFirestore,
   collection,
@@ -203,16 +204,45 @@ import {
   doc,
   onSnapshot,
   getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 VERY IMPORTANT
+
+/* Initialize */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+
+/* 🔐 PAGE PROTECTION */
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "index.html";
+  } else {
+    document.body.style.display = "block";
+  }
+
+});
 
 /* GET TODAY DATE */
 function getToday(){
@@ -394,4 +424,5 @@ function calculateXIRR(values){
 
 </script>
 </body>
+
 </html>
