@@ -295,19 +295,76 @@ height:120px;
 .percent{ font-size:20px; }
 
 .glass:has(#invName){
-flex-direction:column;
-align-items:stretch;
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.glass:has(#invName) h3{
+    text-align:center;
 }
 
 .glass:has(#invName) input,
 .glass:has(#invName) select,
 .glass:has(#invName) button{
-width:100%;
+    width:100%;
+    font-size:16px;
 }
 
-table{ min-width:700px; }
+/* ---------------- TABLE ---------------- */
+
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border-radius:16px;
+}
+
+table{
+    width:100%;
+    min-width:650px; /* allows scroll instead of break */
+    border-collapse:collapse;
+}
 th, td{ font-size:13px; padding:8px; }
 
+}
+
+.top{
+    flex-direction:column;
+    align-items:stretch;
+}
+
+.stat1{
+    width:100%;
+}
+
+.stat{
+    width:100%;
+    text-align:center;
+}
+
+@media (max-width:600px){
+
+table, thead, tbody, th, td, tr{
+    display:block;
+}
+
+thead{
+    display:none;
+}
+
+tbody tr{
+    background:rgba(255,255,255,0.05);
+    margin-bottom:15px;
+    padding:15px;
+    border-radius:12px;
+}
+
+tbody td{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 0;
+    border:none;
+}
 }
 </style>
 </head>
@@ -415,8 +472,8 @@ th, td{ font-size:13px; padding:8px; }
     </div>
 
         <!-- TABLE -->
-        <div class="glass">
-            <table>
+        <div class="glass table-wrapper">
+                <table>
                 <thead>
                     <tr>
                         <th>Investment</th>
@@ -782,6 +839,7 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
 
