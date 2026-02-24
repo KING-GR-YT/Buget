@@ -84,6 +84,24 @@ th{
     min-width:230px;
 }
 
+.home-link{
+    padding:8px 8px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:0.3s ease;
+    font-weight:500;
+    float: right;
+}
+
+.home-link:hover{
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
+}
+
 @media(max-width:600px){
     .total-container{
         flex-direction:column;
@@ -94,8 +112,10 @@ th{
 <body>
 
 <div class="glass-card">
-<h2>🔥 Bank Dashboard</h2>
+<h2>🔥 Bank Dashboard
     <a href="main.html" class="home-link">🏠 Home</a>
+</h2>
+    
 
 <input type="month" id="month">
 
@@ -326,5 +346,6 @@ function renderBankSections(filteredData){
 </script>
 </body>
 </html>
+
 
 
