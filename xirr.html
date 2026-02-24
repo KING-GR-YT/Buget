@@ -173,9 +173,11 @@ input, select{
 }
 
 .xirr{
-    margin-top:15px;
+    margin-top:10px;
     font-size:18px;
     font-weight:600;
+    display:flex;
+    justify-content:space-between;
 }
 
 .home-link{
@@ -215,25 +217,9 @@ input, select{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { 
-  getFirestore,
-  collection,
-  addDoc,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  getDocs
-} from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
-/* 🔥 FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
@@ -243,56 +229,44 @@ const firebaseConfig = {
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 VERY IMPORTANT
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-/* Initialize */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-
-/* 🔐 PAGE PROTECTION */
 document.body.style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
-
   if (!user || user.uid !== ADMIN_UID) {
     window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
   }
-
 });
 
-/* GET TODAY DATE */
 function getToday(){
     const today = new Date();
     return today.toISOString().split("T")[0];
 }
 
-/* CREATE INVESTMENT */
 window.createInvestment = async function(){
     const name = document.getElementById("invName").value.trim();
     if(!name) return alert("Enter investment name");
-
     await addDoc(collection(db,"investments"),{ name });
     document.getElementById("invName").value="";
 };
 
-/* DELETE INVESTMENT */
 window.deleteInvestment = async function(id){
     const confirmDelete = confirm("Delete entire investment?");
     if(!confirmDelete) return;
 
     const flows = await getDocs(collection(db,"investments",id,"cashflows"));
-    flows.forEach(async(flow)=>{
-        await deleteDoc(flow.ref);
-    });
+    flows.forEach(async(flow)=> await deleteDoc(flow.ref));
 
     await deleteDoc(doc(db,"investments",id));
 };
 
-/* LOAD INVESTMENTS */
 const listDiv = document.getElementById("investmentList");
 
 onSnapshot(collection(db,"investments"),(snapshot)=>{
@@ -302,9 +276,7 @@ onSnapshot(collection(db,"investments"),(snapshot)=>{
     });
 });
 
-/* RENDER CARD */
 function renderInvestment(id,name){
-
     const div=document.createElement("div");
     div.className="card";
 
@@ -316,7 +288,6 @@ function renderInvestment(id,name){
                 Delete
             </button>
         </div>
- 	<div class="xirr">XIRR: <span id="xirr-${id}">0%</span></div>
 
         <div class="form-vertical">
             <select id="type-${id}">
@@ -333,43 +304,34 @@ function renderInvestment(id,name){
         </div>
 
         <div class="cashflows" id="flows-${id}"></div>
-       
+        <div class="xirr">
+            <span>XIRR: <span id="xirr-${id}">0%</span></span>
+            <span>Total: ₹<span id="total-${id}">0</span></span>
+        </div>
     `;
 
     listDiv.appendChild(div);
     loadCashflows(id);
 }
 
-/* ADD CASHFLOW */
 window.addCashflow = async function(id){
-
     const rawAmount = parseFloat(document.getElementById(`amt-${id}`).value);
     const type = document.getElementById(`type-${id}`).value;
     const date = document.getElementById(`date-${id}`).value;
-
     if(!rawAmount || !date) return alert("Fill fields");
 
-    let amount = type === "invest"
-        ? -Math.abs(rawAmount)
-        : Math.abs(rawAmount);
-
-    await addDoc(collection(db,"investments",id,"cashflows"),{
-        amount,
-        date,
-        type
-    });
-
+    let amount = type === "invest" ? -Math.abs(rawAmount) : Math.abs(rawAmount);
+    await addDoc(collection(db,"investments",id,"cashflows"),{ amount, date, type });
     document.getElementById(`amt-${id}`).value="";
 };
 
-/* DELETE CASHFLOW */
 window.deleteCashflow = async function(investmentId, cashflowId){
     await deleteDoc(doc(db,"investments",investmentId,"cashflows",cashflowId));
 };
 
-/* LOAD CASHFLOWS */
 function loadCashflows(id){
     const flowDiv=document.getElementById(`flows-${id}`);
+    const totalEl=document.getElementById(`total-${id}`);
 
     onSnapshot(collection(db,"investments",id,"cashflows"),(snapshot)=>{
         let cashflows=[];
@@ -378,59 +340,60 @@ function loadCashflows(id){
         snapshot.forEach(docSnap=>{
             const data=docSnap.data();
             cashflows.push({
-                amount:data.amount,
-                date:new Date(data.date)
+                id: docSnap.id,
+                amount: data.amount,
+                date: new Date(data.date)
             });
+        });
 
+        // Sort newest to oldest
+        cashflows.sort((a,b)=>b.date-a.date);
+
+        // Display
+        cashflows.forEach(cf=>{
             flowDiv.innerHTML+=`
                 <div class="flow">
                     <div class="flow-left">
-                        <span>${data.date}</span>
-                        <span class="${data.amount>0?'positive':'negative'}">
-                            ₹${Math.abs(data.amount)}
-                        </span>
+                        <span>${cf.date.toISOString().split("T")[0]}</span>
+                        <span class="${cf.amount>0?'positive':'negative'}">₹${Math.abs(cf.amount)}</span>
                     </div>
                     <button class="delete-btn"
-                        onclick="deleteCashflow('${id}','${docSnap.id}')">
+                        onclick="deleteCashflow('${id}','${cf.id}')">
                         Delete
                     </button>
                 </div>
             `;
         });
 
+        // Calculate XIRR
         const result=calculateXIRR(cashflows);
         const xirrEl=document.getElementById(`xirr-${id}`);
-
         if(isNaN(result)){
             xirrEl.innerText="0%";
-        }else{
+        } else {
             xirrEl.innerText=(result*100).toFixed(2)+"%";
             xirrEl.style.color=result>=0?"#22c55e":"#ef4444";
         }
+
+        // Calculate total
+        const total = cashflows.reduce((sum, cf)=> sum + cf.amount, 0);
+        totalEl.innerText = total.toFixed(2);
     });
 }
 
-/* XIRR */
 function calculateXIRR(values){
     if(values.length<2) return 0;
-
-    const guess=0.1;
-    const tol=1e-6;
-    const maxIter=100;
-
+    const guess=0.1, tol=1e-6, maxIter=100;
     const dates=values.map(v=>v.date);
     const amounts=values.map(v=>v.amount);
     const minDate=Math.min(...dates);
-
     function npv(rate){
         return amounts.reduce((acc,amount,i)=>{
             const days=(dates[i]-minDate)/(1000*60*60*24);
             return acc+amount/Math.pow(1+rate,days/365);
         },0);
     }
-
     let rate=guess;
-
     for(let i=0;i<maxIter;i++){
         let f=npv(rate);
         let f1=(npv(rate+tol)-f)/tol;
@@ -438,15 +401,9 @@ function calculateXIRR(values){
         if(Math.abs(newRate-rate)<tol) return newRate;
         rate=newRate;
     }
-
     return rate;
 }
 
 </script>
 </body>
-
 </html>
-
-
-
-
