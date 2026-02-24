@@ -41,7 +41,7 @@ body{
     }
 }
 
-/* MOBILE IMPROVEMENTS */
+/* MOBILE */
 @media(max-width:600px){
     .dashboard{
         padding:15px;
@@ -84,7 +84,7 @@ body{
     box-shadow:0 0 20px rgba(0,0,0,0.4);
 }
 
-/* SECTION TITLE */
+/* TITLE */
 .title{
     text-align:center;
     font-weight:600;
@@ -92,7 +92,7 @@ body{
     font-size:18px;
 }
 
-/* TABLE WRAPPER FOR MOBILE SCROLL */
+/* TABLE WRAPPER */
 .table-wrapper{
     width:100%;
     overflow-x:auto;
@@ -133,7 +133,6 @@ input:focus{
     box-shadow:0 0 8px #00ffff;
 }
 
-/* HIGHLIGHTS */
 .highlight-blue{ background:#00bcd4; color:black; font-weight:600; }
 
 .net{
@@ -196,10 +195,9 @@ input:focus{
 
 <div class="dashboard">
 
-<!-- ===== CURRENT MONTH ===== -->
+<!-- ================= CURRENT MONTH ================= -->
 <div class="card" id="febCard">
 <div class="title">Current Month</div>
-
 <div class="flex">
 <div class="left">
 
@@ -222,25 +220,10 @@ input:focus{
 <th>Total</th>
 </tr>
 
-<tr><td>YES Bank</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>HDFC</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>ONE CARD</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>ICICI</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
+<tr><td>YES Bank</td><td><input type="number" class="febP"></td><td><input type="number" class="febS"></td><td class="febRow"></td></tr>
+<tr><td>HDFC</td><td><input type="number" class="febP"></td><td><input type="number" class="febS"></td><td class="febRow"></td></tr>
+<tr><td>ONE CARD</td><td><input type="number" class="febP"></td><td><input type="number" class="febS"></td><td class="febRow"></td></tr>
+<tr><td>ICICI</td><td><input type="number" class="febP"></td><td><input type="number" class="febS"></td><td class="febRow"></td></tr>
 
 <tr class="highlight-blue">
 <td>TOTAL</td>
@@ -258,7 +241,6 @@ NET BALANCE: ₹ <span id="febNet"></span>
 </div>
 
 <div class="right">
-
 <div class="table-wrapper">
 <table class="side-table">
 <tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
@@ -272,6 +254,71 @@ NET BALANCE: ₹ <span id="febNet"></span>
 
 <div class="total-box">
 TOTAL: ₹ <span id="febExpTotal"></span>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- ================= PREVIOUS MONTH ================= -->
+<div class="card" id="janCard">
+<div class="title">Previous Month</div>
+<div class="flex">
+<div class="left">
+
+<div class="table-wrapper">
+<table>
+<tr><td>EXTRA</td><td><input type="number" id="janExtra"></td></tr>
+<tr><td>SALARY</td><td><input type="number" id="janSalary" value="25000"></td></tr>
+<tr class="highlight-blue"><td>BANK BALANCE</td><td id="janBankBalance"></td></tr>
+</table>
+</div>
+
+<br>
+
+<div class="table-wrapper">
+<table>
+<tr>
+<th></th>
+<th>PARDEEP</th>
+<th>SANDEEP</th>
+<th>Total</th>
+</tr>
+
+<tr><td>KOTAK</td><td><input type="number" class="janP"></td><td><input type="number" class="janS"></td><td class="janRow"></td></tr>
+<tr><td>HDFC</td><td><input type="number" class="janP"></td><td><input type="number" class="janS"></td><td class="janRow"></td></tr>
+<tr><td>ONE CARD</td><td><input type="number" class="janP"></td><td><input type="number" class="janS"></td><td class="janRow"></td></tr>
+<tr><td>ICICI</td><td><input type="number" class="janP"></td><td><input type="number" class="janS"></td><td class="janRow"></td></tr>
+
+<tr class="highlight-blue">
+<td>TOTAL</td>
+<td id="janTotalP"></td>
+<td id="janTotalS"></td>
+<td id="janGrand"></td>
+</tr>
+</table>
+</div>
+
+<div class="net">
+NET BALANCE: ₹ <span id="janNet"></span>
+</div>
+
+</div>
+
+<div class="right">
+<div class="table-wrapper">
+<table class="side-table">
+<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>House</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>Investment</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>Petrol</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>EM Fund</td><td><input type="number" class="janExp"></td></tr>
+<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
+</table>
+</div>
+
+<div class="total-box">
+TOTAL: ₹ <span id="janExpTotal"></span>
 </div>
 
 </div>
