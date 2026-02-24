@@ -85,7 +85,7 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:15px;
+    margin-bottom:10px;
 }
 
 .investment-name{
@@ -107,6 +107,7 @@ body{
     display:flex;
     flex-direction:column;
     gap:10px;
+    margin-bottom:15px;
 }
 
 input, select{
@@ -142,9 +143,7 @@ input, select{
 }
 
 .cashflows{
-    margin-top:15px;
-    max-height:180px;
-    overflow:auto;
+    margin-top:10px;
     font-size:14px;
 }
 
@@ -172,12 +171,12 @@ input, select{
     border:none;
 }
 
-.xirr{
-    margin-top:10px;
-    font-size:18px;
-    font-weight:600;
+.xirr-total{
     display:flex;
     justify-content:space-between;
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:10px;
 }
 
 .home-link{
@@ -289,6 +288,11 @@ function renderInvestment(id,name){
             </button>
         </div>
 
+        <div class="xirr-total">
+            <span>XIRR: <span id="xirr-${id}">0%</span></span>
+            <span>Total: ₹<span id="total-${id}">0</span></span>
+        </div>
+
         <div class="form-vertical">
             <select id="type-${id}">
                 <option value="invest">💸 Investment</option>
@@ -304,10 +308,6 @@ function renderInvestment(id,name){
         </div>
 
         <div class="cashflows" id="flows-${id}"></div>
-        <div class="xirr">
-            <span>XIRR: <span id="xirr-${id}">0%</span></span>
-            <span>Total: ₹<span id="total-${id}">0</span></span>
-        </div>
     `;
 
     listDiv.appendChild(div);
@@ -349,7 +349,7 @@ function loadCashflows(id){
         // Sort newest to oldest
         cashflows.sort((a,b)=>b.date-a.date);
 
-        // Display
+        // Display all cashflows (no scroll)
         cashflows.forEach(cf=>{
             flowDiv.innerHTML+=`
                 <div class="flow">
@@ -365,7 +365,7 @@ function loadCashflows(id){
             `;
         });
 
-        // Calculate XIRR
+        // XIRR
         const result=calculateXIRR(cashflows);
         const xirrEl=document.getElementById(`xirr-${id}`);
         if(isNaN(result)){
@@ -375,9 +375,10 @@ function loadCashflows(id){
             xirrEl.style.color=result>=0?"#22c55e":"#ef4444";
         }
 
-        // Calculate total
+        // Total
         const total = cashflows.reduce((sum, cf)=> sum + cf.amount, 0);
         totalEl.innerText = total.toFixed(2);
+        totalEl.style.color = total>=0?"#22c55e":"#ef4444";
     });
 }
 
