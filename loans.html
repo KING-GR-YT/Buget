@@ -1,84 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loan Dashboard</title>
-<style>
-body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0a0f1c,#050811);color:#fff;}
-.header{padding:20px;text-align:center;font-size:24px;font-weight:bold;color:#00f0ff;}
-.form-box{max-width:1100px;margin:20px auto;background:#0c1225;padding:25px;border-radius:18px;border:1px solid #1e2a4a;display:flex;flex-wrap:wrap;gap:15px;}
-.form-box input{flex:1;min-width:150px;padding:10px;border-radius:8px;border:1px solid #1e2a4a;background:#11162a;color:#fff;}
-.form-box button{flex:0 0 110px;padding:10px;border:none;border-radius:8px;background:#00f0ff;color:#000;font-weight:bold;cursor:pointer;}
-.summary-wrapper{max-width:1100px;margin:20px auto;display:flex;gap:20px;flex-wrap:wrap;}
-.summary-card{flex:1;min-width:350px;background:#0c1225;padding:20px;border-radius:16px;border:1px solid #1e2a4a;}
-.summary-card h2{margin:0 0 15px 0;color:#00f0ff;}
-.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.summary-item{background:#11162a;padding:10px;border-radius:10px;}
-.summary-item small{color:#7fa8ff;}
-.summary-item b{display:block;margin-top:5px;color:#00f0ff;}
-.loan-data-view{max-width:1100px;margin:20px auto;}
-.loan-data-item{background:#0c1225;padding:18px;border-radius:16px;margin-bottom:15px;border:1px solid #1e2a4a;display:flex;flex-wrap:wrap;align-items:center;gap:25px;}
-.loan-data-item h3{flex:0 0 120px;color:#00f0ff;}
-.loan-field{min-width:120px;}
-.loan-field span{display:block;font-size:12px;color:#7fa8ff;}
-.loan-field b{font-size:15px;color:#e8faff;cursor:pointer;}
-.status{padding:0px 10px;border-radius:20px;font-size:12px;font-weight:600;}
-.status.ACTIVE{background:#002b36;color:#32CD32;}
-.status.CLOSED{background:#062e16;color:#00ff99;}
-.action-icons{margin-left:auto;display:flex;gap:10px;}
-.icon-btn{cursor:pointer;padding:6px 10px;border-radius:8px;background:#11162a;border:1px solid #1e2a4a;}
-.icon-btn:hover{background:#00f0ff;color:#000;}
-.icon-btn.disabled{opacity:0.4;pointer-events:none;}
-
-.home-link{
-    padding:8px 14px;
-    border-radius:8px;
-    text-decoration:none;
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    border:1px solid rgba(0,255,255,0.4);
-    transition:0.3s ease;
-    font-weight:500;
-    float: right;
-}
-
-.home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 10px #00ffff;
-}
-
-</style>
-</head>
-<body>
-<div class="header">🚀 Loan Summary
-   <a href="main.html" class="home-link">🏠 Home</a>
-</div>
-
-<div class="form-box">
-    <input type="text" id="loanName" placeholder="Loan Name">
-    <input type="number" id="loanAmount" placeholder="Amount">
-    <input type="number" id="loanInterest" placeholder="Interest %">
-    <input type="number" id="loanTenure" placeholder="Tenure (Years)">
-    <input type="date" id="loanStart" >
-    <button id="saveBtn">Save</button>
-</div>
-
-<div class="summary-wrapper">
-    <div class="summary-card" id="activeSummary">
-        <h2>🟢 Active Loans</h2>
-        <div class="summary-grid" id="activeGrid"></div>
-    </div>
-
-    <div class="summary-card" id="closedSummary">
-        <h2>🔵 Closed Loans</h2>
-        <div class="summary-grid" id="closedGrid"></div>
-    </div>
-</div>
-
-<div class="loan-data-view" id="loanDataView"></div>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -110,14 +29,13 @@ const firebaseConfig = {
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 PUT YOUR UID HERE
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 YOUR UID
 
 
 /* 🔐 INITIALIZE */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-
 
 /* 🔐 PAGE PROTECTION */
 document.body.style.display = "none";
@@ -127,149 +45,157 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "index.html";
   } else {
     document.body.style.display = "block";
+    startApp(); // ✅ load loans only after auth verified
   }
 });
 
 
-/* ===== LOAN LOGIC STARTS BELOW ===== */
+/* ================= START APP AFTER LOGIN ================= */
+function startApp() {
 
-const loanCollection = collection(db,"loans");
-const loanQuery = query(loanCollection, orderBy("createdAt","desc"));
+  const loanRef = collection(db, "loans");
+  let loans = [];
 
-function calculateEMI(p,r,t){ 
-  const m=r/12/100; 
-  const n=t*12; 
-  return p*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1);
-}
+  const loanDataView = document.getElementById("loanDataView");
+  const activeGrid = document.getElementById("activeGrid");
+  const closedGrid = document.getElementById("closedGrid");
 
-function remainingBalance(p,r,t,paid){ 
-  const m=r/12/100; 
-  const emi=calculateEMI(p,r,t); 
-  return p*Math.pow(1+m,paid)-emi*((Math.pow(1+m,paid)-1)/m);
-}
-
-document.getElementById("saveBtn").addEventListener("click",async()=>{
- const name=loanName.value.trim();
- const amount=parseFloat(loanAmount.value);
- const interest=parseFloat(loanInterest.value);
- const tenure=parseFloat(loanTenure.value);
- const startDate=loanStart.value;
-
- if(!name||!amount||!interest||!tenure||!startDate){
-   alert("Fill all fields");
-   return;
- }
-
- const emi=calculateEMI(amount,interest,tenure);
-
- await addDoc(loanCollection,{
-   name,amount,interest,tenure,startDate,
-   emi,
-   createdAt:new Date()
- });
-
- loanName.value=loanAmount.value=loanInterest.value=loanTenure.value=loanStart.value="";
-});
-
-onSnapshot(loanQuery,(snapshot)=>{
-
- loanDataView.innerHTML="";
- let active={count:0,loan:0,emi:0,balance:0,paid:0};
- let closed={count:0,loan:0,emi:0,paid:0};
-
- snapshot.forEach((docItem)=>{
-
-  const d=docItem.data();
-  const start=new Date(d.startDate);
-  const today=new Date();
-  const paidMonths=(today.getFullYear()-start.getFullYear())*12+(today.getMonth()-start.getMonth());
-
-  let bal=remainingBalance(d.amount,d.interest,d.tenure,paidMonths);
-  bal=Math.max(0,Math.round(bal));
-
-  const balance=d.manualBalance!==undefined?d.manualBalance:bal;
-  const isClosed=balance===0;
-
-  const monthsPaid = Math.min(paidMonths,d.tenure*12);
-  const totalPaid = d.manualPaid !== undefined 
-      ? d.manualPaid 
-      : Math.round(d.emi * monthsPaid);
-
-  const principalPaid = d.amount - balance;
-  const percentPaid = Math.round(Math.min(100,(principalPaid/d.amount)*100));
-
-  if(isClosed){ 
-    closed.count++; 
-    closed.loan+=d.amount; 
-    closed.emi+=d.emi; 
-    closed.paid+=totalPaid;
-  } else { 
-    active.count++; 
-    active.loan+=d.amount; 
-    active.emi+=d.emi; 
-    active.balance+=balance; 
-    active.paid+=totalPaid;
+  function calculateEMI(p, r, months) {
+    const m = r / 12 / 100;
+    return (p * m * Math.pow(1 + m, months)) /
+           (Math.pow(1 + m, months) - 1);
   }
 
-  loanDataView.innerHTML+=`
-  <div class="loan-data-item">
-    <h3>${d.name}</h3>
-    <div class="loan-field"><span>Loan</span><b>₹${d.amount.toLocaleString()}</b></div>
-    <div class="loan-field"><span>EMI</span><b onclick="editEMI('${docItem.id}',${d.emi})">₹${d.emi.toFixed(0)}</b></div>
-    <div class="loan-field"><span>Balance</span><b onclick="editBalance('${docItem.id}',${balance})">₹${balance.toLocaleString()}</b></div>
-    <div class="loan-field"><span>% Paid</span><b>${percentPaid}%</b></div>
-    <div class="loan-field"><span>Total Paid</span><b onclick="editTotalPaid('${docItem.id}',${totalPaid})">₹${totalPaid.toLocaleString()}</b></div>
-    <div class="loan-field"><span>Status</span><b class="status ${isClosed?'CLOSED':'ACTIVE'}">${isClosed?'CLOSED':'ACTIVE'}</b></div>
-    <div class="action-icons">
-      <div class="icon-btn" onclick="deleteLoan('${docItem.id}')">🗑</div>
-    </div>
-  </div>`;
- });
+  /* ================= ADD LOAN ================= */
+  document.getElementById("saveBtn").addEventListener("click", async () => {
 
- activeGrid.innerHTML=`
- <div class="summary-item"><small>Loans</small><b>${active.count}</b></div>
- <div class="summary-item"><small>Total Loan</small><b>₹${active.loan.toLocaleString()}</b></div>
- <div class="summary-item"><small>Total EMI</small><b>₹${active.emi.toFixed(0)}</b></div>
- <div class="summary-item"><small>Total Balance</small><b>₹${active.balance.toLocaleString()}</b></div>
- <div class="summary-item"><small>Total Paid</small><b>₹${active.paid.toLocaleString()}</b></div>
- `;
+    const name = loanName.value.trim();
+    const amount = parseFloat(loanAmount.value);
+    const interest = parseFloat(loanInterest.value);
+    const tenure = parseFloat(loanTenure.value);
+    const startDate = loanStart.value;
 
- closedGrid.innerHTML=`
- <div class="summary-item"><small>Loans</small><b>${closed.count}</b></div>
- <div class="summary-item"><small>Total Loan</small><b>₹${closed.loan.toLocaleString()}</b></div>
- <div class="summary-item"><small>Total EMI</small><b>₹${closed.emi.toFixed(0)}</b></div>
- <div class="summary-item"><small>Total Paid</small><b>₹${closed.paid.toLocaleString()}</b></div>
- `;
-});
+    if (!name || !amount || !interest || !tenure || !startDate) {
+      alert("Fill all fields");
+      return;
+    }
 
-window.editBalance=async(id,current)=>{ 
-  const val=prompt("Edit Balance:",current); 
-  if(val===null||isNaN(val)||val==="") return; 
-  await updateDoc(doc(db,"loans",id),{manualBalance:parseFloat(val)});
-}
+    const emi = calculateEMI(amount, interest, tenure);
 
-window.editEMI=async(id,current)=>{ 
-  const val=prompt("Edit EMI:",current); 
-  if(val===null||isNaN(val)||val==="") return; 
-  await updateDoc(doc(db,"loans",id),{emi:parseFloat(val)});
-}
+    await addDoc(loanRef, {
+      name,
+      amount,
+      interest,
+      tenure,
+      startDate,
+      emi,
+      principalPaid: 0,
+      interestPaid: 0,
+      created: new Date()
+    });
 
-window.editTotalPaid=async(id,current)=>{ 
-  const val=prompt("Edit Total Paid:",current); 
-  if(val===null||isNaN(val)||val==="") return; 
-  await updateDoc(doc(db,"loans",id),{manualPaid:parseFloat(val)});
-}
+    loanName.value = loanAmount.value =
+    loanInterest.value = loanTenure.value = loanStart.value = "";
+  });
 
-window.deleteLoan=async(id)=>{ 
-  if(confirm("Delete this loan?")) 
-    await deleteDoc(doc(db,"loans",id));
+
+  /* ================= REALTIME ================= */
+  const q = query(loanRef, orderBy("created", "desc"));
+
+  onSnapshot(q, (snapshot) => {
+    loans = [];
+    snapshot.forEach(docSnap => {
+      loans.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    renderLoans();
+  });
+
+
+  /* ================= DELETE ================= */
+  window.deleteLoan = async (id) => {
+    if (confirm("Delete this loan?")) {
+      await deleteDoc(doc(db, "loans", id));
+    }
+  };
+
+  /* ================= EDIT ================= */
+  window.editPrincipal = async (id) => {
+    const loan = loans.find(l => l.id === id);
+    const val = prompt("Edit Principal Paid:", loan.principalPaid || 0);
+    if (!val || isNaN(val)) return;
+    await updateDoc(doc(db, "loans", id), {
+      principalPaid: parseFloat(val)
+    });
+  };
+
+  window.editInterest = async (id) => {
+    const loan = loans.find(l => l.id === id);
+    const val = prompt("Edit Interest Paid:", loan.interestPaid || 0);
+    if (!val || isNaN(val)) return;
+    await updateDoc(doc(db, "loans", id), {
+      interestPaid: parseFloat(val)
+    });
+  };
+
+  window.editEMI = async (id) => {
+    const loan = loans.find(l => l.id === id);
+    const val = prompt("Edit EMI:", loan.emi);
+    if (!val || isNaN(val)) return;
+    await updateDoc(doc(db, "loans", id), {
+      emi: parseFloat(val)
+    });
+  };
+
+
+  /* ================= RENDER ================= */
+  function renderLoans() {
+
+    loanDataView.innerHTML = "";
+    let active = {count:0,loan:0,emi:0,balance:0};
+    let closed = {count:0,loan:0,total:0};
+
+    loans.forEach(d => {
+
+      const totalPaid = (d.principalPaid||0) + (d.interestPaid||0);
+      const balance = Math.max(0, d.amount - totalPaid);
+      const percentPaid = Math.round(((d.principalPaid||0)/d.amount)*100) || 0;
+      const isClosed = balance === 0;
+
+      if(isClosed){
+        closed.count++;
+        closed.loan += d.amount;
+        closed.total += totalPaid;
+      } else {
+        active.count++;
+        active.loan += d.amount;
+        active.emi += d.emi;
+        active.balance += balance;
+      }
+
+      loanDataView.innerHTML += `
+      <div class="loan-data-item">
+        <h3>${d.name}</h3>
+        <div class="loan-field"><span>% Paid</span><b>${percentPaid}%</b></div>
+        <div class="loan-field"><span>Loan</span><b>₹${d.amount.toLocaleString()}</b></div>
+        <div class="loan-field"><span>EMI</span><b onclick="editEMI('${d.id}')">₹${d.emi.toFixed(0)}</b></div>
+        <div class="loan-field"><span>Balance</span><b>₹${balance.toLocaleString()}</b></div>
+        <div class="loan-field"><span>Status</span><b class="status ${isClosed?'CLOSED':'ACTIVE'}">${isClosed?'CLOSED':'ACTIVE'}</b></div>
+        <div class="action-icons">
+          <div class="icon-btn" onclick="deleteLoan('${d.id}')">🗑</div>
+        </div>
+      </div>`;
+    });
+
+    activeGrid.innerHTML = `
+    <div class="summary-item"><small>Loans</small><b>${active.count}</b></div>
+    <div class="summary-item"><small>Total EMI</small><b>₹${active.emi.toFixed(0)}</b></div>
+    <div class="summary-item"><small>Total Balance</small><b>₹${active.balance.toLocaleString()}</b></div>`;
+
+    closedGrid.innerHTML = `
+    <div class="summary-item"><small>Loans</small><b>${closed.count}</b></div>
+    <div class="summary-item"><small>Total Paid</small><b>₹${closed.total.toLocaleString()}</b></div>`;
+  }
+
 }
 
 </script>
-
-
-</body>
-</html>
-
-
-
