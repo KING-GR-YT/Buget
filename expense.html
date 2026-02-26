@@ -285,25 +285,26 @@ function setCurrentMonthInput(){
 }
 
 async function addEntry(){
-    const month = month.value;
-    const bank = bank.value;
-    const amount = parseFloat(document.getElementById("amount").value);
-    const person = person.value;
 
-    if(!month || isNaN(amount)){
+    const monthValue = document.getElementById("month").value;
+    const bankValue = document.getElementById("bank").value;
+    const amountValue = parseFloat(document.getElementById("amount").value);
+    const personValue = document.getElementById("person").value;
+
+    if(!monthValue || isNaN(amountValue)){
         alert("Enter Month & Valid Amount");
         return;
     }
 
     await addDoc(bankCollection,{
-        month,
-        bank,
-        amount,
-        person,
+        month: monthValue,
+        bank: bankValue,
+        amount: amountValue,
+        person: personValue,
         createdAt: new Date()
     });
 
-    document.getElementById("amount").value="";
+    document.getElementById("amount").value = "";
 }
 
 window.deleteEntry = async function(id){
@@ -416,3 +417,4 @@ function renderBankSections(filteredData){
 </script>
 </body>
 </html>
+
