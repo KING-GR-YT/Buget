@@ -221,7 +221,7 @@ function renderLoans() {
 
     const totalPaid=d.principalPaid+d.interestPaid;
     const percentPaid=Math.round((d.principalPaid/d.amount)*100)||0;
-    const balance=Math.max(0,d.amount-totalPaid);
+    const balance = Math.max(0, d.amount - d.principalPaid);
 
     if(balance===0 && !d.closedOn){
       d.closedOn=new Date().toISOString();
@@ -304,4 +304,5 @@ function renderLoans() {
 </script>
 </body>
 </html>
+
 
