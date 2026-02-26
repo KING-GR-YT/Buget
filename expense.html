@@ -370,22 +370,51 @@ function renderAll(){
 function renderTotals(filteredData){
 
     let bankTotals = {};
+    let bankPersonTotals = {};
 
-    filteredData.forEach(item=>{
-        bankTotals[item.bank] = (bankTotals[item.bank] || 0) + item.amount;
+    filteredData.forEach(item => {
+
+        const bank = item.bank;
+        const person = item.person;
+        const amount = Number(item.amount) || 0;
+
+        // Bank total
+        bankTotals[bank] = (bankTotals[bank] || 0) + amount;
+
+        // Bank + Person total
+        if(!bankPersonTotals[bank]){
+            bankPersonTotals[bank] = {};
+        }
+
+        bankPersonTotals[bank][person] =
+            (bankPersonTotals[bank][person] || 0) + amount;
     });
 
     let output = `<div class='total-container'>`;
 
     for(let bank in bankTotals){
-        output += `<div class="total-card">
-        <b>${bank} - TOTAL</b><br>
-        ₹ ${bankTotals[bank].toFixed(2)}
-        </div>`;
+
+        output += `
+        <div class="total-card">
+            <b style="font-size:16px">${bank} - TOTAL</b><br>
+            <div style="font-size:18px; margin:6px 0;">
+                ₹ ${bankTotals[bank].toFixed(2)}
+            </div>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.2); margin:8px 0;">`;
+
+        for(let person in bankPersonTotals[bank]){
+            output += `
+                <div style="font-size:14px">
+                    ${person} : ₹ ${bankPersonTotals[bank][person].toFixed(2)}
+                </div>`;
+        }
+
+        output += `</div>`;
     }
 
     output += `</div>`;
-    totals.innerHTML = output;
+
+    document.getElementById("totals").innerHTML = output;
 }
 
 function renderBankSections(filteredData){
@@ -449,5 +478,6 @@ function renderBankSections(filteredData){
 </script>
 </body>
 </html>
+
 
 
