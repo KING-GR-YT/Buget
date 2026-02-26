@@ -73,6 +73,18 @@ th{
     border-radius:14px;
     min-width:230px;
 }
+
+#bankSections{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    margin:20px;
+}
+
+.bank-section{
+    flex:1;
+    min-width:350px;
+}
 @media(max-width:600px){
     .total-container{
         flex-direction:column;
@@ -231,13 +243,10 @@ function renderAll(){
         ? data
         : data.filter(item => item.month === selectedMonth);
 
-    // 🔥 New entries on top
+    // ✅ Proper newest first using createdAt
     filteredData.sort((a,b)=>{
-        if(a.month > b.month) return -1;
-        if(a.month < b.month) return 1;
-        if(a.id > b.id) return -1;
-        if(a.id < b.id) return 1;
-        return 0;
+        return new Date(b.createdAt?.seconds ? b.createdAt.seconds * 1000 : b.createdAt)
+             - new Date(a.createdAt?.seconds ? a.createdAt.seconds * 1000 : a.createdAt);
     });
 
     renderTotals(filteredData);
@@ -322,3 +331,4 @@ function renderBankSections(filteredData){
 </script>
 </body>
 </html>
+
