@@ -312,24 +312,56 @@ window.deleteEntry = async function(id){
 }
 
 function populateMonthFilter(){
+
     const filter = document.getElementById("monthFilter");
+    const currentMonth = new Date().toISOString().slice(0,7);
+
+    // Get unique months from data
     const months = [...new Set(data.map(item => item.month))];
+
+    // If current month not in list, add it
+    if(!months.includes(currentMonth)){
+        months.push(currentMonth);
+    }
+
+    // Sort newest first
     months.sort().reverse();
 
+    // Build dropdown
     filter.innerHTML = `<option value="all">All Months</option>`;
+
     months.forEach(month=>{
         filter.innerHTML += `<option value="${month}">${month}</option>`;
     });
+
+    // ✅ AUTO SELECT CURRENT MONTH
+    filter.value = currentMonth;
+
+    // If current month not found (edge case)
+    if(filter.value !== currentMonth){
+        filter.value = "all";
+    }
 }
 
 function renderAll(){
-    const selectedMonth = monthFilter.value;
+
+    const selectedMonth = document.getElementById("monthFilter").value;
 
     let filteredData = selectedMonth === "all"
         ? data
         : data.filter(item => item.month === selectedMonth);
 
-    filteredData.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    filteredData.sort((a,b)=>{
+        const dateA = a.createdAt?.seconds 
+            ? new Date(a.createdAt.seconds * 1000)
+            : new Date(a.createdAt);
+
+        const dateB = b.createdAt?.seconds 
+            ? new Date(b.createdAt.seconds * 1000)
+            : new Date(b.createdAt);
+
+        return dateB - dateA;
+    });
 
     renderTotals(filteredData);
     renderBankSections(filteredData);
@@ -417,4 +449,5 @@ function renderBankSections(filteredData){
 </script>
 </body>
 </html>
+
 
