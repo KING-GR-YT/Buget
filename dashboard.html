@@ -11,7 +11,7 @@
 
 body{
     margin:0;
-    font-family:'Orbitron',Inter;
+    font-family:'Inter',Orbitron;
     background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
     color:#dff;
 }
@@ -92,40 +92,42 @@ th{
 }
 
 /* INPUT */
+/* Make inputs look like table text (TOTAL row style) */
 input{
-    width:90%;
-    padding:8px;
-    border-radius:8px;
-    border:1px solid rgba(0,255,255,0.3);
-    background:rgba(0,0,0,0.6);
+    width:100%;
+    padding:8px 0;
+    border:none;
+    background:transparent;
     color:#00ffff;
+    font-weight:600;
+    font-size:14px;
     text-align:center;
-    font-weight:500;
 }
 
-input:focus{
+/* Remove default number arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Highlight entire cell instead */
+td{
+    position:relative;
+}
+
+td input:focus{
     outline:none;
-    box-shadow:0 0 12px #00ffff;
-    border-color:#00ffff;
 }
 
-/* HIGHLIGHT ROWS */
-.highlight-blue{
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    font-weight:600;
-}
-
-.highlight-yellow{
-    background:#ffc107;
-    color:#000;
-    font-weight:600;
-}
-
-.highlight-green{
-    background:#00ff99;
-    color:#000;
-    font-weight:600;
+/* Add row highlight on focus */
+td:focus-within{
+    background:rgba(0,255,255,0.12);
+    box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
+    border-radius:6px;
 }
 
 /* NET BALANCE */
@@ -494,6 +496,7 @@ load("jan");
 </script>
 </body>
 </html>
+
 
 
 
