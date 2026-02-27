@@ -430,7 +430,14 @@ onAuthStateChanged(auth, (user) => {
 /* ===============================
    YOUR ORIGINAL BUDGET CODE
 ================================= */
-
+function formatCurrency(num){
+  return Number(num || 0).toLocaleString("en-IN", {
+    style: "currency",
+    currency: "INR",
+    minimumFractionDigits: 2
+  });
+}
+	
 function calculate(prefix){
 
 let P = document.querySelectorAll(`.${prefix}P`);
@@ -443,27 +450,33 @@ let totalP=0,totalS=0,expTotal=0;
 for(let i=0;i<P.length;i++){
 let p=Number(P[i].value)||0;
 let s=Number(S[i].value)||0;
-rows[i].innerText=(p+s).toFixed(2);
+
+rows[i].innerText = formatCurrency(p+s);
+
 totalP+=p;
 totalS+=s;
 }
 
 exp.forEach(e=>expTotal+=Number(e.value)||0);
 
-document.getElementById(prefix+"TotalP").innerText=totalP.toFixed(2);
-document.getElementById(prefix+"TotalS").innerText=totalS.toFixed(2);
-document.getElementById(prefix+"Grand").innerText=(totalP+totalS).toFixed(2);
-document.getElementById(prefix+"ExpTotal").innerText=expTotal.toFixed(2);
+document.getElementById(prefix+"TotalP").innerText = formatCurrency(totalP);
+document.getElementById(prefix+"TotalS").innerText = formatCurrency(totalS);
+document.getElementById(prefix+"Grand").innerText = formatCurrency(totalP+totalS);
+document.getElementById(prefix+"ExpTotal").innerText = formatCurrency(expTotal);
 
 let salary=Number(document.getElementById(prefix+"Salary").value)||0;
 let extra=Number(document.getElementById(prefix+"Extra").value)||0;
 let bank=salary+extra;
 
-document.getElementById(prefix+"BankBalance").innerText=bank.toFixed(2);
+document.getElementById(prefix+"BankBalance").innerText = formatCurrency(bank);
 
 let net=bank-totalP-expTotal;
 
-document.getElementById(prefix+"Net").innerText=net.toFixed(2);
+let netEl = document.getElementById(prefix+"Net");
+netEl.innerText = formatCurrency(net);
+
+/* Auto red/green for net */
+netEl.style.color = net >= 0 ? "#00ff99" : "#ff4d4d";
 
 save(prefix);
 }
@@ -496,6 +509,7 @@ load("jan");
 </script>
 </body>
 </html>
+
 
 
 
