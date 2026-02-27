@@ -12,26 +12,30 @@
 body{
     margin:0;
     font-family:'Poppins',sans-serif;
-    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:white;
+    background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
+    color:#dff;
 }
 
 /* HEADER */
 .header{
     text-align:center;
     padding:20px;
-    font-size:22px;
+    font-size:26px;
     font-weight:600;
-    background:rgba(0,0,0,0.3);
-    backdrop-filter:blur(10px);
+    letter-spacing:1px;
+    background:rgba(0,255,255,0.05);
+    border-bottom:1px solid rgba(0,255,255,0.3);
+    box-shadow:0 0 25px rgba(0,255,255,0.2);
+    color:#00ffff;
+    text-shadow:0 0 10px #00ffff;
 }
 
 /* GRID */
 .dashboard{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:25px;
-    padding:25px;
+    gap:30px;
+    padding:30px;
 }
 
 @media(max-width:1000px){
@@ -42,86 +46,123 @@ body{
 
 /* CARD */
 .card{
-    background:rgba(255,255,255,0.05);
-    border-radius:15px;
-    padding:20px;
-    backdrop-filter:blur(12px);
-    box-shadow:0 0 20px rgba(0,0,0,0.4);
+    background:rgba(10,15,30,0.85);
+    border-radius:18px;
+    padding:25px;
+    border:1px solid rgba(0,255,255,0.25);
+    box-shadow:
+        0 0 25px rgba(0,255,255,0.15),
+        inset 0 0 30px rgba(0,255,255,0.05);
+    transition:0.3s;
+}
+
+.card:hover{
+    box-shadow:
+        0 0 35px rgba(0,255,255,0.4),
+        inset 0 0 40px rgba(0,255,255,0.08);
 }
 
 /* SECTION TITLE */
 .title{
     text-align:center;
     font-weight:600;
-    margin-bottom:15px;
-    font-size:18px;
+    margin-bottom:20px;
+    font-size:20px;
+    color:#00ffff;
+    text-shadow:0 0 8px #00ffff;
 }
 
 /* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
+    margin-bottom:10px;
 }
 
 th,td{
-    padding:8px;
+    padding:10px;
     text-align:center;
-    border-bottom:1px solid rgba(255,255,255,0.1);
+    border-bottom:1px solid rgba(0,255,255,0.15);
 }
 
 th{
-    background:rgba(0,255,255,0.2);
+    background:rgba(0,255,255,0.1);
+    color:#00ffff;
+    font-weight:600;
 }
 
 /* INPUT */
 input{
     width:90%;
-    padding:6px;
-    border-radius:6px;
-    border:1px solid rgba(255,255,255,0.2);
-    background:rgba(0,0,0,0.4);
+    padding:8px;
+    border-radius:8px;
+    border:1px solid rgba(0,255,255,0.3);
+    background:rgba(0,0,0,0.6);
     color:#00ffff;
     text-align:center;
+    font-weight:500;
 }
 
 input:focus{
     outline:none;
-    box-shadow:0 0 8px #00ffff;
+    box-shadow:0 0 12px #00ffff;
+    border-color:#00ffff;
 }
 
-/* HIGHLIGHTS */
-.highlight-yellow{ background:#ffc107; color:black; font-weight:600; }
-.highlight-blue{ background:#00bcd4; color:black; font-weight:600; }
-.highlight-green{ background:#4caf50; color:black; font-weight:600; }
+/* HIGHLIGHT ROWS */
+.highlight-blue{
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    font-weight:600;
+}
 
+.highlight-yellow{
+    background:#ffc107;
+    color:#000;
+    font-weight:600;
+}
+
+.highlight-green{
+    background:#00ff99;
+    color:#000;
+    font-weight:600;
+}
+
+/* NET BALANCE */
 .net{
-    margin-top:10px;
-    padding:10px;
+    margin-top:15px;
+    padding:12px;
     text-align:center;
     font-weight:600;
-    border-radius:8px;
-    background:#ffc107;
-    color:black;
+    border-radius:10px;
+    background:rgba(255,193,7,0.15);
+    border:1px solid #ffc107;
+    color:#ffc107;
+    box-shadow:0 0 12px rgba(255,193,7,0.6);
 }
 
 /* RIGHT SIDE TABLE */
 .side-table td{
-    background:rgba(255,255,255,0.05);
+    background:rgba(0,255,255,0.05);
 }
 
+/* EXPENSE TOTAL BOX */
 .total-box{
-    margin-top:10px;
-    padding:10px;
-    background:#4caf50;
-    color:black;
+    margin-top:15px;
+    padding:12px;
+    background:rgba(0,255,100,0.15);
+    border:1px solid #00ff99;
+    color:#00ff99;
     text-align:center;
     font-weight:600;
-    border-radius:8px;
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(0,255,100,0.5);
 }
 
+/* FLEX */
 .flex{
     display:flex;
-    gap:20px;
+    gap:25px;
 }
 
 @media(max-width:1000px){
@@ -133,24 +174,24 @@ input:focus{
 .left{ flex:2; }
 .right{ flex:1; }
 
-
-
+/* HOME BUTTON */
 .home-link{
-    padding:4px 8px;
-    border-radius:4px;
+    padding:6px 14px;
+    border-radius:8px;
     text-decoration:none;
-    background:rgba(0,255,255,0.15);
+    background:rgba(0,255,255,0.1);
     color:#00ffff;
-    border:1px solid rgba(0,255,255,0.4);
+    border:1px solid rgba(0,255,255,0.5);
     transition:0.3s ease;
     font-weight:500;
-    float: right;
+    float:right;
+    box-shadow:0 0 10px rgba(0,255,255,0.3);
 }
 
 .home-link:hover{
     background:#00ffff;
     color:#001f1f;
-    box-shadow:0 0 10px #00ffff;
+    box-shadow:0 0 20px #00ffff;
 }
 
 </style>
@@ -453,6 +494,7 @@ load("jan");
 </script>
 </body>
 </html>
+
 
 
 
