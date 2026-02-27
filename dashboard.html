@@ -1,525 +1,230 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monthly Dashboard</title>
-<link rel="icon" type="image/png" sizes="32x32" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<title>Expense Dashboard</title>
 
 <style>
-
 body{
     margin:0;
-    font-family:'Orbitron',Orbitron;
-    background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
-    color:#dff;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#0a0f1c,#050811);
+    color:#fff;
 }
 
-/* HEADER */
-.header{
-    text-align:center;
+.container{
     padding:20px;
-    font-size:36px;
-    font-weight:600;
-    letter-spacing:1px;
-    background:rgba(0,255,255,0.05);
-    border-bottom:1px solid rgba(0,255,255,0.3);
-    box-shadow:0 0 25px rgba(0,255,255,0.2);
-    color:#00ffff;
-    text-shadow:0 0 10px #00ffff;
 }
 
-/* GRID */
-.dashboard{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-    padding:30px;
+h2{
+    margin-top:40px;
 }
 
-@media(max-width:1000px){
-    .dashboard{
-        grid-template-columns:1fr;
-    }
-}
-
-/* CARD */
-.card{
-    background:rgba(10,15,30,0.85);
-    border-radius:18px;
-    padding:25px;
-    border:1px solid rgba(0,255,255,0.25);
-    box-shadow:
-        0 0 25px rgba(0,255,255,0.15),
-        inset 0 0 30px rgba(0,255,255,0.05);
-    transition:0.3s;
-}
-
-.card:hover{
-    box-shadow:
-        0 0 35px rgba(0,255,255,0.4),
-        inset 0 0 40px rgba(0,255,255,0.08);
-}
-
-/* SECTION TITLE */
-.title{
-    text-align:center;
-    font-weight:600;
-    margin-bottom:20px;
-    font-size:30px;
-    color:#00ffff;
-    text-shadow:0 0 8px #00ffff;
-}
-
-/* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
-    margin-bottom:10px;
+    margin-top:15px;
 }
 
 th,td{
+    border:1px solid rgba(255,255,255,0.1);
     padding:10px;
     text-align:center;
-    border-bottom:1px solid rgba(0,255,255,0.15);
 }
 
 th{
-    background:rgba(0,255,255,0.1);
-    color:#00ffff;
-    font-weight:600;
+    background:#111a2b;
 }
 
-/* INPUT */
-/* Make inputs look like table text (TOTAL row style) */
-input{
-    width:100%;
-    padding:8px 0;
-    border:none;
-    background:transparent;
-    color:#00ffff;
-    font-weight:600;
-    font-size:14px;
-    text-align:center;
-}
-
-/* Remove default number arrows */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
-/* Highlight entire cell instead */
-td{
-    position:relative;
-}
-
-td input:focus{
-    outline:none;
-}
-
-/* Add row highlight on focus */
-td:focus-within{
-    background:rgba(0,255,255,0.12);
-    box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
-    border-radius:6px;
-}
-
-/* NET BALANCE */
-.net{
-    margin-top:15px;
-    padding:12px;
-    text-align:center;
-    font-weight:600;
-    border-radius:10px;
-    background:rgba(255,193,7,0.15);
-    border:1px solid #ffc107;
-    color:#ffc107;
-    box-shadow:0 0 12px rgba(255,193,7,0.6);
-}
-
-/* RIGHT SIDE TABLE */
-.side-table td{
-    background:rgba(0,255,255,0.05);
-}
-
-/* EXPENSE TOTAL BOX */
 .total-box{
-    margin-top:15px;
-    padding:12px;
-    background:rgba(0,255,100,0.15);
-    border:1px solid #00ff99;
-    color:#00ff99;
-    text-align:center;
-    font-weight:600;
+    margin-top:20px;
+    padding:15px;
+    background:#111a2b;
     border-radius:10px;
-    box-shadow:0 0 15px rgba(0,255,100,0.5);
-}
-
-/* FLEX */
-.flex{
+    font-size:18px;
     display:flex;
-    gap:25px;
+    justify-content:space-between;
 }
 
-@media(max-width:1000px){
-    .flex{
-        flex-direction:column;
-    }
+/* MONEY INPUT DESIGN */
+.money-wrap{
+    position:relative;
+    width:100%;
 }
 
-.left{ flex:2; }
-.right{ flex:1; }
-
-/* HOME BUTTON */
-.home-link{
-    padding:6px 14px;
-    border-radius:8px;
-    text-decoration:none;
-    background:rgba(0,255,255,0.1);
+.money-wrap span{
+    position:absolute;
+    left:8px;
+    top:50%;
+    transform:translateY(-50%);
     color:#00ffff;
-    border:1px solid rgba(0,255,255,0.5);
-    transition:0.3s ease;
-    font-weight:500;
-    float:right;
-    box-shadow:0 0 10px rgba(0,255,255,0.3);
+    font-weight:600;
+    pointer-events:none;
 }
 
-.home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 20px #00ffff;
+.money-wrap input{
+    width:100%;
+    padding:8px 8px 8px 20px;
+    background:#0f1626;
+    border:1px solid rgba(255,255,255,0.1);
+    color:#fff;
+    border-radius:6px;
+    text-align:right;
+    font-size:14px;
 }
 
+.money-wrap input:focus{
+    outline:none;
+    border:1px solid #00ffff;
+}
 </style>
 </head>
+
 <body>
 
-<div class="header">⚡ Monthly Dashboard ⚡
-	<a href="main.html" class="home-link">🏠 Home</a>
+<div class="container">
 
-</div>
-
-<div class="dashboard">
-
-<!-- ===== FEBRUARY ===== -->
-<div class="card" id="febCard">
-<div class="title">Current Month</div>
-
-<div class="flex">
-<div class="left">
+<!-- JANUARY -->
+<h2>January</h2>
 
 <table>
 <tr>
-<td>EXTRA</td>
-<td><input type="number" id="febExtra"></td>
+<th>Salary</th>
+<th>Extra</th>
+<th>Expense 1</th>
+<th>Expense 2</th>
 </tr>
+
 <tr>
-<td>SALARY</td>
-<td><input type="number" id="febSalary" value="25000"></td>
-</tr>
-<tr class="highlight-blue">
-<td>BANK BALANCE</td>
-<td id="febBankBalance"></td>
-</tr>
-</table>
-
-<br>
-
-<table>
-<tr>
-<th></th>
-<th>PARDEEP</th>
-<th>SANDEEP</th>
-<th>Total</th>
-</tr>
-
-<tr><td>Yes Bank</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>HDFC</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>ONE CARD</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr><td>ICICI</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
-<td class="febRow"></td></tr>
-
-<tr class="highlight-blue">
-<td>TOTAL</td>
-<td id="febTotalP"></td>
-<td id="febTotalS"></td>
-<td id="febGrand"></td>
-</tr>
-</table>
-
-<div class="net">
-NET BALANCE: ₹ <span id="febNet"></span>
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="janSalary" class="money" value="30000">
 </div>
+</td>
 
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="janExtra" class="money" value="4000">
 </div>
+</td>
 
-<div class="right">
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="janExp1" class="money" value="5000">
+</div>
+</td>
 
-<table class="side-table">
-<tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>House</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Investment</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Petrol</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>EM Fund</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="febExp"></td></tr>
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="janExp2" class="money" value="3000">
+</div>
+</td>
+</tr>
 </table>
 
 <div class="total-box">
-TOTAL: ₹ <span id="febExpTotal"></span>
-</div>
-
-</div>
-</div>
+<span>Total Balance</span>
+<b id="janTotal">₹ 0</b>
 </div>
 
 
-<!-- ===== JANUARY ===== -->
-<div class="card" id="janCard">
-<div class="title">Previous Month</div>
-
-<div class="flex">
-<div class="left">
+<!-- FEBRUARY -->
+<h2>February</h2>
 
 <table>
 <tr>
-<td>EXTRA</td>
-<td><input type="number" id="janExtra"></td>
+<th>Salary</th>
+<th>Extra</th>
+<th>Expense 1</th>
+<th>Expense 2</th>
 </tr>
+
 <tr>
-<td>SALARY</td>
-<td><input type="number" id="janSalary" value="25000"></td>
-</tr>
-<tr class="highlight-blue">
-<td>BANK BALANCE</td>
-<td id="janBankBalance"></td>
-</tr>
-</table>
-
-<br>
-
-<table>
-<tr>
-<th></th>
-<th>PARDEEP</th>
-<th>SANDEEP</th>
-<th>Total</th>
-</tr>
-
-<tr><td>Yes Bank</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>HDFC</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>ONE CARD</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr><td>ICICI</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
-<td class="janRow"></td></tr>
-
-<tr class="highlight-blue">
-<td>TOTAL</td>
-<td id="janTotalP"></td>
-<td id="janTotalS"></td>
-<td id="janGrand"></td>
-</tr>
-</table>
-
-<div class="net">
-NET BALANCE: ₹ <span id="janNet"></span>
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="febSalary" class="money" value="25000">
 </div>
+</td>
 
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="febExtra" class="money" value="5000">
 </div>
+</td>
 
-<div class="right">
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="febExp1" class="money" value="4000">
+</div>
+</td>
 
-<table class="side-table">
-<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>House</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Investment</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Petrol</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>EM Fund</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
+<td>
+<div class="money-wrap">
+<span>₹</span>
+<input type="text" id="febExp2" class="money" value="3500">
+</div>
+</td>
+</tr>
 </table>
 
 <div class="total-box">
-TOTAL: ₹ <span id="janExpTotal"></span>
+<span>Total Balance</span>
+<b id="febTotal">₹ 0</b>
 </div>
 
 </div>
-</div>
-</div>
 
-</div>
+<script>
 
-
-<!-- ================= FIREBASE + AUTO CALC ================= -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { 
-  getAuth, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/* 🔥 YOUR FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* 🔐 ALLOWED ADMIN UID */
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
-
-/* 🔐 PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  } else if (user.email !== ADMIN_EMAIL) {
-    alert("Unauthorized access");
-    auth.signOut();
-    window.location.href = "index.html";
-  }
+// Format while typing
+document.addEventListener("input", function(e){
+    if(e.target.classList.contains("money")){
+        let val = e.target.value.replace(/[^0-9]/g,"");
+        if(val){
+            e.target.value = Number(val).toLocaleString("en-IN");
+        }else{
+            e.target.value="";
+        }
+        calculate();
+    }
 });
 
-
-/* ===============================
-   YOUR ORIGINAL BUDGET CODE
-================================= */
-function formatCurrency(num){
-  return Number(num || 0).toLocaleString("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2
-  });
-}
-	
-function calculate(prefix){
-
-let P = document.querySelectorAll(`.${prefix}P`);
-let S = document.querySelectorAll(`.${prefix}S`);
-let rows = document.querySelectorAll(`.${prefix}Row`);
-let exp = document.querySelectorAll(`.${prefix}Exp`);
-
-let totalP=0,totalS=0,expTotal=0;
-
-for(let i=0;i<P.length;i++){
-let p=Number(P[i].value)||0;
-let s=Number(S[i].value)||0;
-
-rows[i].innerText = formatCurrency(p+s);
-
-totalP+=p;
-totalS+=s;
+function getNumber(id){
+    let val = document.getElementById(id).value.replace(/,/g,"");
+    return Number(val)||0;
 }
 
-exp.forEach(e=>expTotal+=Number(e.value)||0);
+function calculate(){
 
-document.getElementById(prefix+"TotalP").innerText = formatCurrency(totalP);
-document.getElementById(prefix+"TotalS").innerText = formatCurrency(totalS);
-document.getElementById(prefix+"Grand").innerText = formatCurrency(totalP+totalS);
-document.getElementById(prefix+"ExpTotal").innerText = formatCurrency(expTotal);
+    // January
+    let janTotal = 
+        (getNumber("janSalary") + getNumber("janExtra")) -
+        (getNumber("janExp1") + getNumber("janExp2"));
 
-let salary=Number(document.getElementById(prefix+"Salary").value)||0;
-let extra=Number(document.getElementById(prefix+"Extra").value)||0;
-let bank=salary+extra;
+    document.getElementById("janTotal").innerText =
+        "₹ " + janTotal.toLocaleString("en-IN");
 
-document.getElementById(prefix+"BankBalance").innerText = formatCurrency(bank);
+    // February
+    let febTotal = 
+        (getNumber("febSalary") + getNumber("febExtra")) -
+        (getNumber("febExp1") + getNumber("febExp2"));
 
-let net=bank-totalP-expTotal;
-
-let netEl = document.getElementById(prefix+"Net");
-netEl.innerText = formatCurrency(net);
-
-/* Auto red/green for net */
-netEl.style.color = net >= 0 ? "#00ff99" : "#ff4d4d";
-
-save(prefix);
+    document.getElementById("febTotal").innerText =
+        "₹ " + febTotal.toLocaleString("en-IN");
 }
 
-async function save(prefix){
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-let values=[];
-inputs.forEach(i=>values.push(i.value));
-await setDoc(doc(db,"months",prefix),{values});
-}
-
-async function load(prefix){
-let snap=await getDoc(doc(db,"months",prefix));
-if(snap.exists()){
-let values=snap.data().values;
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-inputs.forEach((i,index)=>i.value=values[index]||"");
-}
-calculate(prefix);
-}
-
-document.addEventListener("input",()=>{
-calculate("feb");
-calculate("jan");
-});
-
-load("feb");
-load("jan");
+// Initial calculation
+calculate();
 
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
