@@ -196,6 +196,67 @@ td:focus-within{
     box-shadow:0 0 20px #00ffff;
 }
 
+/* =========================
+   MOBILE RESPONSIVE FIX
+========================= */
+
+@media (max-width: 600px){
+
+    .header{
+        font-size:22px;
+        padding:15px;
+        line-height:1.4;
+    }
+
+    .home-link{
+        float:none;
+        display:inline-block;
+        margin-top:10px;
+    }
+
+    .dashboard{
+        padding:15px;
+        gap:20px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .title{
+        font-size:20px;
+    }
+
+    table{
+        font-size:14px;
+    }
+
+    th, td{
+        padding:8px 5px;
+    }
+
+    input{
+        font-size:14px;
+        padding:6px 0;
+    }
+
+    .net,
+    .total-box{
+        font-size:14px;
+        padding:10px;
+    }
+
+    /* Make table scrollable on small screens */
+    .left{
+        overflow-x:auto;
+    }
+
+    .right{
+        overflow-x:auto;
+    }
+
+}
+
 </style>
 </head>
 <body>
@@ -503,6 +564,7 @@ load("jan");
 </script>
 </body>
 </html>
+
 
 
 
