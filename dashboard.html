@@ -74,41 +74,54 @@ body{
 
 /* TABLE */
 
-/* ================= ANIMATED GLOW BORDER ================= */
-
 table{
-    position:relative;
-    z-index:1;
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:10px;
+    border:1px solid rgba(0,255,255,0.4);
+    box-shadow:0 0 12px rgba(0,255,255,0.15);
+    border-radius:8px;
+    overflow:hidden;
 }
 
-/* Animated outer glow */
-table::before{
-    content:"";
-    position:absolute;
-    inset:-2px;
-    border-radius:10px;
-    padding:2px;
-    background:linear-gradient(
-        90deg,
-        #00ffff,
-        #00ff99,
-        #00ffff,
-        #00ff99
-    );
-    background-size:300% 300%;
-    animation:glowMove 6s linear infinite;
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    pointer-events:none;
+th, td{
+    padding:10px;
+    text-align:center;
+    border:1px solid rgba(0,255,255,0.25);
+    transition:0.2s ease;
 }
 
-@keyframes glowMove{
-    0%{ background-position:0% 50%; }
-    50%{ background-position:100% 50%; }
-    100%{ background-position:0% 50%; }
+/* Header */
+th{
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    font-weight:600;
+    text-shadow:0 0 6px #00ffff;
+}
+
+/* Row Hover Effect */
+table tr:hover td{
+    background:rgba(0,255,255,0.08);
+    box-shadow:inset 0 0 10px rgba(0,255,255,0.2);
+}
+
+/* TOTAL Row Highlight */
+.highlight-blue td{
+    background:rgba(0,255,255,0.18);
+    font-weight:700;
+    color:#00ffff;
+    box-shadow:inset 0 0 15px rgba(0,255,255,0.3);
+}
+
+/* Side Expense Table Slightly Different */
+.side-table td{
+    background:rgba(0,255,255,0.05);
+}
+
+/* Section Divider (between tables) */
+.left table:first-of-type{
+    margin-bottom:20px;
+    border-bottom:2px solid #00ffff;
 }
 
 /* INPUT */
@@ -584,8 +597,6 @@ load("jan");
 </script>
 </body>
 </html>
-
-
 
 
 
