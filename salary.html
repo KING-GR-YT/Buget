@@ -115,12 +115,16 @@ input{
     transition: 0.3s ease;
 }
 
+/* Remove arrows in Chrome, Edge, Safari */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-
-/* Focus */
-input:focus{
-    outline: none;
-    box-shadow: 0 0 8px rgba(0,255,255,0.6);
+/* Remove arrows in Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
 }
 
 /* STATUS COLORS */
@@ -576,6 +580,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
