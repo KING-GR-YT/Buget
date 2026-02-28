@@ -100,19 +100,24 @@ tr{
 /* INPUT */
 input{
     background: transparent;
-    border: 1px solid rgba(0,255,255,0.4);
-    border-radius: 8px;
-    padding: 6px;
+    border: none;               /* ❌ remove border */
+    outline: none;              /* ❌ remove outline */
     width: 80px;
-    color: #00ffff;
 
+    color: #00ffff;
     text-align: center;
-    font-weight: 600;           /* Status-like weight */
-    letter-spacing: 0.5px;      /* Premium spacing */
+
+    font-weight: 600;
+    letter-spacing: 0.5px;
     font-size: 14px;
     font-family: 'Segoe UI', sans-serif;
 
     transition: 0.3s ease;
+}
+
+/* Optional subtle focus effect */
+input:focus{
+    text-shadow: 0 0 6px rgba(0,255,255,0.6);
 }
 
 /* Focus */
@@ -574,6 +579,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
