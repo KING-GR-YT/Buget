@@ -99,20 +99,26 @@ tr{
 
 /* INPUT */
 input{
-    background:transparent;
-    border:1px solid rgba(0,255,255,0.4); 
-	border-radius:8px;
-    padding:6px;
-    width:80px;
-    color:#00ffff;
-    text-align:center;
-    font-weight:bold;
-    transition:0.3s;
+    background: transparent;
+    border: 1px solid rgba(0,255,255,0.4);
+    border-radius: 8px;
+    padding: 6px;
+    width: 80px;
+    color: #00ffff;
+
+    text-align: center;
+    font-weight: 600;           /* Status-like weight */
+    letter-spacing: 0.5px;      /* Premium spacing */
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+
+    transition: 0.3s ease;
 }
 
+/* Focus */
 input:focus{
-    outline:none;
-    box-shadow:0 0 10px #00ffff;
+    outline: none;
+    box-shadow: 0 0 8px rgba(0,255,255,0.6);
 }
 
 /* STATUS COLORS */
@@ -568,6 +574,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
