@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Land Purchase Loan Tracker</title>
+
+<style>
+body {
+  background: #071426;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 20px;
+  color: white;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ===== SUMMARY CARD ===== */
+.summary-container {
+  background: #0b1d35;
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 1px solid #12345a;
+}
+
+.summary-title {
+  color: #00ff88;
+  font-size: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.summary-card {
+  background: #071426;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.summary-card h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #8ca3c7;
+}
+
+.summary-card p {
+  margin: 8px 0 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #00c6d7;
+}
+
+/* ===== FORM ===== */
+.form-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  background: #0b1d35;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.form-container input {
+  background: #071426;
+  border: 1px solid #12345a;
+  color: white;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.form-container button {
+  background: #00c6d7;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+  background: #00a9b2;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #0b1d35;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th,
+td {
+  border: 1px solid #12345a;
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #10294d;
+}
+
+tfoot {
+  background: #10294d;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background: #1b2c4a;
+  border: none;
+  color: white;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: #16436f;
+}
+
+.home-link{
+    padding:4px 4px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:0.3s ease;
+    font-weight:100;
+    float: right;
+}
+
+.home-link:hover{
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Land Purchase Tracker
+  <a href="main.html" class="home-link">🏠 Home</a>
+
+</h1>
+
+
+<!-- ===== SUMMARY SECTION ===== -->
+<div class="summary-container">
+  <div class="summary-title">🟢 Land Purchase Summary</div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h4>Total Principal Paid</h4>
+      <p id="summaryPrincipal">₹0.00</p>
+    </div>
+
+    <div class="summary-card">
+      <h4>Total Interest Paid</h4>
+      <p id="summaryInterest">₹0.00</p>
+    </div>
+
+    <div class="summary-card">
+      <h4>Total Extra Interest</h4>
+      <p id="summaryExtra">₹0.00</p>
+    </div>
+
+    <div class="summary-card">
+      <h4>Total Paid</h4>
+      <p id="summaryTotal">₹0.00</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ENTRY FORM ===== -->
+<div class="form-container">
+  <input type="text" id="name" placeholder="Name" />
+  <input type="number" id="principal" placeholder="Principal Paid" step="0.01" />
+  <input type="number" id="interestPaid" placeholder="Interest Paid" step="0.01" />
+  <input type="number" id="extraInterest" placeholder="Extra Interest Paid" step="0.01" />
+  <button id="saveBtn">Save</button>
+</div>
+
+<!-- ===== TABLE ===== -->
+<table id="loanTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Principal Paid</th>
+      <th>Interest Paid</th>
+      <th>Extra Interest</th>
+      <th>Total Paid</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+
+  <tbody></tbody>
+
+  <tfoot>
+    <tr>
+      <td>TOTAL</td>
+      <td id="totalPrincipal">₹0.00</td>
+      <td id="totalInterest">₹0.00</td>
+      <td id="totalExtra">₹0.00</td>
+      <td id="grandTotal">₹0.00</td>
+      <td></td>
+    </tr>
+  </tfoot>
+</table>
+
+<!-- ===== FIREBASE INTEGRATION ===== -->
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  onSnapshot, 
+  deleteDoc, 
+  doc,
+  query,
+  orderBy,
+  where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.appspot.com",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+};
+
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 Only this UID can access
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let loans = [];
+
+const loanCollection = collection(db, "landRecords");
+
+// Page hidden until login
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user)=>{
+    if(!user || user.uid !== ADMIN_UID){
+        window.location.href = "login.html"; // redirect if not admin
+    } else {
+        document.body.style.display = "block";
+        loadLoans();
+    }
+});
+
+function formatCurrency(num){
+    return "₹" + Number(num).toLocaleString("en-IN", {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+// Save loan
+document.getElementById("saveBtn").addEventListener("click", async ()=>{
+    const user = auth.currentUser;
+    if(!user) return;
+
+    const name = document.getElementById("name").value.trim();
+    const principal = parseFloat(document.getElementById("principal").value) || 0;
+    const interestPaid = parseFloat(document.getElementById("interestPaid").value) || 0;
+    const extraInterest = parseFloat(document.getElementById("extraInterest").value) || 0;
+
+    if(!name){ alert("Enter Name"); return; }
+
+    const totalPaid = principal + interestPaid + extraInterest;
+
+    await addDoc(loanCollection, {
+        uid: user.uid,
+        name,
+        principalPaid: principal,
+        interestPaid: interestPaid,
+        extraInterest: extraInterest,
+        totalPaid,
+        createdAt: new Date()
+    });
+
+    document.querySelectorAll(".form-container input").forEach(i=>i.value="");
+});
+
+// Load loans in real-time
+function loadLoans(){
+    const q = query(loanCollection, orderBy("createdAt","desc"));
+    onSnapshot(q, snapshot=>{
+        loans = [];
+        snapshot.forEach(docSnap=>{
+            const d = docSnap.data();
+            d.id = docSnap.id;
+            loans.push(d);
+        });
+        renderLoans();
+    });
+}
+
+// Render table and summary
+function renderLoans(){
+    const tbody = document.querySelector("#loanTable tbody");
+    tbody.innerHTML = "";
+
+    let totalPrincipal = 0, totalInterest = 0, totalExtra = 0, totalPaid = 0;
+
+    loans.forEach(d=>{
+        totalPrincipal += d.principalPaid || 0;
+        totalInterest += d.interestPaid || 0;
+        totalExtra += d.extraInterest || 0;
+        totalPaid += d.totalPaid || 0;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${d.name}</td>
+            <td class="principal" data-value="${d.principalPaid}">${formatCurrency(d.principalPaid)}</td>
+            <td class="interest" data-value="${d.interestPaid}">${formatCurrency(d.interestPaid)}</td>
+            <td class="extra" data-value="${d.extraInterest}">${formatCurrency(d.extraInterest)}</td>
+            <td class="total" data-value="${d.totalPaid}">${formatCurrency(d.totalPaid)}</td>
+            <td><button class="delete-btn">🗑</button></td>
+        `;
+        row.querySelector(".delete-btn").addEventListener("click", async ()=>{
+            await deleteDoc(doc(db,"landRecords",d.id));
+        });
+
+        tbody.appendChild(row);
+    });
+
+    // Update footer
+    document.getElementById("totalPrincipal").innerText = formatCurrency(totalPrincipal);
+    document.getElementById("totalInterest").innerText = formatCurrency(totalInterest);
+    document.getElementById("totalExtra").innerText = formatCurrency(totalExtra);
+    document.getElementById("grandTotal").innerText = formatCurrency(totalPaid);
+
+    // Update summary
+    document.getElementById("summaryPrincipal").innerText = formatCurrency(totalPrincipal);
+    document.getElementById("summaryInterest").innerText = formatCurrency(totalInterest);
+    document.getElementById("summaryExtra").innerText = formatCurrency(totalExtra);
+    document.getElementById("summaryTotal").innerText = formatCurrency(totalPaid);
+}
+
+</script>
+
+</body>
+</html>
