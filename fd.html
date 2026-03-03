@@ -7,7 +7,6 @@
 
 <style>
 
-/* ===== GLOBAL ===== */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
@@ -15,19 +14,13 @@ body{
     color:#00f7ff;
 }
 
-/* ===== HEADER ===== */
 .header{
     padding:20px 30px;
     font-size:22px;
     font-weight:bold;
-    color:#00f7ff;
     text-shadow:0 0 10px #00f7ff;
-    display:flex;
-    align-items:center;
-    gap:10px;
 }
 
-/* ===== CARD ===== */
 .container{
     margin:20px;
     padding:20px;
@@ -37,7 +30,6 @@ body{
     box-shadow:0 0 20px rgba(0,255,255,0.15);
 }
 
-/* ===== SUMMARY ===== */
 .summary-row{
     display:flex;
     justify-content:space-between;
@@ -52,7 +44,6 @@ body{
 
 .summary-box h3{
     font-size:13px;
-    font-weight:500;
     opacity:0.8;
     margin-bottom:5px;
 }
@@ -63,7 +54,6 @@ body{
     color:#00ff88;
 }
 
-/* ===== INPUT ROW ===== */
 .input-row{
     margin-top:15px;
     display:flex;
@@ -80,7 +70,6 @@ input{
     color:#00f7ff;
     text-align:center;
     font-weight:500;
-    transition:0.3s;
     min-width:120px;
 }
 
@@ -105,7 +94,18 @@ button:hover{
     box-shadow:0 0 15px #00f7ff;
 }
 
-/* ===== TABLE ===== */
+.delete-btn{
+    border:1px solid #ff4d4d;
+    color:#ff4d4d;
+    padding:5px 10px;
+    font-size:12px;
+}
+
+.delete-btn:hover{
+    background:#ff4d4d;
+    color:#000;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -116,7 +116,6 @@ th{
     border-bottom:2px solid #00f7ff;
     padding:12px;
     font-size:13px;
-    font-weight:600;
 }
 
 td{
@@ -126,7 +125,6 @@ td{
     font-size:13px;
 }
 
-/* ===== STATUS ===== */
 .active{
     color:#00ff88;
     font-weight:bold;
@@ -137,22 +135,10 @@ td{
     font-weight:bold;
 }
 
-/* ===== MOBILE ===== */
 @media(max-width:768px){
-
-    .summary-row{
-        flex-direction:column;
-        gap:10px;
-    }
-
-    .input-row{
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    input{
-        width:100%;
-    }
+    .summary-row{flex-direction:column;}
+    .input-row{flex-direction:column;align-items:stretch;}
+    input{width:100%;}
 }
 
 </style>
@@ -161,7 +147,6 @@ td{
 
 <div class="header">⚡ FD Dashboard</div>
 
-<!-- SUMMARY -->
 <div class="container">
     <div class="summary-row">
         <div class="summary-box">
@@ -179,7 +164,6 @@ td{
     </div>
 </div>
 
-<!-- INPUT + TABLE -->
 <div class="container">
 
     <div class="input-row">
@@ -197,12 +181,12 @@ td{
                 <th>Name</th>
                 <th>Rate %</th>
                 <th>Invested</th>
-                <th>Start Date</th>
-                <th>Days</th>
-                <th>Days Passed</th>
+                <th>Maturity Date</th>
+                <th>Days Remaining</th>
                 <th>Status</th>
                 <th>Interest</th>
                 <th>Maturity Value</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -212,65 +196,54 @@ td{
 
 <script type="module">
 
-
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy }
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { auth } from "./auth.js";
+import { auth, protectPage } from "./auth.js";
+
+protectPage();
 
 const db = getFirestore();
 
-/* 🔐 ADMIN UID */
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
-/* 🔐 PAGE PROTECTION */
-onAuthStateChanged(auth,(user)=>{
-    if(!user){
-        window.location.href="index.html";
-    }
-    else if(user.uid !== ADMIN_UID){
-        alert("Unauthorized Access");
-        window.location.href="index.html";
-    }
-    else{
-        loadFDs();
-    }
-});
-
-/* FORMAT */
 function format(num){
     return "₹ " + Math.round(num).toLocaleString("en-IN");
 }
 
-/* LIVE CALCULATION */
 function calculateFD(data){
 
-    const amount=data.amount;
-    const rate=data.rate/100;
-    const start=new Date(data.startDate);
-    const today=new Date();
+    const amount = data.amount;
+    const rate = data.rate / 100;
 
-    const daysPassed=Math.floor((today-start)/(1000*60*60*24));
-    const effectiveDays=Math.min(daysPassed,data.days);
+    const start = new Date(data.startDate);
+    const maturityDate = new Date(start);
+    maturityDate.setDate(start.getDate() + data.days);
 
-    const years=effectiveDays/365;
-    const comp=4;
+    const today = new Date();
 
-    const maturity=amount*Math.pow((1+rate/comp),(comp*years));
-    const interest=maturity-amount;
+    const totalDays = data.days;
+    const daysPassed = Math.floor((today - start)/(1000*60*60*24));
+    const effectiveDays = Math.min(daysPassed,totalDays);
+
+    const daysRemaining = Math.max(totalDays - daysPassed,0);
+
+    const years = effectiveDays / 365;
+    const comp = 4;
+
+    const maturity = amount*Math.pow((1+rate/comp),(comp*years));
+    const interest = maturity - amount;
 
     return{
-        daysPassed:effectiveDays,
-        interest:Math.round(interest),
-        maturity:Math.round(maturity),
-        status: daysPassed>=data.days ? "Matured":"Active"
+        maturityDate: maturityDate.toISOString().split("T")[0],
+        daysRemaining,
+        interest: Math.round(interest),
+        maturity: Math.round(maturity),
+        status: today >= maturityDate ? "Matured":"Active"
     };
 }
 
-/* ADD FD */
-window.addFD=async function(){
+window.addFD = async function(){
 
-    const user=auth.currentUser;
+    const user = auth.currentUser;
 
     await addDoc(collection(db,"users",user.uid,"fds"),{
         name:document.getElementById("name").value,
@@ -280,12 +253,12 @@ window.addFD=async function(){
         days:parseInt(document.getElementById("days").value),
         createdAt:new Date()
     });
+
 }
 
-/* LOAD REAL-TIME */
 function loadFDs(){
 
-    const user=auth.currentUser;
+    const user = auth.currentUser;
 
     const q=query(
         collection(db,"users",user.uid,"fds"),
@@ -316,14 +289,12 @@ function loadFDs(){
             <td>${data.name}</td>
             <td>${data.rate}%</td>
             <td>${format(data.amount)}</td>
-            <td>${data.startDate}</td>
-            <td>${data.days}</td>
-            <td>${live.daysPassed}</td>
-            <td class="${live.status==='Active'?'active':'matured'}">
-                ${live.status}
-            </td>
+            <td>${live.maturityDate}</td>
+            <td>${live.daysRemaining}</td>
+            <td class="${live.status==='Active'?'active':'matured'}">${live.status}</td>
             <td>${format(live.interest)}</td>
             <td>${format(live.maturity)}</td>
+            <td><button class="delete-btn" onclick="deleteFD('${docSnap.id}')">Delete</button></td>
             `;
         });
 
@@ -333,6 +304,17 @@ function loadFDs(){
 
     });
 }
+
+window.deleteFD = async function(id){
+
+    const user=auth.currentUser;
+
+    if(confirm("Delete this FD?")){
+        await deleteDoc(doc(db,"users",user.uid,"fds",id));
+    }
+}
+
+setTimeout(loadFDs,1000);
 
 </script>
 
