@@ -199,9 +199,16 @@ td{
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { auth, protectPage } from "./auth.js";
+import { auth } from "./auth.js";
 
-protectPage();
+import { onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        loadFDs();
+    }
+});
 
 const db = getFirestore();
 
@@ -314,7 +321,7 @@ window.deleteFD = async function(id){
     }
 }
 
-setTimeout(loadFDs,1000);
+
 
 </script>
 
