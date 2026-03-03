@@ -181,7 +181,21 @@ const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 const fdCollection = collection(db, "fds");
+
+let data = [];
+
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+    if (!user || user.uid !== ADMIN_UID) {
+        window.location.href = "index.html";
+    } else {
+        document.body.style.display = "block";
+        startApp();
+    }
+});
 
 function format(num){
     return "₹ " + num.toLocaleString("en-IN",{minimumFractionDigits:2});
