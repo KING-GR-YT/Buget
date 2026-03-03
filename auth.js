@@ -55,3 +55,5 @@ export function logout() {
  window.location.href = "main.html";
  });
 }
+export { auth };
+
