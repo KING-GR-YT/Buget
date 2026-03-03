@@ -265,13 +265,14 @@ function calculateSummary(){
     let rows=document.querySelectorAll("#fdTable tbody tr");
     let totalInvested=0;
     let totalInterest=0;
-    let totalMaturity=0;
 
     rows.forEach(row=>{
         totalInvested+=parseFloat(row.cells[2].innerText.replace(/[^0-9.-]+/g,""));
         totalInterest+=parseFloat(row.cells[8].innerText.replace(/[^0-9.-]+/g,""));
-        totalMaturity+=parseFloat(row.cells[9].innerText.replace(/[^0-9.-]+/g,""));
     });
+
+    // 🔥 Summary Maturity = Invested + Interest
+    let totalMaturity = totalInvested + totalInterest;
 
     document.getElementById("totalInvested").innerText=format(totalInvested);
     document.getElementById("totalInterest").innerText=format(totalInterest);
