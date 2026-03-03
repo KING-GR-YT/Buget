@@ -6,163 +6,209 @@
 <title>FD Dashboard</title>
 
 <style>
+
+/* ===== GLOBAL ===== */
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#0a0f1c,#050811);
-    color:#fff;
+    background:linear-gradient(180deg,#00141c,#000c12);
+    color:#00f7ff;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .header{
-    padding:20px;
-    text-align:center;
+    padding:20px 30px;
     font-size:22px;
     font-weight:bold;
-}
-
-/* SUMMARY */
-.summary{
+    color:#00f7ff;
+    text-shadow:0 0 10px #00f7ff;
     display:flex;
-    justify-content:space-around;
-    padding:15px;
+    align-items:center;
+    gap:10px;
+}
+
+/* ===== CARD ===== */
+.container{
+    margin:20px;
+    padding:20px;
+    border-radius:15px;
+    border:1px solid rgba(0,255,255,0.3);
+    background:rgba(0,255,255,0.03);
+    box-shadow:0 0 20px rgba(0,255,255,0.15);
+}
+
+/* ===== SUMMARY ===== */
+.summary-row{
+    display:flex;
+    justify-content:space-between;
     flex-wrap:wrap;
+    gap:20px;
 }
 
-.card{
-    background:#111827;
-    padding:15px;
-    border-radius:12px;
-    width:30%;
-    min-width:120px;
+.summary-box{
+    flex:1;
     text-align:center;
-    margin:5px;
 }
 
-.card h3{
-    margin:5px 0;
-    font-size:14px;
-    color:#9ca3af;
+.summary-box h3{
+    font-size:13px;
+    font-weight:500;
+    opacity:0.8;
+    margin-bottom:5px;
 }
 
-.card p{
-    margin:0;
+.summary-box p{
     font-size:18px;
     font-weight:bold;
+    color:#00ff88;
 }
 
-/* FORM */
-.form{
-    padding:15px;
+/* ===== INPUT ROW ===== */
+.input-row{
+    margin-top:15px;
     display:flex;
+    gap:15px;
     flex-wrap:wrap;
-    gap:10px;
-    justify-content:center;
+    align-items:center;
 }
 
-.form input{
-    padding:8px;
+input{
+    background:transparent;
+    border:1px solid rgba(0,255,255,0.4);
     border-radius:8px;
-    border:none;
-    width:120px;
+    padding:8px 10px;
+    color:#00f7ff;
     text-align:center;
-    font-weight:bold;
+    font-weight:500;
+    transition:0.3s;
+    min-width:120px;
 }
 
-.form button{
-    padding:8px 15px;
-    border:none;
+input:focus{
+    outline:none;
+    box-shadow:0 0 10px #00f7ff;
+}
+
+button{
+    background:transparent;
+    border:1px solid #00f7ff;
     border-radius:8px;
-    background:#2563eb;
-    color:white;
-    font-weight:bold;
+    padding:8px 18px;
+    color:#00f7ff;
     cursor:pointer;
+    transition:0.3s;
 }
 
-/* TABLE */
+button:hover{
+    background:#00f7ff;
+    color:#000;
+    box-shadow:0 0 15px #00f7ff;
+}
+
+/* ===== TABLE ===== */
 table{
     width:100%;
     border-collapse:collapse;
-    margin-top:15px;
-}
-
-th,td{
-    padding:8px;
-    text-align:center;
-    font-size:13px;
+    margin-top:20px;
 }
 
 th{
-    background:#1f2937;
+    border-bottom:2px solid #00f7ff;
+    padding:12px;
+    font-size:13px;
+    font-weight:600;
 }
 
-tr:nth-child(even){
-    background:#111827;
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid rgba(0,255,255,0.1);
+    font-size:13px;
 }
 
-/* STATUS COLORS */
+/* ===== STATUS ===== */
 .active{
-    color:#10b981;
+    color:#00ff88;
     font-weight:bold;
 }
 
 .matured{
-    color:#ef4444;
+    color:#ff4d4d;
     font-weight:bold;
 }
 
-/* MOBILE */
+/* ===== MOBILE ===== */
 @media(max-width:768px){
-    .card{
-        width:45%;
+
+    .summary-row{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .input-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    input{
+        width:100%;
     }
 }
+
 </style>
 </head>
 <body>
 
-<div class="header">FD Dashboard</div>
+<div class="header">⚡ FD Dashboard</div>
 
-<div class="summary">
-    <div class="card">
-        <h3>Total Invested</h3>
-        <p id="totalInvest">₹ 0</p>
-    </div>
-    <div class="card">
-        <h3>Total Interest</h3>
-        <p id="totalInterest">₹ 0</p>
-    </div>
-    <div class="card">
-        <h3>Total Value</h3>
-        <p id="totalValue">₹ 0</p>
+<!-- SUMMARY -->
+<div class="container">
+    <div class="summary-row">
+        <div class="summary-box">
+            <h3>Total Invested</h3>
+            <p id="totalInvest">₹ 0</p>
+        </div>
+        <div class="summary-box">
+            <h3>Total Interest Till Date</h3>
+            <p id="totalInterest">₹ 0</p>
+        </div>
+        <div class="summary-box">
+            <h3>Total Maturity Value</h3>
+            <p id="totalValue">₹ 0</p>
+        </div>
     </div>
 </div>
 
-<div class="form">
-    <input type="text" id="name" placeholder="FD Name">
-    <input type="number" id="amount" placeholder="Amount">
-    <input type="number" id="rate" placeholder="Rate %">
-    <input type="date" id="startDate">
-    <input type="number" id="days" placeholder="Days">
-    <button onclick="addFD()">Add FD</button>
-</div>
+<!-- INPUT + TABLE -->
+<div class="container">
 
-<table id="fdTable">
-<thead>
-<tr>
-<th>Name</th>
-<th>Rate</th>
-<th>Amount</th>
-<th>Start</th>
-<th>Total Days</th>
-<th>Days Passed</th>
-<th>Status</th>
-<th>Interest</th>
-<th>Maturity Value</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+    <div class="input-row">
+        <input type="text" id="name" placeholder="FD Name">
+        <input type="number" id="rate" placeholder="Interest %">
+        <input type="number" id="amount" placeholder="Amount">
+        <input type="date" id="startDate">
+        <input type="number" id="days" placeholder="Days">
+        <button onclick="addFD()">Add FD</button>
+    </div>
+
+    <table id="fdTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Rate %</th>
+                <th>Invested</th>
+                <th>Start Date</th>
+                <th>Days</th>
+                <th>Days Passed</th>
+                <th>Status</th>
+                <th>Interest</th>
+                <th>Maturity Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+</div>
 
 <script type="module">
 
@@ -174,14 +220,11 @@ import {
 getAuth, onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* 🔥 Firebase Config */
+/* 🔥 YOUR FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -197,7 +240,7 @@ onAuthStateChanged(auth,(user)=>{
         window.location.href="index.html";
     }
     else if(user.uid !== ADMIN_UID){
-        alert("Unauthorized");
+        alert("Unauthorized Access");
         window.location.href="index.html";
     }
     else{
@@ -205,12 +248,12 @@ onAuthStateChanged(auth,(user)=>{
     }
 });
 
-/* 🔢 Format */
+/* FORMAT */
 function format(num){
     return "₹ " + Math.round(num).toLocaleString("en-IN");
 }
 
-/* 📈 Live Calculation */
+/* LIVE CALCULATION */
 function calculateFD(data){
 
     const amount=data.amount;
@@ -235,22 +278,22 @@ function calculateFD(data){
     };
 }
 
-/* ➕ Add FD */
+/* ADD FD */
 window.addFD=async function(){
 
     const user=auth.currentUser;
 
     await addDoc(collection(db,"users",user.uid,"fds"),{
         name:document.getElementById("name").value,
-        amount:parseFloat(document.getElementById("amount").value),
         rate:parseFloat(document.getElementById("rate").value),
+        amount:parseFloat(document.getElementById("amount").value),
         startDate:document.getElementById("startDate").value,
         days:parseInt(document.getElementById("days").value),
         createdAt:new Date()
     });
 }
 
-/* 📡 Real-time Load */
+/* LOAD REAL-TIME */
 function loadFDs(){
 
     const user=auth.currentUser;
@@ -262,7 +305,7 @@ function loadFDs(){
 
     onSnapshot(q,(snapshot)=>{
 
-        let tbody=document.querySelector("#fdTable tbody");
+        const tbody=document.querySelector("#fdTable tbody");
         tbody.innerHTML="";
 
         let totalInvest=0;
@@ -298,6 +341,7 @@ function loadFDs(){
         document.getElementById("totalInvest").innerText=format(totalInvest);
         document.getElementById("totalInterest").innerText=format(totalInterest);
         document.getElementById("totalValue").innerText=format(totalValue);
+
     });
 }
 
