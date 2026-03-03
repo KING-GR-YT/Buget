@@ -156,11 +156,8 @@ td{
     <input type="number" id="amount" placeholder="Amount">
     <input type="date" id="startDate">
     <input type="number" id="days" placeholder="Days">
-    <select id="compounding">
-        <option value="12">Monthly</option>
+    <select id="compounding"> 
         <option value="4" selected>Quarterly</option>
-        <option value="2">Half-Yearly</option>
-        <option value="1">Yearly</option>
     </select>
     <button onclick="addFD()">Add FD</button>
 </div>
@@ -172,7 +169,6 @@ td{
 <th>Rate %</th>
 <th>Invested</th>
 <th>Start Date</th>
-<th>Days</th>
 <th>Maturity Date</th>
 <th>Days Remaining</th>
 <th>Status</th>
@@ -236,7 +232,6 @@ function addFD(){
     <td>${rate}%</td>
     <td>${format(amount)}</td>
     <td>${formatDate(start)}</td>
-    <td>${days}</td>
     <td>${formatDate(maturity)}</td>
     <td>${remainingDays}</td>
     <td class="${status==="Active"?"active":"matured"}">${status}</td>
