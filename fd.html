@@ -166,25 +166,27 @@ td{
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-/* 🔥  FIREBASE CONFIG */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+  apiKey: "YOUR_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+const ADMIN_UID = "YOUR_ADMIN_UID";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+const auth = getAuth(app);
 const fdCollection = collection(db, "fds");
 
-let data = [];
+let latestSnapshot = null;
 
 document.body.style.display = "none";
 
@@ -193,7 +195,6 @@ onAuthStateChanged(auth, (user) => {
         window.location.href = "index.html";
     } else {
         document.body.style.display = "block";
-        startApp();
     }
 });
 
@@ -208,23 +209,19 @@ function clearInputs(){
 }
 
 window.addFD = async function(){
-
-    let name=document.getElementById("name").value.trim();
-    let rate=parseFloat(document.getElementById("rate").value);
-    let amount=parseFloat(document.getElementById("amount").value);
-    let startDate=document.getElementById("startDate").value;
-    let days=parseInt(document.getElementById("days").value);
-    let comp=parseInt(document.getElementById("compounding").value);
+    let name=nameInput.value.trim();
+    let rate=parseFloat(rateInput.value);
+    let amount=parseFloat(amountInput.value);
+    let startDate=startDateInput.value;
+    let days=parseInt(daysInput.value);
+    let comp=parseInt(compounding.value);
 
     if(!name || !rate || !amount || !startDate || !days){
         alert("Please fill all fields");
         return;
     }
 
-    await addDoc(fdCollection,{
-        name, rate, amount, startDate, days, compounding: comp
-    });
-
+    await addDoc(fdCollection,{ name, rate, amount, startDate, days, compounding: comp });
     clearInputs();
 };
 
@@ -235,6 +232,7 @@ window.deleteFD = async function(id){
 };
 
 function renderData(snapshot){
+    latestSnapshot = snapshot;
 
     const table = document.querySelector("#fdTable tbody");
     table.innerHTML = "";
@@ -299,20 +297,20 @@ function calculateSummary(){
 
     let totalMaturity = totalInvested + totalInterest;
 
-    document.getElementById("totalInvested").innerText=format(totalInvested);
-    document.getElementById("totalInterest").innerText=format(totalInterest);
-    document.getElementById("totalMaturity").innerText=format(totalMaturity);
+    totalInvestedEl.innerText=format(totalInvested);
+    totalInterestEl.innerText=format(totalInterest);
+    totalMaturityEl.innerText=format(totalMaturity);
 }
 
 onSnapshot(fdCollection,(snapshot)=>{
     renderData(snapshot);
 });
 
-// 🔥 Auto interest refresh every 1 minute
+/* AUTO REFRESH INTEREST EVERY 60 SECONDS (NO DUPLICATE LISTENER) */
 setInterval(()=>{
-    onSnapshot(fdCollection,(snapshot)=>{
-        renderData(snapshot);
-    });
+    if(latestSnapshot){
+        renderData(latestSnapshot);
+    }
 },60000);
 
 </script>
