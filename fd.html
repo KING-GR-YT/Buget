@@ -209,20 +209,34 @@ function clearInputs(){
 }
 
 window.addFD = async function(){
-    let name=nameInput.value.trim();
-    let rate=parseFloat(rateInput.value);
-    let amount=parseFloat(amountInput.value);
-    let startDate=startDateInput.value;
-    let days=parseInt(daysInput.value);
-    let comp=parseInt(compounding.value);
 
-    if(!name || !rate || !amount || !startDate || !days){
-        alert("Please fill all fields");
+    let name = document.getElementById("name").value.trim();
+    let rate = parseFloat(document.getElementById("rate").value);
+    let amount = parseFloat(document.getElementById("amount").value);
+    let startDate = document.getElementById("startDate").value;
+    let days = parseInt(document.getElementById("days").value);
+    let comp = parseInt(document.getElementById("compounding").value);
+
+    if(!name || isNaN(rate) || isNaN(amount) || !startDate || isNaN(days)){
+        alert("Please fill all fields correctly");
         return;
     }
 
-    await addDoc(fdCollection,{ name, rate, amount, startDate, days, compounding: comp });
-    clearInputs();
+    try{
+        await addDoc(fdCollection,{
+            name,
+            rate,
+            amount,
+            startDate,
+            days,
+            compounding: comp
+        });
+
+        clearInputs();
+    }catch(error){
+        console.error("Error adding FD:", error);
+        alert("Error adding FD. Check console.");
+    }
 };
 
 window.deleteFD = async function(id){
