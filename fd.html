@@ -12,14 +12,12 @@ body{
     background:linear-gradient(135deg,#02121c,#000814);
     color:#00f7ff;
 }
-
 .header{
     padding:20px;
     font-size:26px;
     font-weight:bold;
     text-shadow:0 0 10px #00f7ff;
 }
-
 .card{
     background:rgba(0,255,255,0.05);
     border:1px solid rgba(0,255,255,0.2);
@@ -29,40 +27,34 @@ body{
     box-shadow:0 0 20px rgba(0,255,255,0.2);
     backdrop-filter:blur(10px);
 }
-
 .summary-row{
     display:flex;
     justify-content:space-between;
     flex-wrap:wrap;
     gap:20px;
 }
-
 .summary-box{
     flex:1;
     min-width:200px;
     text-align:center;
 }
-
 .summary-box h3{
     margin:0;
     font-size:14px;
     opacity:0.7;
 }
-
 .summary-box p{
     margin:5px 0 0;
     font-size:20px;
     font-weight:bold;
     color:#00ff88;
 }
-
 .add-section{
     display:flex;
     flex-wrap:wrap;
     gap:15px;
     align-items:center;
 }
-
 input, select{
     background:transparent;
     border:1px solid rgba(0,255,255,0.3);
@@ -71,12 +63,10 @@ input, select{
     border-radius:8px;
     text-align:center;
 }
-
 input:focus, select:focus{
     outline:none;
     box-shadow:0 0 8px #00f7ff;
 }
-
 button{
     background:transparent;
     border:1px solid #00f7ff;
@@ -85,42 +75,34 @@ button{
     border-radius:8px;
     cursor:pointer;
 }
-
 button:hover{
     background:#00f7ff;
     color:#000;
 }
-
 .delete-btn{
     border:1px solid #ff4d4d;
     color:#ff4d4d;
 }
-
 .delete-btn:hover{
     background:#ff4d4d;
     color:#000;
 }
-
 table{
     width:100%;
     border-collapse:collapse;
     margin-top:20px;
 }
-
 th{
     border-bottom:2px solid #00f7ff;
     padding:10px;
 }
-
 td{
     padding:10px;
     text-align:center;
     border-bottom:1px solid rgba(0,255,255,0.1);
 }
-
 .active{ color:#00ff88; font-weight:bold; }
 .matured{ color:#ff4d4d; font-weight:bold; }
-
 @media(max-width:900px){
     .add-section{flex-direction:column;}
 }
@@ -130,7 +112,6 @@ td{
 
 <div class="header">⚡ FD Dashboard</div>
 
-<!-- SUMMARY -->
 <div class="card">
 <div class="summary-row">
     <div class="summary-box">
@@ -148,7 +129,6 @@ td{
 </div>
 </div>
 
-<!-- ADD FD -->
 <div class="card">
 <div class="add-section">
     <input type="text" id="name" placeholder="FD Name">
@@ -156,7 +136,7 @@ td{
     <input type="number" id="amount" placeholder="Amount">
     <input type="date" id="startDate">
     <input type="number" id="days" placeholder="Days">
-    <select id="compounding"> 
+    <select id="compounding">
         <option value="4" selected>Quarterly</option>
     </select>
     <button onclick="addFD()">Add FD</button>
@@ -181,98 +161,143 @@ td{
 </table>
 </div>
 
-<script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* 🔥 REPLACE WITH YOUR REAL FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const fdCollection = collection(db, "fds");
 
 function format(num){
     return "₹ " + num.toLocaleString("en-IN",{minimumFractionDigits:2});
 }
-
 function formatDate(date){
     return date.toISOString().split('T')[0];
 }
-
-function addFD(){
-
-    let name=document.getElementById("name").value.trim();
-    let rate=parseFloat(document.getElementById("rate").value);
-    let amount=parseFloat(document.getElementById("amount").value);
-    let startValue=document.getElementById("startDate").value;
-    let days=parseInt(document.getElementById("days").value);
-    let comp=parseInt(document.getElementById("compounding").value);
-
-    if(!name || !rate || !amount || !startValue || !days){
-        alert("Please fill all fields");
-        return;
-    }
-
-    let start=new Date(startValue);
-    let maturity=new Date(start);
-    maturity.setDate(maturity.getDate()+days);
-
-    let today=new Date();
-    let calcDate=today<maturity?today:maturity;
-
-    let passedDays=Math.floor((today-start)/(1000*60*60*24));
-    let remainingDays=Math.max(days-passedDays,0);
-
-    let yearFrac=(calcDate-start)/(365*24*60*60*1000);
-    let r=rate/100;
-
-    let interest=Math.round(amount*Math.pow((1+r/comp),(comp*yearFrac))-amount);
-    let totalYears=days/365;
-    let maturityValue=Math.round(amount*Math.pow((1+r/comp),(comp*totalYears)));
-
-    let status=today>=maturity?"Matured":"Active";
-
-    let table=document.querySelector("#fdTable tbody");
-    let row=table.insertRow();
-
-    row.innerHTML=`
-    <td>${name}</td>
-    <td>${rate}%</td>
-    <td>${format(amount)}</td>
-    <td>${formatDate(start)}</td>
-    <td>${formatDate(maturity)}</td>
-    <td>${remainingDays}</td>
-    <td class="${status==="Active"?"active":"matured"}">${status}</td>
-    <td style="color:#00ff88">${format(interest)}</td>
-    <td>${format(maturityValue)}</td>
-    <td><button class="delete-btn" onclick="deleteRow(this)">🗑</button></td>
-    `;
-
-    calculateSummary();
-    clearInputs();
-}
-
-function deleteRow(btn){
-    if(confirm("Delete this FD?")){
-        btn.closest("tr").remove();
-        calculateSummary();
-    }
-}
-
 function clearInputs(){
     document.querySelectorAll(".add-section input").forEach(i=>i.value="");
 }
 
-function calculateSummary(){
+window.addFD = async function(){
 
+    let name=document.getElementById("name").value.trim();
+    let rate=parseFloat(document.getElementById("rate").value);
+    let amount=parseFloat(document.getElementById("amount").value);
+    let startDate=document.getElementById("startDate").value;
+    let days=parseInt(document.getElementById("days").value);
+    let comp=parseInt(document.getElementById("compounding").value);
+
+    if(!name || !rate || !amount || !startDate || !days){
+        alert("Please fill all fields");
+        return;
+    }
+
+    await addDoc(fdCollection,{
+        name, rate, amount, startDate, days, compounding: comp
+    });
+
+    clearInputs();
+};
+
+window.deleteFD = async function(id){
+    if(confirm("Delete this FD?")){
+        await deleteDoc(doc(db,"fds",id));
+    }
+};
+
+function renderData(snapshot){
+
+    const table = document.querySelector("#fdTable tbody");
+    table.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+
+        const data = docSnap.data();
+        const id = docSnap.id;
+
+        let start = new Date(data.startDate);
+        let maturity = new Date(start);
+        maturity.setDate(maturity.getDate() + data.days);
+
+        let today = new Date();
+        let calcDate = today < maturity ? today : maturity;
+
+        let passedDays = Math.floor((today - start)/(1000*60*60*24));
+        let remainingDays = Math.max(data.days - passedDays,0);
+
+        let yearFrac = (calcDate - start)/(365*24*60*60*1000);
+        let r = data.rate/100;
+
+        let interest = Math.round(
+            data.amount * Math.pow((1+r/data.compounding),(data.compounding*yearFrac)) - data.amount
+        );
+
+        let totalYears = data.days/365;
+        let maturityValue = Math.round(
+            data.amount * Math.pow((1+r/data.compounding),(data.compounding*totalYears))
+        );
+
+        let status = today>=maturity?"Matured":"Active";
+
+        let row = table.insertRow();
+
+        row.innerHTML = `
+        <td>${data.name}</td>
+        <td>${data.rate}%</td>
+        <td>${format(data.amount)}</td>
+        <td>${data.startDate}</td>
+        <td>${formatDate(maturity)}</td>
+        <td>${remainingDays}</td>
+        <td class="${status==="Active"?"active":"matured"}">${status}</td>
+        <td style="color:#00ff88">${format(interest)}</td>
+        <td>${format(maturityValue)}</td>
+        <td><button class="delete-btn" onclick="deleteFD('${id}')">🗑</button></td>
+        `;
+    });
+
+    calculateSummary();
+}
+
+function calculateSummary(){
     let rows=document.querySelectorAll("#fdTable tbody tr");
     let totalInvested=0;
     let totalInterest=0;
 
     rows.forEach(row=>{
         totalInvested+=parseFloat(row.cells[2].innerText.replace(/[^0-9.-]+/g,""));
-        totalInterest+=parseFloat(row.cells[8].innerText.replace(/[^0-9.-]+/g,""));
+        totalInterest+=parseFloat(row.cells[7].innerText.replace(/[^0-9.-]+/g,""));
     });
 
-    // 🔥 Summary Maturity = Invested + Interest
     let totalMaturity = totalInvested + totalInterest;
 
     document.getElementById("totalInvested").innerText=format(totalInvested);
     document.getElementById("totalInterest").innerText=format(totalInterest);
     document.getElementById("totalMaturity").innerText=format(totalMaturity);
 }
+
+onSnapshot(fdCollection,(snapshot)=>{
+    renderData(snapshot);
+});
+
+// 🔥 Auto interest refresh every 1 minute
+setInterval(()=>{
+    onSnapshot(fdCollection,(snapshot)=>{
+        renderData(snapshot);
+    });
+},60000);
 
 </script>
 
