@@ -6,28 +6,28 @@
 <title>FD Dashboard</title>
 
 <style>
-
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(180deg,#00141c,#000c12);
+    background:linear-gradient(135deg,#02121c,#000814);
     color:#00f7ff;
 }
 
 .header{
-    padding:20px 30px;
-    font-size:22px;
+    padding:20px;
+    font-size:26px;
     font-weight:bold;
     text-shadow:0 0 10px #00f7ff;
 }
 
-.container{
-    margin:20px;
-    padding:20px;
+.card{
+    background:rgba(0,255,255,0.05);
+    border:1px solid rgba(0,255,255,0.2);
     border-radius:15px;
-    border:1px solid rgba(0,255,255,0.3);
-    background:rgba(0,255,255,0.03);
-    box-shadow:0 0 20px rgba(0,255,255,0.15);
+    padding:20px;
+    margin:20px;
+    box-shadow:0 0 20px rgba(0,255,255,0.2);
+    backdrop-filter:blur(10px);
 }
 
 .summary-row{
@@ -39,66 +39,61 @@ body{
 
 .summary-box{
     flex:1;
+    min-width:200px;
     text-align:center;
 }
 
 .summary-box h3{
-    font-size:13px;
-    opacity:0.8;
-    margin-bottom:5px;
+    margin:0;
+    font-size:14px;
+    opacity:0.7;
 }
 
 .summary-box p{
-    font-size:18px;
+    margin:5px 0 0;
+    font-size:20px;
     font-weight:bold;
     color:#00ff88;
 }
 
-.input-row{
-    margin-top:15px;
+.add-section{
     display:flex;
-    gap:15px;
     flex-wrap:wrap;
+    gap:15px;
     align-items:center;
 }
 
-input{
+input, select{
     background:transparent;
-    border:1px solid rgba(0,255,255,0.4);
-    border-radius:8px;
-    padding:8px 10px;
+    border:1px solid rgba(0,255,255,0.3);
     color:#00f7ff;
+    padding:8px;
+    border-radius:8px;
     text-align:center;
-    font-weight:500;
-    min-width:120px;
 }
 
-input:focus{
+input:focus, select:focus{
     outline:none;
-    box-shadow:0 0 10px #00f7ff;
+    box-shadow:0 0 8px #00f7ff;
 }
 
 button{
     background:transparent;
     border:1px solid #00f7ff;
-    border-radius:8px;
-    padding:8px 18px;
     color:#00f7ff;
+    padding:8px 15px;
+    border-radius:8px;
     cursor:pointer;
-    transition:0.3s;
 }
 
 button:hover{
     background:#00f7ff;
     color:#000;
-    box-shadow:0 0 15px #00f7ff;
 }
 
 .delete-btn{
     border:1px solid #ff4d4d;
     color:#ff4d4d;
-    padding:5px 10px;
-    font-size:12px;
 }
 
 .delete-btn:hover{
@@ -114,214 +109,174 @@ table{
 
 th{
     border-bottom:2px solid #00f7ff;
-    padding:12px;
-    font-size:13px;
+    padding:10px;
 }
 
 td{
-    padding:12px;
+    padding:10px;
     text-align:center;
     border-bottom:1px solid rgba(0,255,255,0.1);
-    font-size:13px;
 }
 
-.active{
-    color:#00ff88;
-    font-weight:bold;
-}
+.active{ color:#00ff88; font-weight:bold; }
+.matured{ color:#ff4d4d; font-weight:bold; }
 
-.matured{
-    color:#ff4d4d;
-    font-weight:bold;
+@media(max-width:900px){
+    .add-section{flex-direction:column;}
 }
-
-@media(max-width:768px){
-    .summary-row{flex-direction:column;}
-    .input-row{flex-direction:column;align-items:stretch;}
-    input{width:100%;}
-}
-
 </style>
 </head>
 <body>
 
 <div class="header">⚡ FD Dashboard</div>
 
-<div class="container">
-    <div class="summary-row">
-        <div class="summary-box">
-            <h3>Total Invested</h3>
-            <p id="totalInvest">₹ 0</p>
-        </div>
-        <div class="summary-box">
-            <h3>Total Interest Till Date</h3>
-            <p id="totalInterest">₹ 0</p>
-        </div>
-        <div class="summary-box">
-            <h3>Total Maturity Value</h3>
-            <p id="totalValue">₹ 0</p>
-        </div>
+<!-- SUMMARY -->
+<div class="card">
+<div class="summary-row">
+    <div class="summary-box">
+        <h3>Total Invested</h3>
+        <p id="totalInvested">₹ 0.00</p>
+    </div>
+    <div class="summary-box">
+        <h3>Total Interest Till Date</h3>
+        <p id="totalInterest">₹ 0.00</p>
+    </div>
+    <div class="summary-box">
+        <h3>Total Maturity Value</h3>
+        <p id="totalMaturity">₹ 0.00</p>
     </div>
 </div>
-
-<div class="container">
-
-    <div class="input-row">
-        <input type="text" id="name" placeholder="FD Name">
-        <input type="number" id="rate" placeholder="Interest %">
-        <input type="number" id="amount" placeholder="Amount">
-        <input type="date" id="startDate">
-        <input type="number" id="days" placeholder="Days">
-        <button onclick="addFD()">Add FD</button>
-    </div>
-
-    <table id="fdTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Rate %</th>
-                <th>Invested</th>
-                <th>Maturity Date</th>
-                <th>Days Remaining</th>
-                <th>Status</th>
-                <th>Interest</th>
-                <th>Maturity Value</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
 </div>
 
-<script type="module">
+<!-- ADD FD -->
+<div class="card">
+<div class="add-section">
+    <input type="text" id="name" placeholder="FD Name">
+    <input type="number" id="rate" placeholder="Interest %" step="0.01">
+    <input type="number" id="amount" placeholder="Amount">
+    <input type="date" id="startDate">
+    <input type="number" id="days" placeholder="Days">
+    <select id="compounding">
+        <option value="12">Monthly</option>
+        <option value="4" selected>Quarterly</option>
+        <option value="2">Half-Yearly</option>
+        <option value="1">Yearly</option>
+    </select>
+    <button onclick="addFD()">Add FD</button>
+</div>
 
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<table id="fdTable">
+<thead>
+<tr>
+<th>Name</th>
+<th>Rate %</th>
+<th>Invested</th>
+<th>Start Date</th>
+<th>Days</th>
+<th>Maturity Date</th>
+<th>Days Remaining</th>
+<th>Status</th>
+<th>Interest</th>
+<th>Maturity Value</th>
+<th>Delete</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
 
-import { auth } from "./auth.js";
-
-import { onAuthStateChanged } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        loadFDs();
-    }
-});
-
-const db = getFirestore();
+<script>
 
 function format(num){
-    return "₹ " + Math.round(num).toLocaleString("en-IN");
+    return "₹ " + num.toLocaleString("en-IN",{minimumFractionDigits:2});
 }
 
-function calculateFD(data){
-
-    const amount = data.amount;
-    const rate = data.rate / 100;
-
-    const start = new Date(data.startDate);
-    const maturityDate = new Date(start);
-    maturityDate.setDate(start.getDate() + data.days);
-
-    const today = new Date();
-
-    const totalDays = data.days;
-    const daysPassed = Math.floor((today - start)/(1000*60*60*24));
-    const effectiveDays = Math.min(daysPassed,totalDays);
-
-    const daysRemaining = Math.max(totalDays - daysPassed,0);
-
-    const years = effectiveDays / 365;
-    const comp = 4;
-
-    const maturity = amount*Math.pow((1+rate/comp),(comp*years));
-    const interest = maturity - amount;
-
-    return{
-        maturityDate: maturityDate.toISOString().split("T")[0],
-        daysRemaining,
-        interest: Math.round(interest),
-        maturity: Math.round(maturity),
-        status: today >= maturityDate ? "Matured":"Active"
-    };
+function formatDate(date){
+    return date.toISOString().split('T')[0];
 }
 
-window.addFD = async function(){
+function addFD(){
 
-    const user = auth.currentUser;
+    let name=document.getElementById("name").value.trim();
+    let rate=parseFloat(document.getElementById("rate").value);
+    let amount=parseFloat(document.getElementById("amount").value);
+    let startValue=document.getElementById("startDate").value;
+    let days=parseInt(document.getElementById("days").value);
+    let comp=parseInt(document.getElementById("compounding").value);
 
-    await addDoc(collection(db,"users",user.uid,"fds"),{
-        name:document.getElementById("name").value,
-        rate:parseFloat(document.getElementById("rate").value),
-        amount:parseFloat(document.getElementById("amount").value),
-        startDate:document.getElementById("startDate").value,
-        days:parseInt(document.getElementById("days").value),
-        createdAt:new Date()
-    });
+    if(!name || !rate || !amount || !startValue || !days){
+        alert("Please fill all fields");
+        return;
+    }
 
+    let start=new Date(startValue);
+    let maturity=new Date(start);
+    maturity.setDate(maturity.getDate()+days);
+
+    let today=new Date();
+    let calcDate=today<maturity?today:maturity;
+
+    let passedDays=Math.floor((today-start)/(1000*60*60*24));
+    let remainingDays=Math.max(days-passedDays,0);
+
+    let yearFrac=(calcDate-start)/(365*24*60*60*1000);
+    let r=rate/100;
+
+    let interest=Math.round(amount*Math.pow((1+r/comp),(comp*yearFrac))-amount);
+    let totalYears=days/365;
+    let maturityValue=Math.round(amount*Math.pow((1+r/comp),(comp*totalYears)));
+
+    let status=today>=maturity?"Matured":"Active";
+
+    let table=document.querySelector("#fdTable tbody");
+    let row=table.insertRow();
+
+    row.innerHTML=`
+    <td>${name}</td>
+    <td>${rate}%</td>
+    <td>${format(amount)}</td>
+    <td>${formatDate(start)}</td>
+    <td>${days}</td>
+    <td>${formatDate(maturity)}</td>
+    <td>${remainingDays}</td>
+    <td class="${status==="Active"?"active":"matured"}">${status}</td>
+    <td style="color:#00ff88">${format(interest)}</td>
+    <td>${format(maturityValue)}</td>
+    <td><button class="delete-btn" onclick="deleteRow(this)">🗑</button></td>
+    `;
+
+    calculateSummary();
+    clearInputs();
 }
 
-function loadFDs(){
-
-    const user = auth.currentUser;
-
-    const q=query(
-        collection(db,"users",user.uid,"fds"),
-        orderBy("createdAt","desc")
-    );
-
-    onSnapshot(q,(snapshot)=>{
-
-        const tbody=document.querySelector("#fdTable tbody");
-        tbody.innerHTML="";
-
-        let totalInvest=0;
-        let totalInterest=0;
-        let totalValue=0;
-
-        snapshot.forEach(docSnap=>{
-
-            const data=docSnap.data();
-            const live=calculateFD(data);
-
-            totalInvest+=data.amount;
-            totalInterest+=live.interest;
-            totalValue+=live.maturity;
-
-            let row=tbody.insertRow();
-
-            row.innerHTML=`
-            <td>${data.name}</td>
-            <td>${data.rate}%</td>
-            <td>${format(data.amount)}</td>
-            <td>${live.maturityDate}</td>
-            <td>${live.daysRemaining}</td>
-            <td class="${live.status==='Active'?'active':'matured'}">${live.status}</td>
-            <td>${format(live.interest)}</td>
-            <td>${format(live.maturity)}</td>
-            <td><button class="delete-btn" onclick="deleteFD('${docSnap.id}')">Delete</button></td>
-            `;
-        });
-
-        document.getElementById("totalInvest").innerText=format(totalInvest);
-        document.getElementById("totalInterest").innerText=format(totalInterest);
-        document.getElementById("totalValue").innerText=format(totalValue);
-
-    });
-}
-
-window.deleteFD = async function(id){
-
-    const user=auth.currentUser;
-
+function deleteRow(btn){
     if(confirm("Delete this FD?")){
-        await deleteDoc(doc(db,"users",user.uid,"fds",id));
+        btn.closest("tr").remove();
+        calculateSummary();
     }
 }
 
+function clearInputs(){
+    document.querySelectorAll(".add-section input").forEach(i=>i.value="");
+}
 
+function calculateSummary(){
+
+    let rows=document.querySelectorAll("#fdTable tbody tr");
+    let totalInvested=0;
+    let totalInterest=0;
+    let totalMaturity=0;
+
+    rows.forEach(row=>{
+        totalInvested+=parseFloat(row.cells[2].innerText.replace(/[^0-9.-]+/g,""));
+        totalInterest+=parseFloat(row.cells[8].innerText.replace(/[^0-9.-]+/g,""));
+        totalMaturity+=parseFloat(row.cells[9].innerText.replace(/[^0-9.-]+/g,""));
+    });
+
+    document.getElementById("totalInvested").innerText=format(totalInvested);
+    document.getElementById("totalInterest").innerText=format(totalInterest);
+    document.getElementById("totalMaturity").innerText=format(totalMaturity);
+}
 
 </script>
 
