@@ -308,126 +308,156 @@ TOTAL <span id="janExpTotal"></span>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ===============================
+   FIREBASE CONFIG
+================================= */
 
 const firebaseConfig = {
-apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-authDomain: "personal-budget-1cbbe.firebaseapp.com",
-projectId: "personal-budget-1cbbe",
-storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-messagingSenderId: "133591748262",
-appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-/* MONTH TITLES */
+/* 🔐 ALLOWED ADMIN UID */
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-function getMonthName(offset=0){
-let d=new Date();
+
+/* 🔐 PROTECT PAGE */
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+  } else if (user.uid !== ADMIN_UID) {
+    alert("Unauthorized access");
+    auth.signOut();
+    window.location.href = "index.html";
+  }
+});
+
+/* ===============================
+   AUTO MONTH NAME
+================================= */
+
+function monthName(offset){
+
+const d = new Date();
 d.setMonth(d.getMonth()+offset);
+
 return d.toLocaleString("en-IN",{month:"long",year:"numeric"});
+
 }
 
 document.getElementById("currentMonthTitle").innerText =
-"Current Month : "+getMonthName(0);
+"Current Month : "+monthName(0);
 
 document.getElementById("previousMonthTitle").innerText =
-"Previous Month : "+getMonthName(-1);
+"Previous Month : "+monthName(-1);
 
-/* FIRESTORE DATA */
 
-const bankCollection = collection(db,"bankEntries");
+/* ===============================
+   AUTO LOAD BANK ENTRIES
+================================= */
 
-function monthString(offset=0){
-let d=new Date();
-d.setMonth(d.getMonth()+offset);
+const bankRef = collection(db,"bankEntries");
+
+function getCurrentMonth(){
+return new Date().toISOString().slice(0,7);
+}
+
+function getPreviousMonth(){
+
+let d = new Date();
+d.setMonth(d.getMonth()-1);
+
 return d.toISOString().slice(0,7);
 }
 
-function fill(prefix,data){
+function updateBankTables(snapshot){
 
-const banks=["YES BANK","HDFC","ONE CARD","ICICI"];
+const currentMonth = getCurrentMonth();
+const previousMonth = getPreviousMonth();
 
-banks.forEach((bank,i)=>{
-
-let p=data[bank]?.PARDEEP||0;
-let s=data[bank]?.SANDEEP||0;
-
-document.querySelectorAll(`.${prefix}P`)[i].value=p;
-document.querySelectorAll(`.${prefix}S`)[i].value=s;
-
-});
-
-calculate(prefix);
-
-}
-
-function format(num){
-return Number(num||0).toLocaleString("en-IN",{style:"currency",currency:"INR"});
-}
-
-function calculate(prefix){
-
-let P=document.querySelectorAll(`.${prefix}P`);
-let S=document.querySelectorAll(`.${prefix}S`);
-let rows=document.querySelectorAll(`.${prefix}Row`);
-
-let totalP=0,totalS=0;
-
-for(let i=0;i<P.length;i++){
-
-let p=Number(P[i].value)||0;
-let s=Number(S[i].value)||0;
-
-rows[i].innerText=format(p+s);
-
-totalP+=p;
-totalS+=s;
-
-}
-
-document.getElementById(prefix+"TotalP").innerText=format(totalP);
-document.getElementById(prefix+"TotalS").innerText=format(totalS);
-document.getElementById(prefix+"Grand").innerText=format(totalP+totalS);
-
-}
-
-onSnapshot(bankCollection,(snapshot)=>{
-
-let currentMonth=monthString(0);
-let previousMonth=monthString(-1);
-
-let currentData={};
-let previousData={};
+let currentData = {};
+let previousData = {};
 
 snapshot.forEach(docItem=>{
 
-let d=docItem.data();
+const d = docItem.data();
 
-if(d.month===currentMonth){
+const month = d.month;
+const bank = d.bank;
+const person = d.person;
+const amount = Number(d.amount) || 0;
 
-if(!currentData[d.bank]) currentData[d.bank]={};
-currentData[d.bank][d.person]=(currentData[d.bank][d.person]||0)+Number(d.amount);
+if(month===currentMonth){
+
+if(!currentData[bank]) currentData[bank]={};
+currentData[bank][person]=(currentData[bank][person]||0)+amount;
 
 }
 
-if(d.month===previousMonth){
+if(month===previousMonth){
 
-if(!previousData[d.bank]) previousData[d.bank]={};
-previousData[d.bank][d.person]=(previousData[d.bank][d.person]||0)+Number(d.amount);
+if(!previousData[bank]) previousData[bank]={};
+previousData[bank][person]=(previousData[bank][person]||0)+amount;
 
 }
 
 });
 
-fill("feb",currentData);
-fill("jan",previousData);
+/* BANK ORDER */
+
+const banks = ["YES BANK","HDFC","ONE CARD","ICICI"];
+
+/* CURRENT MONTH */
+
+banks.forEach((bank,i)=>{
+
+let p = currentData[bank]?.PARDEEP || 0;
+let s = currentData[bank]?.SANDEEP || 0;
+
+document.querySelectorAll(".febP")[i].value = p;
+document.querySelectorAll(".febS")[i].value = s;
 
 });
+
+/* PREVIOUS MONTH */
+
+banks.forEach((bank,i)=>{
+
+let p = previousData[bank]?.PARDEEP || 0;
+let s = previousData[bank]?.SANDEEP || 0;
+
+document.querySelectorAll(".janP")[i].value = p;
+document.querySelectorAll(".janS")[i].value = s;
+
+});
+
+/* RUN YOUR EXISTING CALCULATION */
+
+calculate("feb");
+calculate("jan");
+
+}
+
+/* REALTIME LISTENER */
+
+onSnapshot(bankRef,(snapshot)=>{
+updateBankTables(snapshot);
+});
+
+
 
 </script>
 </body>
 </html>
+
