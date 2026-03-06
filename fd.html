@@ -266,10 +266,13 @@ window.deleteFD = async function(id){
 };
 
 function renderData(snapshot){
+
     latestSnapshot = snapshot;
 
     const table = document.querySelector("#fdTable tbody");
     table.innerHTML = "";
+
+    let fdList = [];
 
     snapshot.forEach(docSnap => {
 
@@ -298,22 +301,42 @@ function renderData(snapshot){
             data.amount * Math.pow((1+r/data.compounding),(data.compounding*totalYears))
         );
 
-        let status = today>=maturity?"Matured":"Active";
+        let status = today>=maturity ? "Matured" : "Active";
+
+        fdList.push({
+            id,
+            data,
+            maturity,
+            remainingDays,
+            interest,
+            maturityValue,
+            status
+        });
+
+    });
+
+    /* SORT BY REMAINING DAYS (LOWEST FIRST) */
+    fdList.sort((a,b)=>a.remainingDays - b.remainingDays);
+
+    /* RENDER TABLE */
+
+    fdList.forEach(item => {
 
         let row = table.insertRow();
 
         row.innerHTML = `
-        <td>${data.name}</td>
-        <td>${data.rate}%</td>
-        <td>${format(data.amount)}</td>
-        <td>${data.startDate}</td>
-        <td>${formatDate(maturity)}</td>
-        <td>${remainingDays}</td>
-        <td class="${status==="Active"?"active":"matured"}">${status}</td>
-        <td style="color:#00ff88">${format(interest)}</td>
-        <td>${format(maturityValue)}</td>
-        <td><button class="delete-btn" onclick="deleteFD('${id}')">🗑</button></td>
+        <td>${item.data.name}</td>
+        <td>${item.data.rate}%</td>
+        <td>${format(item.data.amount)}</td>
+        <td>${item.data.startDate}</td>
+        <td>${formatDate(item.maturity)}</td>
+        <td>${item.remainingDays}</td>
+        <td class="${item.status==="Active"?"active":"matured"}">${item.status}</td>
+        <td style="color:#00ff88">${format(item.interest)}</td>
+        <td>${format(item.maturityValue)}</td>
+        <td><button class="delete-btn" onclick="deleteFD('${item.id}')">🗑</button></td>
         `;
+
     });
 
     calculateSummary();
