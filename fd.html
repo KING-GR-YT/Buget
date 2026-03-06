@@ -320,6 +320,10 @@ function renderData(snapshot){
     calculateSummary();
 }
 
+const totalInvestedEl = document.getElementById("totalInvested");
+const totalInterestEl = document.getElementById("totalInterest");
+const totalMaturityEl = document.getElementById("totalMaturity");
+
 function calculateSummary(){
     let rows=document.querySelectorAll("#fdTable tbody tr");
     let totalInvested=0;
