@@ -3,36 +3,40 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Monthly Dashboard</title>
+
 <link rel="icon" type="image/png" sizes="32x32" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+
 body{
-    margin:0;
-    font-family:'Segoe UI',sans-serif;
-    background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
-    color:#dff;
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
+color:#dff;
 }
 
 /* HEADER */
+
 .header{
-    text-align:center;
-    padding:20px;
-    font-size:36px;
-    font-weight:600;
-    letter-spacing:1px;
-    background:rgba(0,255,255,0.05);
-    border-bottom:1px solid rgba(0,255,255,0.3);
-    box-shadow:0 0 25px rgba(0,255,255,0.2);
-    color:#00ffff;
+text-align:center;
+padding:20px;
+font-size:36px;
+font-weight:600;
+letter-spacing:1px;
+background:rgba(0,255,255,0.05);
+border-bottom:1px solid rgba(0,255,255,0.3);
+box-shadow:0 0 25px rgba(0,255,255,0.2);
+color:#00ffff;
 }
 
 .dashboard{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
-    padding:30px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+padding:30px;
 }
 
 @media(max-width:1000px){
@@ -130,19 +134,23 @@ float:right;
 
 </style>
 </head>
+
 <body>
 
-<div class="header">⚡ Monthly Dashboard ⚡
+<div class="header">
+⚡ Monthly Dashboard ⚡
 <a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 <div class="dashboard">
 
 <!-- CURRENT MONTH -->
-<div class="card" id="febCard">
+<div class="card">
+
 <div class="title" id="currentMonthTitle"></div>
 
 <div class="flex">
+
 <div class="left">
 
 <table>
@@ -150,10 +158,12 @@ float:right;
 <td>EXTRA</td>
 <td><input type="number" id="febExtra"></td>
 </tr>
+
 <tr>
 <td>SALARY</td>
 <td><input type="number" id="febSalary" value="25000"></td>
 </tr>
+
 <tr class="highlight-blue">
 <td>BANK BALANCE</td>
 <td id="febBankBalance"></td>
@@ -163,6 +173,7 @@ float:right;
 <br>
 
 <table>
+
 <tr>
 <th></th>
 <th>PARDEEP</th>
@@ -170,25 +181,33 @@ float:right;
 <th>Total</th>
 </tr>
 
-<tr><td>YES BANK</td>
+<tr>
+<td>YES BANK</td>
 <td><input class="febP"></td>
 <td><input class="febS"></td>
-<td class="febRow"></td></tr>
+<td class="febRow"></td>
+</tr>
 
-<tr><td>HDFC</td>
+<tr>
+<td>HDFC</td>
 <td><input class="febP"></td>
 <td><input class="febS"></td>
-<td class="febRow"></td></tr>
+<td class="febRow"></td>
+</tr>
 
-<tr><td>ONE CARD</td>
+<tr>
+<td>ONE CARD</td>
 <td><input class="febP"></td>
 <td><input class="febS"></td>
-<td class="febRow"></td></tr>
+<td class="febRow"></td>
+</tr>
 
-<tr><td>ICICI</td>
+<tr>
+<td>ICICI</td>
 <td><input class="febP"></td>
 <td><input class="febS"></td>
-<td class="febRow"></td></tr>
+<td class="febRow"></td>
+</tr>
 
 <tr class="highlight-blue">
 <td>TOTAL</td>
@@ -196,15 +215,18 @@ float:right;
 <td id="febTotalS"></td>
 <td id="febGrand"></td>
 </tr>
+
 </table>
 
 <div class="net">
-NET BALANCE <span id="febNet"></span>
+NET BALANCE
+<span id="febNet"></span>
 </div>
 
 </div>
 
 <div class="right">
+
 <table>
 <tr><td>EMI</td><td><input class="febExp"></td></tr>
 <tr><td>House</td><td><input class="febExp"></td></tr>
@@ -217,35 +239,44 @@ NET BALANCE <span id="febNet"></span>
 <div class="total-box">
 TOTAL <span id="febExpTotal"></span>
 </div>
+
 </div>
 </div>
 </div>
 
+
 <!-- PREVIOUS MONTH -->
-<div class="card" id="janCard">
+<div class="card">
+
 <div class="title" id="previousMonthTitle"></div>
 
 <div class="flex">
+
 <div class="left">
 
 <table>
+
 <tr>
 <td>EXTRA</td>
 <td><input type="number" id="janExtra"></td>
 </tr>
+
 <tr>
 <td>SALARY</td>
 <td><input type="number" id="janSalary" value="25000"></td>
 </tr>
+
 <tr class="highlight-blue">
 <td>BANK BALANCE</td>
 <td id="janBankBalance"></td>
 </tr>
+
 </table>
 
 <br>
 
 <table>
+
 <tr>
 <th></th>
 <th>PARDEEP</th>
@@ -253,25 +284,33 @@ TOTAL <span id="febExpTotal"></span>
 <th>Total</th>
 </tr>
 
-<tr><td>YES BANK</td>
+<tr>
+<td>YES BANK</td>
 <td><input class="janP"></td>
 <td><input class="janS"></td>
-<td class="janRow"></td></tr>
+<td class="janRow"></td>
+</tr>
 
-<tr><td>HDFC</td>
+<tr>
+<td>HDFC</td>
 <td><input class="janP"></td>
 <td><input class="janS"></td>
-<td class="janRow"></td></tr>
+<td class="janRow"></td>
+</tr>
 
-<tr><td>ONE CARD</td>
+<tr>
+<td>ONE CARD</td>
 <td><input class="janP"></td>
 <td><input class="janS"></td>
-<td class="janRow"></td></tr>
+<td class="janRow"></td>
+</tr>
 
-<tr><td>ICICI</td>
+<tr>
+<td>ICICI</td>
 <td><input class="janP"></td>
 <td><input class="janS"></td>
-<td class="janRow"></td></tr>
+<td class="janRow"></td>
+</tr>
 
 <tr class="highlight-blue">
 <td>TOTAL</td>
@@ -279,185 +318,163 @@ TOTAL <span id="febExpTotal"></span>
 <td id="janTotalS"></td>
 <td id="janGrand"></td>
 </tr>
+
 </table>
 
 <div class="net">
-NET BALANCE <span id="janNet"></span>
+NET BALANCE
+<span id="janNet"></span>
 </div>
 
 </div>
 
-<div class="right">
-<table>
-<tr><td>EMI</td><td><input class="janExp"></td></tr>
-<tr><td>House</td><td><input class="janExp"></td></tr>
-<tr><td>Investment</td><td><input class="janExp"></td></tr>
-<tr><td>Petrol</td><td><input class="janExp"></td></tr>
-<tr><td>EM Fund</td><td><input class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input class="janExp"></td></tr>
-</table>
-
-<div class="total-box">
-TOTAL <span id="janExpTotal"></span>
-</div>
-</div>
 </div>
 </div>
 
 </div>
+
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ===============================
-   FIREBASE CONFIG
-================================= */
+/* FIREBASE */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain:"personal-budget-1cbbe.firebaseapp.com",
+projectId:"personal-budget-1cbbe",
+storageBucket:"personal-budget-1cbbe.firebasestorage.app",
+messagingSenderId:"133591748262",
+appId:"1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-
-/* 🔐 ALLOWED ADMIN UID */
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
 
-/* 🔐 PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  } else if (user.uid !== ADMIN_UID) {
-    alert("Unauthorized access");
-    auth.signOut();
-    window.location.href = "index.html";
-  }
-});
-
-/* ===============================
-   AUTO MONTH NAME
-================================= */
+/* MONTH TITLES */
 
 function monthName(offset){
-
-const d = new Date();
+let d=new Date();
 d.setMonth(d.getMonth()+offset);
-
 return d.toLocaleString("en-IN",{month:"long",year:"numeric"});
-
 }
 
-document.getElementById("currentMonthTitle").innerText =
+document.getElementById("currentMonthTitle").innerText=
 "Current Month : "+monthName(0);
 
-document.getElementById("previousMonthTitle").innerText =
+document.getElementById("previousMonthTitle").innerText=
 "Previous Month : "+monthName(-1);
 
 
-/* ===============================
-   AUTO LOAD BANK ENTRIES
-================================= */
-
-const bankRef = collection(db,"bankEntries");
+/* GET MONTH */
 
 function getCurrentMonth(){
 return new Date().toISOString().slice(0,7);
 }
 
 function getPreviousMonth(){
-
-let d = new Date();
+let d=new Date();
 d.setMonth(d.getMonth()-1);
-
 return d.toISOString().slice(0,7);
 }
 
-function updateBankTables(snapshot){
 
-const currentMonth = getCurrentMonth();
-const previousMonth = getPreviousMonth();
+/* FIREBASE LISTENER */
 
-let currentData = {};
-let previousData = {};
+const bankRef=collection(db,"bankEntries");
+
+onSnapshot(bankRef,(snapshot)=>{
+
+let currentMonth=getCurrentMonth();
+let previousMonth=getPreviousMonth();
+
+let currentData={};
+let previousData={};
 
 snapshot.forEach(docItem=>{
 
-const d = docItem.data();
+let d=docItem.data();
 
-const month = d.month;
-const bank = d.bank;
-const person = d.person;
-const amount = Number(d.amount) || 0;
+if(d.month===currentMonth){
 
-if(month===currentMonth){
+if(!currentData[d.bank]) currentData[d.bank]={};
 
-if(!currentData[bank]) currentData[bank]={};
-currentData[bank][person]=(currentData[bank][person]||0)+amount;
+currentData[d.bank][d.person]=(currentData[d.bank][d.person]||0)+Number(d.amount);
 
 }
 
-if(month===previousMonth){
+if(d.month===previousMonth){
 
-if(!previousData[bank]) previousData[bank]={};
-previousData[bank][person]=(previousData[bank][person]||0)+amount;
+if(!previousData[d.bank]) previousData[d.bank]={};
+
+previousData[d.bank][d.person]=(previousData[d.bank][d.person]||0)+Number(d.amount);
 
 }
 
 });
 
-/* BANK ORDER */
-
-const banks = ["YES BANK","HDFC","ONE CARD","ICICI"];
-
-/* CURRENT MONTH */
+const banks=["YES BANK","HDFC","ONE CARD","ICICI"];
 
 banks.forEach((bank,i)=>{
 
-let p = currentData[bank]?.PARDEEP || 0;
-let s = currentData[bank]?.SANDEEP || 0;
+let p=currentData[bank]?.PARDEEP||0;
+let s=currentData[bank]?.SANDEEP||0;
 
-document.querySelectorAll(".febP")[i].value = p;
-document.querySelectorAll(".febS")[i].value = s;
+document.querySelectorAll(".febP")[i].value=p;
+document.querySelectorAll(".febS")[i].value=s;
 
 });
-
-/* PREVIOUS MONTH */
 
 banks.forEach((bank,i)=>{
 
-let p = previousData[bank]?.PARDEEP || 0;
-let s = previousData[bank]?.SANDEEP || 0;
+let p=previousData[bank]?.PARDEEP||0;
+let s=previousData[bank]?.SANDEEP||0;
 
-document.querySelectorAll(".janP")[i].value = p;
-document.querySelectorAll(".janS")[i].value = s;
+document.querySelectorAll(".janP")[i].value=p;
+document.querySelectorAll(".janS")[i].value=s;
 
 });
-
-/* RUN YOUR EXISTING CALCULATION */
 
 calculate("feb");
 calculate("jan");
 
-}
-
-/* REALTIME LISTENER */
-
-onSnapshot(bankRef,(snapshot)=>{
-updateBankTables(snapshot);
 });
 
 
+/* CALCULATE TOTALS */
+
+function calculate(prefix){
+
+let p=document.querySelectorAll("."+prefix+"P");
+let s=document.querySelectorAll("."+prefix+"S");
+let rows=document.querySelectorAll("."+prefix+"Row");
+
+let tp=0;
+let ts=0;
+
+p.forEach((el,i)=>{
+
+let pv=Number(el.value)||0;
+let sv=Number(s[i].value)||0;
+
+rows[i].innerText=pv+sv;
+
+tp+=pv;
+ts+=sv;
+
+});
+
+document.getElementById(prefix+"TotalP").innerText=tp;
+document.getElementById(prefix+"TotalS").innerText=ts;
+document.getElementById(prefix+"Grand").innerText=tp+ts;
+document.getElementById(prefix+"BankBalance").innerText=tp+ts;
+
+}
 
 </script>
+
 </body>
 </html>
-
