@@ -157,9 +157,7 @@ td{
     <input type="number" id="amount" placeholder="Amount">
     <input type="date" id="startDate">
     <input type="number" id="days" placeholder="Days">
-    <select id="compounding">
-        <option value="4" selected>Quarterly</option>
-    </select>
+  
     <button onclick="addFD()">Add FD</button>
 </div>
 
@@ -236,7 +234,7 @@ window.addFD = async function(){
     let amount = parseFloat(document.getElementById("amount").value);
     let startDate = document.getElementById("startDate").value;
     let days = parseInt(document.getElementById("days").value);
-    let comp = parseInt(document.getElementById("compounding").value);
+    let comp = 4;
 
     if(!name || isNaN(rate) || isNaN(amount) || !startDate || isNaN(days)){
         alert("Please fill all fields correctly");
