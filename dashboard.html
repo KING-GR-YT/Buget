@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-
 body{
     margin:0;
     font-family:'Segoe UI',sans-serif;
@@ -27,10 +26,8 @@ body{
     border-bottom:1px solid rgba(0,255,255,0.3);
     box-shadow:0 0 25px rgba(0,255,255,0.2);
     color:#00ffff;
-    text-shadow:0 0 10px #00ffff;
 }
 
-/* GRID */
 .dashboard{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -39,255 +36,96 @@ body{
 }
 
 @media(max-width:1000px){
-    .dashboard{
-        grid-template-columns:1fr;
-    }
+.dashboard{grid-template-columns:1fr;}
 }
 
-/* CARD */
 .card{
-    background:rgba(10,15,30,0.85);
-    border-radius:18px;
-    padding:25px;
-    border:1px solid #ffc107;
-    box-shadow:
-        0 0 25px rgba(0,255,255,0.15),
-        inset 0 0 30px rgba(0,255,255,0.05);
-    transition:0.3s;
+background:rgba(10,15,30,0.85);
+border-radius:18px;
+padding:25px;
+border:1px solid #ffc107;
 }
 
-.card:hover{
-    box-shadow:
-        0 0 35px rgba(0,255,255,0.4),
-        inset 0 0 40px rgba(0,255,255,0.08);
-}
-
-/* SECTION TITLE */
 .title{
-    text-align:center;
-    font-weight:600;
-    margin-bottom:20px;
-    font-size:30px;
-    color:#00ffff;
-    text-shadow:0 0 8px #00ffff;
+text-align:center;
+font-weight:600;
+margin-bottom:20px;
+font-size:28px;
+color:#00ffff;
 }
-
-/* TABLE */
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    margin-bottom:10px;
-    border:1px solid rgba(0,255,255,0.4);
-    box-shadow:0 0 12px rgba(0,255,255,0.15);
-    border-radius:8px;
-    overflow:hidden;
+width:100%;
+border-collapse:collapse;
+margin-bottom:10px;
+border:1px solid rgba(0,255,255,0.4);
 }
 
-th, td{
-    padding:10px;
-    text-align:center;
-    border:1px solid rgba(0,255,255,0.25);
-    transition:0.2s ease;
+th,td{
+padding:10px;
+text-align:center;
+border:1px solid rgba(0,255,255,0.25);
 }
 
-/* Header */
 th{
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    font-weight:800;
-    
+background:rgba(0,255,255,0.15);
+color:#00ffff;
+font-weight:800;
 }
 
-/* Row Hover Effect */
-table tr:hover td{
-    background:rgba(0,255,255,0.08);
-    box-shadow:inset 0 0 10px rgba(0,255,255,0.2);
-}
-
-/* TOTAL Row Highlight */
 .highlight-blue td{
-    background:rgba(0,255,255,0.18);
-    font-weight:700;
-    color:#00ffff;
-    box-shadow:inset 0 0 15px rgba(0,255,255,0.3);
+background:rgba(0,255,255,0.18);
+font-weight:700;
+color:#00ffff;
 }
 
-/* Side Expense Table Slightly Different */
-.side-table td{
-    background:rgba(0,255,255,0.05);
-}
-
-/* Section Divider (between tables) */
-.left table:first-of-type{
-    margin-bottom:20px;
-    border-bottom:2px solid #00ffff;
-}
-
-/* INPUT */
-/* Make inputs look like table text (TOTAL row style) */
 input{
-    width:100%;
-    padding:8px 0;
-    border:none;
-    background:transparent;
-    color:#00ffff;
-    font-weight:1000;
-    font-size:16px;
-    text-align:center;
+width:100%;
+padding:8px 0;
+border:none;
+background:transparent;
+color:#00ffff;
+font-weight:1000;
+font-size:16px;
+text-align:center;
 }
 
-/* Remove default number arrows */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type=number] {
-    -moz-appearance: textfield;
-}
-
-/* Highlight entire cell instead */
-td{
-    position:relative;
-}
-
-td input:focus{
-    outline:none;
-}
-
-/* Add row highlight on focus */
-td:focus-within{
-    background:rgba(0,255,255,0.12);
-    box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
-    border-radius:6px;
-}
-
-/* NET BALANCE */
 .net{
-    margin-top:15px;
-    padding:12px;
-    text-align:center;
-    font-weight:1000;
-    border-radius:10px;
-    background:rgba(255,193,7,0.15);
-    border:1px solid #ffc107;
-    color:#ffc107;
-    box-shadow:0 0 12px rgba(255,193,7,0.6);
+margin-top:15px;
+padding:12px;
+text-align:center;
+font-weight:1000;
+border-radius:10px;
+background:rgba(255,193,7,0.15);
+border:1px solid #ffc107;
+color:#ffc107;
 }
 
-/* RIGHT SIDE TABLE */
-.side-table td{
-    background:rgba(0,255,255,0.05);
-}
-
-/* EXPENSE TOTAL BOX */
 .total-box{
-    margin-top:15px;
-    padding:12px;
-    background:rgba(0,255,100,0.15);
-    border:1px solid #00ff99;
-    color:#00ff99;
-    text-align:center;
-    font-weight:800;
-    border-radius:10px;
-    box-shadow:0 0 15px rgba(0,255,100,0.5);
+margin-top:15px;
+padding:12px;
+background:rgba(0,255,100,0.15);
+border:1px solid #00ff99;
+color:#00ff99;
+text-align:center;
+font-weight:800;
+border-radius:10px;
 }
 
-/* FLEX */
-.flex{
-    display:flex;
-    gap:25px;
-}
+.flex{display:flex;gap:25px;}
+@media(max-width:1000px){.flex{flex-direction:column;}}
 
-@media(max-width:1000px){
-    .flex{
-        flex-direction:column;
-    }
-}
+.left{flex:2;}
+.right{flex:1;}
 
-.left{ flex:2; }
-.right{ flex:1; }
-
-/* HOME BUTTON */
 .home-link{
-    padding:6px 14px;
-    border-radius:8px;
-    text-decoration:none;
-    background:rgba(0,255,255,0.1);
-    color:#00ffff;
-    border:1px solid rgba(0,255,255,0.5);
-    transition:0.3s ease;
-    font-weight:500;
-    float:right;
-    box-shadow:0 0 10px rgba(0,255,255,0.3);
-}
-
-.home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 20px #00ffff;
-}
-
-/* =========================
-   MOBILE RESPONSIVE FIX
-========================= */
-
-@media (max-width: 600px){
-
-    .header{
-        font-size:22px;
-        padding:15px;
-        line-height:1.4;
-    }
-
-    .home-link{
-        float:none;
-        display:inline-block;
-        margin-top:10px;
-    }
-
-    .dashboard{
-        padding:15px;
-        gap:20px;
-    }
-
-    .card{
-        padding:15px;
-    }
-
-    .title{
-        font-size:20px;
-    }
-
-    table{
-        font-size:14px;
-    }
-
-    th, td{
-        padding:8px 5px;
-    }
-
-    input{
-        font-size:14px;
-        padding:6px 0;
-    }
-
-    .net,
-    .total-box{
-        font-size:14px;
-        padding:10px;
-    }
-
-    /* Make table scrollable on small screens */
-    .left{
-        overflow-x:auto;
-    }
-
-    .right{
-        overflow-x:auto;
-    }
-
+padding:6px 14px;
+border-radius:8px;
+text-decoration:none;
+background:rgba(0,255,255,0.1);
+color:#00ffff;
+border:1px solid rgba(0,255,255,0.5);
+float:right;
 }
 
 </style>
@@ -295,15 +133,14 @@ td:focus-within{
 <body>
 
 <div class="header">⚡ Monthly Dashboard ⚡
-	<a href="main.html" class="home-link">🏠 Home</a>
-
+<a href="main.html" class="home-link">🏠 Home</a>
 </div>
 
 <div class="dashboard">
 
-<!-- ===== FEBRUARY ===== -->
+<!-- CURRENT MONTH -->
 <div class="card" id="febCard">
-<div class="title">Current Month</div>
+<div class="title" id="currentMonthTitle"></div>
 
 <div class="flex">
 <div class="left">
@@ -333,24 +170,24 @@ td:focus-within{
 <th>Total</th>
 </tr>
 
-<tr><td>Yes Bank</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
+<tr><td>YES BANK</td>
+<td><input class="febP"></td>
+<td><input class="febS"></td>
 <td class="febRow"></td></tr>
 
 <tr><td>HDFC</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
+<td><input class="febP"></td>
+<td><input class="febS"></td>
 <td class="febRow"></td></tr>
 
 <tr><td>ONE CARD</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
+<td><input class="febP"></td>
+<td><input class="febS"></td>
 <td class="febRow"></td></tr>
 
 <tr><td>ICICI</td>
-<td><input type="number" class="febP"></td>
-<td><input type="number" class="febS"></td>
+<td><input class="febP"></td>
+<td><input class="febS"></td>
 <td class="febRow"></td></tr>
 
 <tr class="highlight-blue">
@@ -362,36 +199,31 @@ td:focus-within{
 </table>
 
 <div class="net">
-NET BALANCE    <span id="febNet"></span>
+NET BALANCE <span id="febNet"></span>
 </div>
 
 </div>
 
 <div class="right">
-
-<table class="side-table">
-<tr><td>EMI</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>House</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Investment</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Petrol</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>EM Fund</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="febExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="febExp"></td></tr>
+<table>
+<tr><td>EMI</td><td><input class="febExp"></td></tr>
+<tr><td>House</td><td><input class="febExp"></td></tr>
+<tr><td>Investment</td><td><input class="febExp"></td></tr>
+<tr><td>Petrol</td><td><input class="febExp"></td></tr>
+<tr><td>EM Fund</td><td><input class="febExp"></td></tr>
+<tr><td>Other EXP</td><td><input class="febExp"></td></tr>
 </table>
 
 <div class="total-box">
-TOTAL    <span id="febExpTotal"></span>
+TOTAL <span id="febExpTotal"></span>
+</div>
+</div>
+</div>
 </div>
 
-</div>
-</div>
-</div>
-
-
-<!-- ===== JANUARY ===== -->
+<!-- PREVIOUS MONTH -->
 <div class="card" id="janCard">
-<div class="title">Previous Month</div>
+<div class="title" id="previousMonthTitle"></div>
 
 <div class="flex">
 <div class="left">
@@ -421,24 +253,24 @@ TOTAL    <span id="febExpTotal"></span>
 <th>Total</th>
 </tr>
 
-<tr><td>Yes Bank</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
+<tr><td>YES BANK</td>
+<td><input class="janP"></td>
+<td><input class="janS"></td>
 <td class="janRow"></td></tr>
 
 <tr><td>HDFC</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
+<td><input class="janP"></td>
+<td><input class="janS"></td>
 <td class="janRow"></td></tr>
 
 <tr><td>ONE CARD</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
+<td><input class="janP"></td>
+<td><input class="janS"></td>
 <td class="janRow"></td></tr>
 
 <tr><td>ICICI</td>
-<td><input type="number" class="janP"></td>
-<td><input type="number" class="janS"></td>
+<td><input class="janP"></td>
+<td><input class="janS"></td>
 <td class="janRow"></td></tr>
 
 <tr class="highlight-blue">
@@ -450,174 +282,152 @@ TOTAL    <span id="febExpTotal"></span>
 </table>
 
 <div class="net">
-NET BALANCE    <span id="janNet"></span>
+NET BALANCE <span id="janNet"></span>
 </div>
 
 </div>
 
 <div class="right">
-
-<table class="side-table">
-<tr><td>EMI</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>House</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Investment</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Petrol</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>EM Fund</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
-<tr><td>Other EXP</td><td><input type="number" class="janExp"></td></tr>
+<table>
+<tr><td>EMI</td><td><input class="janExp"></td></tr>
+<tr><td>House</td><td><input class="janExp"></td></tr>
+<tr><td>Investment</td><td><input class="janExp"></td></tr>
+<tr><td>Petrol</td><td><input class="janExp"></td></tr>
+<tr><td>EM Fund</td><td><input class="janExp"></td></tr>
+<tr><td>Other EXP</td><td><input class="janExp"></td></tr>
 </table>
 
 <div class="total-box">
-TOTAL    <span id="janExpTotal"></span>
+TOTAL <span id="janExpTotal"></span>
+</div>
+</div>
+</div>
 </div>
 
 </div>
-</div>
-</div>
 
-</div>
-
-
-<!-- ================= FIREBASE + AUTO CALC ================= -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { 
-  getAuth, 
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-/* 🔥 YOUR FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain: "personal-budget-1cbbe.firebaseapp.com",
+projectId: "personal-budget-1cbbe",
+storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+messagingSenderId: "133591748262",
+appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
-/* 🔐 ALLOWED ADMIN UID */
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+/* MONTH TITLES */
 
+function getMonthName(offset=0){
+let d=new Date();
+d.setMonth(d.getMonth()+offset);
+return d.toLocaleString("en-IN",{month:"long",year:"numeric"});
+}
 
-/* 🔐 PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  } else if (user.uid !== ADMIN_UID) {
-    alert("Unauthorized access");
-    auth.signOut();
-    window.location.href = "index.html";
-  }
+document.getElementById("currentMonthTitle").innerText =
+"Current Month : "+getMonthName(0);
+
+document.getElementById("previousMonthTitle").innerText =
+"Previous Month : "+getMonthName(-1);
+
+/* FIRESTORE DATA */
+
+const bankCollection = collection(db,"bankEntries");
+
+function monthString(offset=0){
+let d=new Date();
+d.setMonth(d.getMonth()+offset);
+return d.toISOString().slice(0,7);
+}
+
+function fill(prefix,data){
+
+const banks=["YES BANK","HDFC","ONE CARD","ICICI"];
+
+banks.forEach((bank,i)=>{
+
+let p=data[bank]?.PARDEEP||0;
+let s=data[bank]?.SANDEEP||0;
+
+document.querySelectorAll(`.${prefix}P`)[i].value=p;
+document.querySelectorAll(`.${prefix}S`)[i].value=s;
+
 });
 
+calculate(prefix);
 
-/* ===============================
-   YOUR ORIGINAL BUDGET CODE
-================================= */
-function formatCurrency(num){
-  return Number(num || 0).toLocaleString("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2
-  });
 }
-	
+
+function format(num){
+return Number(num||0).toLocaleString("en-IN",{style:"currency",currency:"INR"});
+}
+
 function calculate(prefix){
 
-let P = document.querySelectorAll(`.${prefix}P`);
-let S = document.querySelectorAll(`.${prefix}S`);
-let rows = document.querySelectorAll(`.${prefix}Row`);
-let exp = document.querySelectorAll(`.${prefix}Exp`);
+let P=document.querySelectorAll(`.${prefix}P`);
+let S=document.querySelectorAll(`.${prefix}S`);
+let rows=document.querySelectorAll(`.${prefix}Row`);
 
-let totalP=0,totalS=0,expTotal=0;
+let totalP=0,totalS=0;
 
 for(let i=0;i<P.length;i++){
+
 let p=Number(P[i].value)||0;
 let s=Number(S[i].value)||0;
 
-rows[i].innerText = formatCurrency(p+s);
+rows[i].innerText=format(p+s);
 
 totalP+=p;
 totalS+=s;
+
 }
 
-exp.forEach(e=>expTotal+=Number(e.value)||0);
+document.getElementById(prefix+"TotalP").innerText=format(totalP);
+document.getElementById(prefix+"TotalS").innerText=format(totalS);
+document.getElementById(prefix+"Grand").innerText=format(totalP+totalS);
 
-document.getElementById(prefix+"TotalP").innerText = formatCurrency(totalP);
-document.getElementById(prefix+"TotalS").innerText = formatCurrency(totalS);
-document.getElementById(prefix+"Grand").innerText = formatCurrency(totalP+totalS);
-document.getElementById(prefix+"ExpTotal").innerText = formatCurrency(expTotal);
-
-let salary=Number(document.getElementById(prefix+"Salary").value)||0;
-let extra=Number(document.getElementById(prefix+"Extra").value)||0;
-let bank=salary+extra;
-
-document.getElementById(prefix+"BankBalance").innerText = formatCurrency(bank);
-
-let net=bank-totalP-expTotal;
-
-let netEl = document.getElementById(prefix+"Net");
-netEl.innerText = formatCurrency(net);
-
-/* Auto red/green for net */
-netEl.style.color = net >= 0 ? "#00ff99" : "#ff4d4d";
-
-save(prefix);
 }
 
-async function save(prefix){
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-let values=[];
-inputs.forEach(i=>values.push(i.value));
-await setDoc(doc(db,"months",prefix),{values});
+onSnapshot(bankCollection,(snapshot)=>{
+
+let currentMonth=monthString(0);
+let previousMonth=monthString(-1);
+
+let currentData={};
+let previousData={};
+
+snapshot.forEach(docItem=>{
+
+let d=docItem.data();
+
+if(d.month===currentMonth){
+
+if(!currentData[d.bank]) currentData[d.bank]={};
+currentData[d.bank][d.person]=(currentData[d.bank][d.person]||0)+Number(d.amount);
+
 }
 
-async function load(prefix){
-let snap=await getDoc(doc(db,"months",prefix));
-if(snap.exists()){
-let values=snap.data().values;
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-inputs.forEach((i,index)=>i.value=values[index]||"");
-}
-calculate(prefix);
+if(d.month===previousMonth){
+
+if(!previousData[d.bank]) previousData[d.bank]={};
+previousData[d.bank][d.person]=(previousData[d.bank][d.person]||0)+Number(d.amount);
+
 }
 
-document.addEventListener("input",()=>{
-calculate("feb");
-calculate("jan");
 });
 
-load("feb");
-load("jan");
+fill("feb",currentData);
+fill("jan",previousData);
+
+});
 
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
