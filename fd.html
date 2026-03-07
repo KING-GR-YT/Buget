@@ -184,7 +184,7 @@ td{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot }
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -347,6 +347,7 @@ const totalInterestEl = document.getElementById("totalInterest");
 const totalMaturityEl = document.getElementById("totalMaturity");
 
 function calculateSummary(){
+
     let rows=document.querySelectorAll("#fdTable tbody tr");
     let totalInvested=0;
     let totalInterest=0;
@@ -361,6 +362,17 @@ function calculateSummary(){
     totalInvestedEl.innerText=format(totalInvested);
     totalInterestEl.innerText=format(totalInterest);
     totalMaturityEl.innerText=format(totalMaturity);
+
+    /* 🔥 SAVE FD TOTAL TO FIRESTORE */
+
+    setDoc(
+        doc(db,"financeSummary","main"),
+        {
+            fdInvested: totalInvested,
+            fdInterest: totalInterest
+        },
+        { merge:true }
+    );
 }
 
 onSnapshot(fdCollection,(snapshot)=>{
