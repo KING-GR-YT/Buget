@@ -483,53 +483,81 @@ TOTAL    <span id="janExpTotal"></span>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 import { 
-  getAuth, 
-  onAuthStateChanged 
+getFirestore,
+doc,
+setDoc,
+getDoc,
+collection,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import { 
+getAuth,
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-/* 🔥 YOUR FIREBASE CONFIG */
+
+/* FIREBASE CONFIG */
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain: "personal-budget-1cbbe.firebaseapp.com",
+projectId: "personal-budget-1cbbe",
+storageBucket: "personal-budget-1cbbe.firebasestorage.app",
+messagingSenderId: "133591748262",
+appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* 🔐 ALLOWED ADMIN UID */
+const bankCollection = collection(db,"bankEntries");
+
+/* ADMIN UID */
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
 
-/* 🔐 PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-  } else if (user.uid !== ADMIN_UID) {
-    alert("Unauthorized access");
-    auth.signOut();
-    window.location.href = "index.html";
-  }
+/* AUTH PROTECTION */
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+window.location.href="index.html";
+}
+
+else if(user.uid !== ADMIN_UID){
+alert("Unauthorized access");
+auth.signOut();
+window.location.href="index.html";
+}
+
+else{
+
+load("feb");
+load("jan");
+loadBankEntries();
+
+}
+
 });
 
 
-/* ===============================
-   YOUR ORIGINAL BUDGET CODE
-================================= */
+/* FORMAT CURRENCY */
+
 function formatCurrency(num){
-  return Number(num || 0).toLocaleString("en-IN", {
-    style: "currency",
-    currency: "INR",
-    minimumFractionDigits: 2
-  });
+
+return Number(num || 0).toLocaleString("en-IN",{
+style:"currency",
+currency:"INR",
+minimumFractionDigits:2
+});
+
 }
-	
+
+
+/* CALCULATION */
+
 function calculate(prefix){
 
 let P = document.querySelectorAll(`.${prefix}P`);
@@ -540,64 +568,158 @@ let exp = document.querySelectorAll(`.${prefix}Exp`);
 let totalP=0,totalS=0,expTotal=0;
 
 for(let i=0;i<P.length;i++){
+
 let p=Number(P[i].value)||0;
 let s=Number(S[i].value)||0;
 
-rows[i].innerText = formatCurrency(p+s);
+rows[i].innerText=formatCurrency(p+s);
 
 totalP+=p;
 totalS+=s;
+
 }
 
 exp.forEach(e=>expTotal+=Number(e.value)||0);
 
-document.getElementById(prefix+"TotalP").innerText = formatCurrency(totalP);
-document.getElementById(prefix+"TotalS").innerText = formatCurrency(totalS);
-document.getElementById(prefix+"Grand").innerText = formatCurrency(totalP+totalS);
-document.getElementById(prefix+"ExpTotal").innerText = formatCurrency(expTotal);
+document.getElementById(prefix+"TotalP").innerText=formatCurrency(totalP);
+document.getElementById(prefix+"TotalS").innerText=formatCurrency(totalS);
+document.getElementById(prefix+"Grand").innerText=formatCurrency(totalP+totalS);
+document.getElementById(prefix+"ExpTotal").innerText=formatCurrency(expTotal);
 
 let salary=Number(document.getElementById(prefix+"Salary").value)||0;
 let extra=Number(document.getElementById(prefix+"Extra").value)||0;
+
 let bank=salary+extra;
 
-document.getElementById(prefix+"BankBalance").innerText = formatCurrency(bank);
+document.getElementById(prefix+"BankBalance").innerText=formatCurrency(bank);
 
 let net=bank-totalP-expTotal;
 
-let netEl = document.getElementById(prefix+"Net");
-netEl.innerText = formatCurrency(net);
+let netEl=document.getElementById(prefix+"Net");
 
-/* Auto red/green for net */
-netEl.style.color = net >= 0 ? "#00ff99" : "#ff4d4d";
+netEl.innerText=formatCurrency(net);
+
+netEl.style.color = net >=0 ? "#00ff99" : "#ff4d4d";
 
 save(prefix);
+
 }
+
+
+/* SAVE MONTH DATA */
 
 async function save(prefix){
+
 let inputs=document.querySelectorAll(`#${prefix}Card input`);
+
 let values=[];
+
 inputs.forEach(i=>values.push(i.value));
+
 await setDoc(doc(db,"months",prefix),{values});
+
 }
+
+
+/* LOAD MONTH DATA */
 
 async function load(prefix){
-let snap=await getDoc(doc(db,"months",prefix));
-if(snap.exists()){
-let values=snap.data().values;
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
-inputs.forEach((i,index)=>i.value=values[index]||"");
-}
-calculate(prefix);
-}
 
-document.addEventListener("input",()=>{
-calculate("feb");
-calculate("jan");
+let snap=await getDoc(doc(db,"months",prefix));
+
+if(snap.exists()){
+
+let values=snap.data().values;
+
+let inputs=document.querySelectorAll(`#${prefix}Card input`);
+
+inputs.forEach((i,index)=>{
+
+i.value=values[index]||"";
+
 });
 
-load("feb");
-load("jan");
+}
+
+calculate(prefix);
+
+}
+
+
+/* AUTO CALCULATE */
+
+document.addEventListener("input",()=>{
+
+calculate("feb");
+calculate("jan");
+
+});
+
+
+/* ================================
+   BANK ENTRIES FROM EXPENSE PAGE
+================================ */
+
+function loadBankEntries(){
+
+onSnapshot(bankCollection,(snapshot)=>{
+
+let data=[];
+
+snapshot.forEach(doc=>{
+data.push(doc.data());
+});
+
+
+const today=new Date();
+
+const currentMonth=today.toISOString().slice(0,7);
+
+const prevDate=new Date(today.getFullYear(),today.getMonth()-1,1);
+
+const previousMonth=prevDate.toISOString().slice(0,7);
+
+
+fillMonth("feb",currentMonth,data);
+fillMonth("jan",previousMonth,data);
+
+});
+
+}
+
+
+/* FILL BANK DATA */
+
+function fillMonth(prefix,month,data){
+
+let banks=["YES BANK","HDFC","ONE CARD","ICICI"];
+
+banks.forEach((bank,index)=>{
+
+let pTotal=0;
+let sTotal=0;
+
+data.forEach(item=>{
+
+if(item.month===month && item.bank===bank){
+
+if(item.person==="PARDEEP") pTotal+=Number(item.amount);
+if(item.person==="SANDEEP") sTotal+=Number(item.amount);
+
+}
+
+});
+
+document.querySelectorAll(`.${prefix}P`)[index].value=pTotal || "";
+document.querySelectorAll(`.${prefix}S`)[index].value=sTotal || "";
+
+});
+
+calculate(prefix);
+
+}
 
 </script>
 </body>
 </html>
+
