@@ -303,7 +303,7 @@ td:focus-within{
 
 <!-- ===== FEBRUARY ===== -->
 <div class="card" id="febCard">
-<div class="title">Current Month</div>
+<div class="title" id="currentMonthTitle"></div>
 
 <div class="flex">
 <div class="left">
@@ -391,7 +391,7 @@ TOTAL    <span id="febExpTotal"></span>
 
 <!-- ===== JANUARY ===== -->
 <div class="card" id="janCard">
-<div class="title">Previous Month</div>
+<div class="title" id="previousMonthTitle"></div>
 
 <div class="flex">
 <div class="left">
@@ -680,6 +680,17 @@ const prev = new Date(today.getFullYear(), today.getMonth()-1,1);
 const previousMonth =
 prev.getFullYear()+"-"+String(prev.getMonth()+1).padStart(2,"0");
 
+const monthNames = [
+"January","February","March","April","May","June",
+"July","August","September","October","November","December"
+];
+
+document.getElementById("currentMonthTitle").innerText =
+monthNames[today.getMonth()] + " Dashboard";
+
+document.getElementById("previousMonthTitle").innerText =
+monthNames[prev.getMonth()] + " Dashboard";
+
 fillMonth("feb",currentMonth,data);
 fillMonth("jan",previousMonth,data);
 
@@ -722,5 +733,6 @@ calculate(prefix);
 </script>
 </body>
 </html>
+
 
 
