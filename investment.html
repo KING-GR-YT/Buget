@@ -535,7 +535,7 @@ text-shadow:0 0 18px rgba(255,46,99,0.9);
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script>
 
 /* 🔥 FIREBASE CONFIG */
@@ -556,6 +556,9 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.database();
+const firestore = firebase.firestore();
+
+        
 /* 🔐 PAGE PROTECTION */
 document.body.style.display = "none";
 
@@ -599,6 +602,30 @@ db.ref("portfolio").on("value",snap=>{
   }
 
   render();
+});
+
+/* ================= FIRESTORE SUMMARY ================= */
+
+firestore.collection("financeSummary")
+.doc("main")
+.onSnapshot((doc)=>{
+
+    if(!doc.exists) return;
+
+    const d = doc.data();
+
+    /* LOAN AUTO UPDATE */
+    if(d.loan !== undefined){
+        document.querySelector('[data-id="loan"]').innerText = INR(d.loan);
+    }
+
+    /* FD → EMERGENCY FUND */
+    if(d.fdInvested !== undefined){
+        document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.fdInvested);
+    }
+
+    calculate();
+
 });
 
 /* ================== SAVE ================== */
@@ -860,6 +887,7 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
 
