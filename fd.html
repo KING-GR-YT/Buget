@@ -15,6 +15,7 @@ body{
 }
 
 /* HEADER */
+
 .header{
     padding:20px;
     font-size:26px;
@@ -27,6 +28,7 @@ body{
 }
 
 /* CARDS */
+
 .card{
     background:rgba(0,255,255,0.05);
     border:1px solid rgba(0,255,255,0.2);
@@ -37,7 +39,16 @@ body{
     backdrop-filter:blur(10px);
 }
 
+/* INPUT CARD TITLE */
+
+.card-title{
+    margin-top:0;
+    margin-bottom:15px;
+    font-size:18px;
+}
+
 /* SUMMARY */
+
 .summary-row{
     display:flex;
     justify-content:space-between;
@@ -47,7 +58,7 @@ body{
 
 .summary-box{
     flex:1;
-    min-width:160px;
+    min-width:180px;
     text-align:center;
 }
 
@@ -64,22 +75,22 @@ body{
     color:#00ff88;
 }
 
-/* INPUT AREA */
+/* INPUT SECTION */
+
 .add-section{
     display:flex;
     flex-wrap:wrap;
     gap:15px;
-    align-items:center;
 }
 
 input, select{
     background:transparent;
     border:1px solid rgba(0,255,255,0.3);
     color:#00f7ff;
-    padding:8px;
+    padding:10px;
     border-radius:8px;
     text-align:center;
-    min-width:120px;
+    min-width:130px;
 }
 
 input:focus, select:focus{
@@ -91,7 +102,7 @@ button{
     background:transparent;
     border:1px solid #00f7ff;
     color:#00f7ff;
-    padding:8px 15px;
+    padding:10px 15px;
     border-radius:8px;
     cursor:pointer;
 }
@@ -100,6 +111,8 @@ button:hover{
     background:#00f7ff;
     color:#000;
 }
+
+/* DELETE BUTTON */
 
 .delete-btn{
     border:1px solid #ff4d4d;
@@ -112,6 +125,7 @@ button:hover{
 }
 
 /* TABLE */
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -133,12 +147,14 @@ td{
 .active{ color:#00ff88; font-weight:bold; }
 .matured{ color:#ff4d4d; font-weight:bold; }
 
-/* TABLE SCROLL FOR MOBILE */
+/* TABLE SCROLL */
+
 .card{
     overflow-x:auto;
 }
 
 /* HOME BUTTON */
+
 .home-link{
     padding:6px 10px;
     border-radius:8px;
@@ -147,16 +163,15 @@ td{
     color:#00ffff;
     border:1px solid rgba(0,255,255,0.4);
     transition:0.3s ease;
-    font-weight:100;
 }
 
 .home-link:hover{
     background:#00ffff;
     color:#001f1f;
-    box-shadow:0 0 10px #00ffff;
 }
 
-/* MOBILE RESPONSIVE */
+/* MOBILE */
+
 @media(max-width:768px){
 
 .header{
@@ -168,22 +183,26 @@ td{
     padding:15px;
 }
 
-.summary-box p{
-    font-size:18px;
+.summary-row{
+    flex-direction:column;
+}
+
+.summary-box{
+    min-width:100%;
 }
 
 .add-section{
     flex-direction:column;
-    align-items:stretch;
 }
 
-input,select,button{
+input,button{
     width:100%;
 }
 
 table{
     font-size:13px;
 }
+
 }
   
 </style>
@@ -211,7 +230,9 @@ table{
 </div>
 </div>
 
-<div class="card">
+<div class="card input-card">
+<h3 class="card-title">➕ Add New FD</h3>
+
 <div class="add-section">
     <input type="text" id="name" placeholder="FD Name">
     <input type="number" id="rate" placeholder="Interest %" step="0.01">
@@ -221,7 +242,9 @@ table{
   
     <button onclick="addFD()">Add FD</button>
 </div>
+</div>
 
+<div class="card">
 <table id="fdTable">
 <thead>
 <tr>
