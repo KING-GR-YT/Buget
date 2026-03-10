@@ -105,6 +105,30 @@ input:focus{
   display:flex;
   align-items:center;
   gap:8px;
+  cursor:pointer;
+}
+
+.remember input{
+  appearance:none;
+  width:16px;
+  height:16px;
+  border:1px solid #00ff88;
+  background:black;
+  cursor:pointer;
+  position:relative;
+}
+
+.remember input:checked{
+  background:#00ff88;
+}
+
+.remember input:checked::after{
+  content:"✔";
+  position:absolute;
+  font-size:12px;
+  color:black;
+  left:2px;
+  top:-1px;
 }
 
 button{
@@ -403,6 +427,7 @@ document.getElementById("password").addEventListener("keydown", function(e){
 </script>
 </body>
 </html>
+
 
 
 
