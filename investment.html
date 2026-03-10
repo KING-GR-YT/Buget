@@ -429,6 +429,13 @@ text-shadow:0 0 18px rgba(255,46,99,0.9);
         <div class="percent" id="pDebt">0%</div>
     </div>
 </div>
+
+<div class="stat1">
+    <span>Growth %</span>
+    <div class="mini-progress">
+        <div class="percent" id="pGrowth">0%</div>
+    </div>
+</div>
 </div>
 
 <!-- SUMMARY 2-->
@@ -781,6 +788,26 @@ function calculate(){
   totalInvested.innerText=INR(totalI);
   totalCurrent.innerText=INR(totalC);
   totalProfit.innerText=INR(totalC-totalI);
+  // ================= GROWTH % =================
+
+let growth = totalI ? ((totalC - totalI) / totalI) * 100 : 0;
+
+document.getElementById("pGrowth").innerText = growth.toFixed(1) + "%";
+
+const growthBox = document.getElementById("pGrowth").parentElement;
+
+growthBox.classList.remove("low","medium","high");
+
+if(growth < 0){
+    growthBox.classList.add("low");
+}
+else if(growth < 15){
+    growthBox.classList.add("medium");
+}
+else{
+    growthBox.classList.add("high");
+}
+    
   currentFundValue.innerText=INR(totalC);
 
   document.getElementById("currentFundValue").innerText = INR(totalC);
@@ -887,6 +914,7 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
 
