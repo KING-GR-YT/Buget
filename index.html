@@ -383,9 +383,27 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./service-worker.js");
   });
 }
+
+/* ==============================
+   Enter Key Login
+============================== */
+
+document.getElementById("email").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
+
+document.getElementById("password").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
+  
 </script>
 </body>
 </html>
+
 
 
 
