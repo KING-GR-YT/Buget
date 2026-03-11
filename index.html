@@ -53,6 +53,17 @@ canvas{
   border-radius:8px;
 }
 
+.blink{
+  text-align:center;
+  animation:blinkText 1.2s infinite;
+}
+
+@keyframes blinkText{
+  0%{opacity:1;}
+  50%{opacity:0;}
+  100%{opacity:1;}
+}
+
 /* Mobile optimization */
 @media (max-width:480px){
   .terminal{
@@ -148,7 +159,7 @@ button:hover{
 <canvas id="particles"></canvas>
 
 <div class="terminal">
-  <h2 id="typing"></h2>
+  <h2 class="blink">>>> ADMIN TERMINAL ACCESS <<<</h2>
 
   <div class="line">
     <input 
@@ -324,21 +335,6 @@ function accessGrantedEffect(){
 }
 
 /* ==============================
-   Hacker Typing Header
-============================== */
-
-const text = ">>> ADMIN TERMINAL ACCESS <<<";
-let i = 0;
-function typeWriter(){
-  if(i < text.length){
-    document.getElementById("typing").innerHTML += text.charAt(i);
-    i++;
-    setTimeout(typeWriter, 60);
-  }
-}
-typeWriter();
-
-/* ==============================
    Particle Animation
 ============================== */
 
@@ -415,6 +411,7 @@ document.getElementById("password").addEventListener("keydown", function(e){
 </script>
 </body>
 </html>
+
 
 
 
