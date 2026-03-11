@@ -147,25 +147,31 @@ background:rgba(0,255,255,0.04);
 
 input{
 
-background:rgba(0,255,255,0.05);
+background:transparent;
+border:none;
+outline:none;
 
-border:1px solid rgba(0,255,255,0.25);
-
-border-radius:6px;
-
-padding:5px;
-
-width:95px;
+width:120px;
 
 color:#00ffff;
 
-text-align:center;
-
+font-size:18px;
 font-weight:600;
 
-font-size:15px;
+text-align:center;
 
-transition:0.25s;
+}
+
+/* Remove number arrows */
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{
+-webkit-appearance:none;
+margin:0;
+}
+
+input[type=number]{
+-moz-appearance:textfield;
 }
 
 input:focus{
@@ -706,6 +712,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
