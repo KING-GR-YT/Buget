@@ -382,7 +382,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
-/* 🔥 FIREBASE CONFIG */
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
@@ -392,7 +392,7 @@ const firebaseConfig = {
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52"; // 🔐 VERY IMPORTANT
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
 /* Initialize */
 const app = initializeApp(firebaseConfig);
@@ -400,7 +400,7 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-/* 🔐 PAGE PROTECTION */
+/* PAGE PROTECTION */
 document.body.style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
@@ -414,7 +414,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 
-/* ===== YOUR CALCULATION CODE (UNCHANGED BELOW) ===== */
+/* ===== CALCULATION ===== */
 
 window.calculate = function(){
 
@@ -424,13 +424,14 @@ let C5=parseFloat(rent.value)||0;
 let C6=parseFloat(petrol.value)||0;
 let C7=parseFloat(other.value)||0;
 
+if(C2===0) return;
 
 /* Percentages */
-let D4=(C4/C2)*100||0;
-let D5=(C5/C2)*100||0;
-let D6=(C6/C2)*100||0;
-let D7=(C7/C2)*100||0;
 
+let D4=(C4/C2)*100;
+let D5=(C5/C2)*100;
+let D6=(C6/C2)*100;
+let D7=(C7/C2)*100;
 
 emiPercent.innerHTML=D4.toFixed(2)+"%";
 rentPercent.innerHTML=D5.toFixed(2)+"%";
@@ -452,37 +453,50 @@ otherStatus.className=D7>5?"bad":"good";
 
 
 /* Total */
+
 let total=C4+C5+C6+C7;
-let D13=(total/C2)*100||0;
+let D13=(total/C2)*100;
 
 totalExp.innerHTML="₹ "+total.toFixed(2);
 totalPercent.innerHTML=D13.toFixed(2)+"%";
 totalStatus.innerHTML=D13>80?"Bad":"Good";
 totalStatus.className=D13>80?"bad":"good";
 
+
 /* Balance */
+
 let balanceVal=C2-total;
-let D15=(balanceVal/C2)*100||0;
+let D15=(balanceVal/C2)*100;
 
 balance.innerHTML="₹ "+balanceVal.toFixed(2);
 balancePercent.innerHTML=D15.toFixed(2)+"%";
 balanceStatus.innerHTML=D15>20?"Good":"Bad";
 balanceStatus.className=D15>20?"good":"bad";
 
+
 /* EMI Calculator */
+
 let H6=parseFloat(totalAmount.value)||0;
 let H7=parseFloat(downPayment.value)||0;
 let H8=H6-H7;
+
 loanAmount.innerHTML="₹ "+H8.toFixed(2);
 
 let H9=parseFloat(interest.value)||0;
 let H10=parseFloat(tenure.value)||0;
-let r=H9/12/100;
 
-let emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1)||0;
+let r=H9/12/100;
+let emiValue=0;
+
+if(H9===0){
+    emiValue = H8/H10;
+}else{
+    emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1);
+}
+
 emiCalc.innerHTML="₹ "+emiValue.toFixed(2);
 
-let salaryEmi=(C4+emiValue)/C2*100||0;
+let salaryEmi=(C4+emiValue)/C2*100;
 salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
 
 readyLoan.innerHTML=D4>50?"NO":"YES";
@@ -490,9 +504,10 @@ readyLoan.innerHTML=D4>50?"NO":"YES";
 let emiBalanceVal=(C2*0.5)-C4;
 emiBalance.innerHTML="₹ "+emiBalanceVal.toFixed(2);
 
-decision.innerHTML=readyLoan.innerHTML=="YES" && salaryEmi<50 ? "GOOD" : "BAD";
+decision.innerHTML=(readyLoan.innerHTML==="YES" && salaryEmi<50) ? "GOOD" : "BAD";
 
 }
+
 
 
 /* ===== SAVE DATA ===== */
@@ -500,31 +515,37 @@ decision.innerHTML=readyLoan.innerHTML=="YES" && salaryEmi<50 ? "GOOD" : "BAD";
 window.saveData = async function(){
 
 let data = {
-  salary: salary.value,
-  emi: emi.value,
-  rent: rent.value,
-  petrol: petrol.value,
-  other: other.value,
-  totalAmount: totalAmount.value,
-  downPayment: downPayment.value,
-  interest: interest.value,
-  tenure: tenure.value,
-  createdAt: new Date()
+
+salary: salary.value,
+emi: emi.value,
+rent: rent.value,
+petrol: petrol.value,
+other: other.value,
+
+totalAmount: totalAmount.value,
+downPayment: downPayment.value,
+interest: interest.value,
+tenure: tenure.value,
+
+createdAt: new Date()
+
 };
 
 await addDoc(collection(db, "dashboardData"), data);
 
 alert("Saved Successfully!");
+
 }
 
-/* ===== LOAD LAST SAVED DATA ===== */
+
+/* ===== LOAD LAST DATA ===== */
 
 async function loadLastData(){
 
 const q = query(
-  collection(db, "dashboardData"),
-  orderBy("createdAt","desc"),
-  limit(1)
+collection(db,"dashboardData"),
+orderBy("createdAt","desc"),
+limit(1)
 );
 
 const snapshot = await getDocs(q);
@@ -538,9 +559,6 @@ emi.value = d.emi || 0;
 rent.value = d.rent || 0;
 petrol.value = d.petrol || 0;
 other.value = d.other || 0;
-EXP1.value = d.EXP1 || 0;
-EXP2.value = d.EXP2 || 0;
-
 
 totalAmount.value = d.totalAmount || 0;
 downPayment.value = d.downPayment || 0;
@@ -550,9 +568,12 @@ tenure.value = d.tenure || 0;
 });
 
 calculate();
+
 }
 
-/* Auto Events */
+
+/* AUTO EVENTS */
+
 document.querySelectorAll("input").forEach(i=>{
 i.addEventListener("input",calculate);
 });
@@ -565,6 +586,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
