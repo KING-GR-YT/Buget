@@ -265,24 +265,10 @@ input[type=number]{
 </tr>
 
 <tr>
-<td>Investment</td>
+<td>Other EXP</td>
 <td>₹ <input type="number" id="other" value=""></td>
 <td id="otherPercent"></td>
 <td id="otherStatus"></td>
-</tr>
-
-<tr>
-<td>Emergency Fund</td>
-<td>₹ <input type="number" id="EXP1" value=""></td>
-<td id="exp1Percent"></td>
-<td id="exp1Status"></td>
-</tr>
-
-<tr>
-<td>Other EXP</td>
-<td>₹ <input type="number" id="EXP2" value=""></td>
-<td id="exp2Percent"></td>
-<td id="exp2Status"></td>
 </tr>
 
 <tr class="greenbox">
@@ -437,23 +423,20 @@ let C4=parseFloat(emi.value)||0;
 let C5=parseFloat(rent.value)||0;
 let C6=parseFloat(petrol.value)||0;
 let C7=parseFloat(other.value)||0;
-let C8=parseFloat(EXP1.value)||0;
-let C9=parseFloat(EXP2.value)||0;
+
 
 /* Percentages */
 let D4=(C4/C2)*100||0;
 let D5=(C5/C2)*100||0;
 let D6=(C6/C2)*100||0;
 let D7=(C7/C2)*100||0;
-let D8=(C8/C2)*100||0;
-let D9=(C9/C2)*100||0;
+
 
 emiPercent.innerHTML=D4.toFixed(2)+"%";
 rentPercent.innerHTML=D5.toFixed(2)+"%";
 petrolPercent.innerHTML=D6.toFixed(2)+"%";
 otherPercent.innerHTML=D7.toFixed(2)+"%";
-exp1Percent.innerHTML=D8.toFixed(2)+"%";
-exp2Percent.innerHTML=D9.toFixed(2)+"%";
+
 
 emiStatus.innerHTML=D4>40?"Bad":"Good";
 emiStatus.className=D4>40?"bad":"good";
@@ -464,17 +447,12 @@ rentStatus.className=D5>30?"bad":"good";
 petrolStatus.innerHTML=D6>5?"Bad":"Good";
 petrolStatus.className=D6>5?"bad":"good";
 
-otherStatus.innerHTML=D7>10?"Bad":"Good";
-otherStatus.className=D7>10?"bad":"good";
+otherStatus.innerHTML=D7>5?"Bad":"Good";
+otherStatus.className=D7>5?"bad":"good";
 
-exp1Status.innerHTML=D8>10?"Bad":"Good";
-exp1Status.className=D8>10?"bad":"good";
-
-exp2Status.innerHTML=D9>10?"Bad":"Good";
-exp2Status.className=D9>10?"bad":"good";
 
 /* Total */
-let total=C4+C5+C6+C7+C8+C9;
+let total=C4+C5+C6+C7;
 let D13=(total/C2)*100||0;
 
 totalExp.innerHTML="₹ "+total.toFixed(2);
@@ -589,6 +567,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
