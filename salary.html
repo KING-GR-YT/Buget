@@ -84,12 +84,15 @@ h1{
 table{
     width:100%;
     border-collapse:collapse;
-    font-size:24px;
+    font-size:20px;
+    table-layout:fixed;
 }
 
 th,td{
-    padding:12px 10px;
+    padding:14px 12px;
     text-align:center;
+    height:48px;   /* forces same row height */
+    vertical-align:middle;
 }
 
 th{
@@ -98,23 +101,19 @@ th{
     font-weight:600;
 }
 
-tr{
-    border-bottom:1px solid rgba(0,255,255,0.12);
-}
-
 /* INPUT */
 
 input{
     background:transparent;
     border:none;
     outline:none;
-    width:95px;
-
+    width:90px;
+    height:28px;
     color:#00ffff;
     text-align:center;
 
     font-weight:600;
-    font-size:21px;
+    font-size:18px;
     letter-spacing:0.5px;
 }
 
@@ -586,6 +585,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
