@@ -84,7 +84,7 @@ h1{
 table{
     width:100%;
     border-collapse:collapse;
-    font-size:20px;
+    font-size:24px;
     table-layout:fixed;
 }
 
@@ -474,28 +474,19 @@ balanceStatus.className=D15>20?"good":"bad";
 
 
 /* EMI Calculator */
-
 let H6=parseFloat(totalAmount.value)||0;
 let H7=parseFloat(downPayment.value)||0;
 let H8=H6-H7;
-
 loanAmount.innerHTML="₹ "+H8.toFixed(2);
 
 let H9=parseFloat(interest.value)||0;
 let H10=parseFloat(tenure.value)||0;
-
 let r=H9/12/100;
-let emiValue=0;
 
-if(H9===0){
-    emiValue = H8/H10;
-}else{
-    emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1);
-}
-
+let emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1)||0;
 emiCalc.innerHTML="₹ "+emiValue.toFixed(2);
 
-let salaryEmi=(C4+emiValue)/C2*100;
+let salaryEmi=(C4+emiValue)/C2*100||0;
 salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
 
 readyLoan.innerHTML=D4>50?"NO":"YES";
@@ -503,11 +494,9 @@ readyLoan.innerHTML=D4>50?"NO":"YES";
 let emiBalanceVal=(C2*0.5)-C4;
 emiBalance.innerHTML="₹ "+emiBalanceVal.toFixed(2);
 
-decision.innerHTML=(readyLoan.innerHTML==="YES" && salaryEmi<50) ? "GOOD" : "BAD";
+decision.innerHTML=readyLoan.innerHTML=="YES" && salaryEmi<50 ? "GOOD" : "BAD";
 
 }
-
-
 
 /* ===== SAVE DATA ===== */
 
@@ -585,6 +574,7 @@ loadLastData();
 
 </body>
 </html>
+
 
 
 
