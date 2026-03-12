@@ -322,20 +322,56 @@ let otherVal=parseFloat(other.value)||0;
 
 if(salaryVal===0)return;
 
+/* Percentages */
+
+let emiP=(emiVal/salaryVal)*100;
+let rentP=(rentVal/salaryVal)*100;
+let petrolP=(petrolVal/salaryVal)*100;
+let otherP=(otherVal/salaryVal)*100;
+
+emiPercent.innerHTML=emiP.toFixed(2)+"%";
+rentPercent.innerHTML=rentP.toFixed(2)+"%";
+petrolPercent.innerHTML=petrolP.toFixed(2)+"%";
+otherPercent.innerHTML=otherP.toFixed(2)+"%";
+
+/* STATUS */
+
+emiStatus.innerHTML=emiP>40?"Bad":"Good";
+emiStatus.className=emiP>40?"bad":"good";
+
+rentStatus.innerHTML=rentP>30?"Bad":"Good";
+rentStatus.className=rentP>30?"bad":"good";
+
+petrolStatus.innerHTML=petrolP>5?"Bad":"Good";
+petrolStatus.className=petrolP>5?"bad":"good";
+
+otherStatus.innerHTML=otherP>5?"Bad":"Good";
+otherStatus.className=otherP>5?"bad":"good";
+
+/* Total */
+
 let total=emiVal+rentVal+petrolVal+otherVal;
 
-emiPercent.innerHTML=((emiVal/salaryVal)*100).toFixed(2)+"%";
-rentPercent.innerHTML=((rentVal/salaryVal)*100).toFixed(2)+"%";
-petrolPercent.innerHTML=((petrolVal/salaryVal)*100).toFixed(2)+"%";
-otherPercent.innerHTML=((otherVal/salaryVal)*100).toFixed(2)+"%";
-
 totalExp.innerHTML="₹ "+total.toFixed(2);
-totalPercent.innerHTML=((total/salaryVal)*100).toFixed(2)+"%";
+
+let totalP=(total/salaryVal)*100;
+
+totalPercent.innerHTML=totalP.toFixed(2)+"%";
+totalStatus.innerHTML=totalP>80?"Bad":"Good";
+totalStatus.className=totalP>80?"bad":"good";
+
+/* Balance */
 
 let balanceVal=salaryVal-total;
+let balanceP=(balanceVal/salaryVal)*100;
 
 balance.innerHTML="₹ "+balanceVal.toFixed(2);
-balancePercent.innerHTML=((balanceVal/salaryVal)*100).toFixed(2)+"%";
+balancePercent.innerHTML=balanceP.toFixed(2)+"%";
+
+balanceStatus.innerHTML=balanceP>20?"Good":"Bad";
+balanceStatus.className=balanceP>20?"good":"bad";
+
+/* EMI Calculator */
 
 let loan=parseFloat(totalAmount.value)||0;
 let down=parseFloat(downPayment.value)||0;
@@ -343,6 +379,7 @@ let interestVal=parseFloat(interest.value)||0;
 let tenureVal=parseFloat(tenure.value)||0;
 
 let loanAmountVal=loan-down;
+
 loanAmount.innerHTML="₹ "+loanAmountVal.toFixed(2);
 
 let emiCalcVal=0;
@@ -371,8 +408,6 @@ emiBalance.innerHTML="₹ "+((salaryVal*0.5)-(emiVal+emiCalcVal)).toFixed(2);
 decision.innerHTML=salaryEmi<50?"GOOD":"BAD";
 
 }
-
-window.calculate=calculate;
 
 async function saveData(){
 
@@ -443,3 +478,4 @@ loadData();
 
 </body>
 </html>
+
