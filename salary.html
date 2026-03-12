@@ -5,230 +5,154 @@
 <title>Salary Dashboard</title>
 <link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
+
 <style>
-*{
-    box-sizing:border-box;
-}
+
+*{box-sizing:border-box;}
 
 body{
-    margin:0;
-    font-family:Orbitron;
-    background:linear-gradient(135deg,#0a0f1c,#050811);
-    color:#e6ffff;
-    padding:25px;
-    font-size:16px;
+margin:0;
+font-family:Orbitron;
+background:linear-gradient(135deg,#0a0f1c,#050811);
+color:#e6ffff;
+padding:25px;
 }
 
 /* HEADER */
-h1{
-    text-align:center;
-    font-size:34px;
-    font-weight:700;
-    margin-bottom:35px;
-    color:#00ffff;
-    letter-spacing:1px;
-    text-shadow:0 0 20px rgba(0,255,255,0.8);
-}
 
-/* HOME BUTTON */
+h1{
+text-align:center;
+font-size:34px;
+margin-bottom:35px;
+color:#00ffff;
+text-shadow:0 0 20px rgba(0,255,255,0.8);
+}
 
 .home-link{
-    display:inline-block;
-    padding:8px 14px;
-    border-radius:8px;
-    text-decoration:none;
-    font-size:20px;
-    background:rgba(0,255,255,0.12);
-    border:1px solid rgba(0,255,255,0.4);
-    color:#00ffff;
-    transition:0.25s;
-    float:right;
+float:right;
+padding:8px 14px;
+border-radius:8px;
+text-decoration:none;
+background:rgba(0,255,255,0.12);
+border:1px solid rgba(0,255,255,0.4);
+color:#00ffff;
 }
-
-.home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 18px #00ffff;
-}
-
-/* LAYOUT */
 
 .container{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:30px;
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
 }
 
-/* CARD STYLE */
-
 .section{
-    background:rgba(15,25,45,0.9);
-    padding:24px;
-    border-radius:22px;
-    box-shadow:
-        0 0 30px rgba(0,255,255,0.15),
-        inset 0 0 25px rgba(0,255,255,0.05);
-    border:1px solid rgba(0,255,255,0.25);
-    backdrop-filter:blur(12px);
+background:rgba(15,25,45,0.9);
+padding:24px;
+border-radius:22px;
+box-shadow:0 0 30px rgba(0,255,255,0.15);
+border:1px solid rgba(0,255,255,0.25);
 }
 
 .section h2{
-    text-align:center;
-    font-size:24px;
-    color:#00ffff;
-    letter-spacing:0.5px;
+text-align:center;
+color:#00ffff;
 }
 
 /* TABLE */
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    font-size:23px;
+width:100%;
+border-collapse:collapse;
+font-size:22px;
 }
 
 th,td{
-    padding:12px 10px;
-    text-align:center;
+padding:12px;
+text-align:center;
 }
 
 th{
-    background:rgba(0,255,255,0.12);
-    color:#00ffff;
-    font-weight:600;
+background:rgba(0,255,255,0.12);
+color:#00ffff;
 }
 
 tr{
-    border-bottom:1px solid rgba(0,255,255,0.12);
+border-bottom:1px solid rgba(0,255,255,0.12);
 }
 
 /* INPUT */
 
 input{
-    background:transparent;
-    border:none;
-    outline:none;
-    width:95px;
-
-    color:#00ffff;
-    text-align:center;
-
-    font-weight:600;
-    font-size:21px;
-    letter-spacing:0.5px;
+background:transparent;
+border:none;
+outline:none;
+width:90px;
+color:#00ffff;
+text-align:center;
+font-weight:600;
+font-size:20px;
 }
 
-/* Remove number arrows */
-
 input[type=number]::-webkit-outer-spin-button,
-input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance:none;
+input[type=number]::-webkit-inner-spin-button{
+-webkit-appearance:none;
 }
 
 input[type=number]{
-    -moz-appearance:textfield;
+-moz-appearance:textfield;
 }
 
-/* STATUS COLORS */
+/* STATUS */
 
-.good{
-    color:#00ff9d;
-    font-weight:600;
-}
-
-.bad{
-    color:#ff5c5c;
-    font-weight:600;
-}
+.good{color:#00ff9d;font-weight:600;}
+.bad{color:#ff5c5c;font-weight:600;}
 
 .greenbox{
-    background:rgba(0,255,120,0.08);
-    color:#00ff9d;
-    font-weight:600;
+background:rgba(0,255,120,0.08);
+color:#00ff9d;
 }
 
 .redbox{
-    background:rgba(255,60,60,0.08);
-    color:#ff5c5c;
-    font-weight:600;
-}
-
-/* SAVE BUTTON */
-
-.save-wrapper{
-    margin-top:25px;
-    text-align:center;
-}
-
-.save-btn{
-    background:linear-gradient(45deg,#00ffff,#00ff99);
-    color:#001f1f;
-    border:none;
-    padding:14px 45px;
-    font-weight:700;
-    border-radius:40px;
-    cursor:pointer;
-    font-size:16px;
-    transition:0.25s;
-}
-
-.save-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 0 25px #00ffff;
+background:rgba(255,60,60,0.08);
+color:#ff5c5c;
 }
 
 /* MOBILE */
 
-@media (max-width: 900px){
+@media (max-width:900px){
 
-    body{
-        padding:15px;
-    }
+.container{
+grid-template-columns:1fr;
+}
 
-    .container{
-        grid-template-columns:1fr;
-        gap:22px;
-    }
+table{
+font-size:14px;
+}
 
-    h1{
-        font-size:26px;
-    }
-
-    .section{
-        padding:22px;
-    }
-
-    table{
-        font-size:14px;
-    }
-
-    input{
-        width:75px;
-        font-size:14px;
-    }
-
-    .save-btn{
-        width:100%;
-        font-size:15px;
-    }
+input{
+width:70px;
+font-size:14px;
+}
 
 }
+
 </style>
 </head>
 
 <body>
 
 <h1>Salary Dashboard
-	<a href="main.html" class="home-link">🏠 Home</a>
+<a href="main.html" class="home-link">🏠 Home</a>
 </h1>
 
 <div class="container">
 
-<!-- LEFT SECTION -->
+<!-- LEFT -->
+
 <div class="section">
 <h2>Salary Overview</h2>
 
 <table>
+
 <tr>
 <th>Particular</th>
 <th>Amount</th>
@@ -236,37 +160,37 @@ input[type=number]{
 <th>Status</th>
 </tr>
 
-<tr class="highlight">
+<tr>
 <td>Salary</td>
-<td>₹ <input type="number" id="salary" value=""></td>
+<td>₹ <input type="number" id="salary"></td>
 <td id="salaryPercent">100%</td>
 <td></td>
 </tr>
 
 <tr>
 <td>EMI</td>
-<td>₹ <input type="number" id="emi" value=""></td>
+<td>₹ <input type="number" id="emi"></td>
 <td id="emiPercent"></td>
 <td id="emiStatus"></td>
 </tr>
 
 <tr>
 <td>Rent</td>
-<td>₹ <input type="number" id="rent" value=""></td>
+<td>₹ <input type="number" id="rent"></td>
 <td id="rentPercent"></td>
 <td id="rentStatus"></td>
 </tr>
 
 <tr>
 <td>Petrol</td>
-<td>₹ <input type="number" id="petrol" value=""></td>
+<td>₹ <input type="number" id="petrol"></td>
 <td id="petrolPercent"></td>
 <td id="petrolStatus"></td>
 </tr>
 
 <tr>
 <td>Other EXP</td>
-<td>₹ <input type="number" id="other" value=""></td>
+<td>₹ <input type="number" id="other"></td>
 <td id="otherPercent"></td>
 <td id="otherStatus"></td>
 </tr>
@@ -289,8 +213,10 @@ input[type=number]{
 </div>
 
 
-<!-- RIGHT SECTION -->
+<!-- RIGHT -->
+
 <div class="section">
+
 <h2>EMI Calculator</h2>
 
 <table>
@@ -311,12 +237,12 @@ input[type=number]{
 
 <tr>
 <td>Total Amount</td>
-<td>₹ <input type="number" id="totalAmount" value=""></td>
+<td>₹ <input type="number" id="totalAmount"></td>
 </tr>
 
 <tr>
 <td>Down Payment</td>
-<td>₹ <input type="number" id="downPayment" value="0"></td>
+<td>₹ <input type="number" id="downPayment"></td>
 </tr>
 
 <tr>
@@ -326,12 +252,12 @@ input[type=number]{
 
 <tr>
 <td>Interest Rate %</td>
-<td>- <input type="number" id="interest" value=""></td>
+<td><input type="number" id="interest"></td>
 </tr>
 
 <tr>
 <td>Tenure Months</td>
-<td>- <input type="number" id="tenure" value=""></td>
+<td><input type="number" id="tenure"></td>
 </tr>
 
 <tr class="greenbox">
@@ -350,266 +276,170 @@ input[type=number]{
 </tr>
 
 </table>
-</div>
 
 </div>
 
-<div class="save-wrapper">
-	<button onclick="saveData()" class="save-btn">
-        SAVE DATA
-    	</button>
 </div>
 
 <script type="module">
 
-import { initializeApp } from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  getDocs,
-  query,
-  orderBy,
-  limit
-} from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getAuth,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
-/* FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+const firebaseConfig={
+apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain:"personal-budget-1cbbe.firebaseapp.com",
+projectId:"personal-budget-1cbbe",
+storageBucket:"personal-budget-1cbbe.firebasestorage.app",
+messagingSenderId:"133591748262",
+appId:"1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+const ADMIN_UID="7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-/* Initialize */
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
 
+document.body.style.display="none";
 
-/* PAGE PROTECTION */
-document.body.style.display = "none";
-
-onAuthStateChanged(auth, (user) => {
-
-  if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "index.html";
-  } else {
-    document.body.style.display = "block";
-  }
-
+onAuthStateChanged(auth,(user)=>{
+if(!user||user.uid!==ADMIN_UID){
+window.location.href="index.html";
+}else{
+document.body.style.display="block";
+}
 });
 
+function calculate(){
 
-/* ===== CALCULATION ===== */
+let salaryVal=parseFloat(salary.value)||0;
+let emiVal=parseFloat(emi.value)||0;
+let rentVal=parseFloat(rent.value)||0;
+let petrolVal=parseFloat(petrol.value)||0;
+let otherVal=parseFloat(other.value)||0;
 
-window.calculate = function(){
+if(salaryVal===0)return;
 
-let C2=parseFloat(salary.value)||0;
-let C4=parseFloat(emi.value)||0;
-let C5=parseFloat(rent.value)||0;
-let C6=parseFloat(petrol.value)||0;
-let C7=parseFloat(other.value)||0;
+let total=emiVal+rentVal+petrolVal+otherVal;
 
-if(C2===0) return;
-
-/* Percentages */
-
-let D4=(C4/C2)*100;
-let D5=(C5/C2)*100;
-let D6=(C6/C2)*100;
-let D7=(C7/C2)*100;
-
-emiPercent.innerHTML=D4.toFixed(2)+"%";
-rentPercent.innerHTML=D5.toFixed(2)+"%";
-petrolPercent.innerHTML=D6.toFixed(2)+"%";
-otherPercent.innerHTML=D7.toFixed(2)+"%";
-
-
-emiStatus.innerHTML=D4>40?"Bad":"Good";
-emiStatus.className=D4>40?"bad":"good";
-
-rentStatus.innerHTML=D5>30?"Bad":"Good";
-rentStatus.className=D5>30?"bad":"good";
-
-petrolStatus.innerHTML=D6>5?"Bad":"Good";
-petrolStatus.className=D6>5?"bad":"good";
-
-otherStatus.innerHTML=D7>5?"Bad":"Good";
-otherStatus.className=D7>5?"bad":"good";
-
-
-/* Total */
-
-let total=C4+C5+C6+C7;
-let D13=(total/C2)*100;
+emiPercent.innerHTML=((emiVal/salaryVal)*100).toFixed(2)+"%";
+rentPercent.innerHTML=((rentVal/salaryVal)*100).toFixed(2)+"%";
+petrolPercent.innerHTML=((petrolVal/salaryVal)*100).toFixed(2)+"%";
+otherPercent.innerHTML=((otherVal/salaryVal)*100).toFixed(2)+"%";
 
 totalExp.innerHTML="₹ "+total.toFixed(2);
-totalPercent.innerHTML=D13.toFixed(2)+"%";
-totalStatus.innerHTML=D13>80?"Bad":"Good";
-totalStatus.className=D13>80?"bad":"good";
+totalPercent.innerHTML=((total/salaryVal)*100).toFixed(2)+"%";
 
-
-/* Balance */
-
-let balanceVal=C2-total;
-let D15=(balanceVal/C2)*100;
+let balanceVal=salaryVal-total;
 
 balance.innerHTML="₹ "+balanceVal.toFixed(2);
-balancePercent.innerHTML=D15.toFixed(2)+"%";
-balanceStatus.innerHTML=D15>20?"Good":"Bad";
-balanceStatus.className=D15>20?"good":"bad";
+balancePercent.innerHTML=((balanceVal/salaryVal)*100).toFixed(2)+"%";
 
+let loan=parseFloat(totalAmount.value)||0;
+let down=parseFloat(downPayment.value)||0;
+let interestVal=parseFloat(interest.value)||0;
+let tenureVal=parseFloat(tenure.value)||0;
 
-/* EMI Calculator */
-let H6=parseFloat(totalAmount.value)||0;
-let H7=parseFloat(downPayment.value)||0;
-let H8=H6-H7;
-loanAmount.innerHTML="₹ "+H8.toFixed(2);
+let loanAmountVal=loan-down;
+loanAmount.innerHTML="₹ "+loanAmountVal.toFixed(2);
 
-let H9=parseFloat(interest.value)||0;
-let H10=parseFloat(tenure.value)||0;
-let r=H9/12/100;
+let emiCalcVal=0;
 
-let emiValue=(H8*r*Math.pow(1+r,H10))/(Math.pow(1+r,H10)-1)||0;
-emiCalc.innerHTML="₹ "+emiValue.toFixed(2);
+if(loanAmountVal>0 && tenureVal>0){
 
-let salaryEmi=(C4+emiValue)/C2*100||0;
+if(interestVal===0){
+emiCalcVal=loanAmountVal/tenureVal;
+}else{
+let r=interestVal/12/100;
+emiCalcVal=(loanAmountVal*r*Math.pow(1+r,tenureVal))/(Math.pow(1+r,tenureVal)-1);
+}
+
+}
+
+emiCalc.innerHTML="₹ "+emiCalcVal.toFixed(2);
+
+let salaryEmi=((emiVal+emiCalcVal)/salaryVal)*100;
+
 salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
 
-readyLoan.innerHTML=D4>50?"NO":"YES";
+readyLoan.innerHTML=salaryEmi<50?"YES":"NO";
 
-let emiBalanceVal=(C2*0.5)-C4;
-emiBalance.innerHTML="₹ "+emiBalanceVal.toFixed(2);
+emiBalance.innerHTML="₹ "+((salaryVal*0.5)-(emiVal+emiCalcVal)).toFixed(2);
 
-decision.innerHTML=readyLoan.innerHTML=="YES" && salaryEmi<50 ? "GOOD" : "BAD";
+decision.innerHTML=salaryEmi<50?"GOOD":"BAD";
 
 }
 
-/* ===== SAVE DATA ===== */
+window.calculate=calculate;
 
-window.saveData = async function(){
+async function saveData(){
 
-let data = {
-
-salary: salary.value,
-emi: emi.value,
-rent: rent.value,
-petrol: petrol.value,
-other: other.value,
-
-totalAmount: totalAmount.value,
-downPayment: downPayment.value,
-interest: interest.value,
-tenure: tenure.value,
-
-createdAt: new Date()
-
+let data={
+salary:salary.value,
+emi:emi.value,
+rent:rent.value,
+petrol:petrol.value,
+other:other.value,
+totalAmount:totalAmount.value,
+downPayment:downPayment.value,
+interest:interest.value,
+tenure:tenure.value,
+updatedAt:new Date()
 };
 
-await addDoc(collection(db, "dashboardData"), data);
-
-alert("Saved Successfully!");
+await setDoc(doc(db,"dashboardData","main"),data);
 
 }
 
+let timer;
 
-/* ===== LOAD LAST DATA ===== */
+function autoSave(){
 
-async function loadLastData(){
+clearTimeout(timer);
 
-const q = query(
-collection(db,"dashboardData"),
-orderBy("createdAt","desc"),
-limit(1)
-);
+timer=setTimeout(()=>{
+saveData();
+},1200);
 
-const snapshot = await getDocs(q);
+}
 
-snapshot.forEach((doc)=>{
+async function loadData(){
 
-let d = doc.data();
+const snap=await getDoc(doc(db,"dashboardData","main"));
 
-salary.value = d.salary || 0;
-emi.value = d.emi || 0;
-rent.value = d.rent || 0;
-petrol.value = d.petrol || 0;
-other.value = d.other || 0;
+if(snap.exists()){
 
-totalAmount.value = d.totalAmount || 0;
-downPayment.value = d.downPayment || 0;
-interest.value = d.interest || 0;
-tenure.value = d.tenure || 0;
+let d=snap.data();
 
-});
+salary.value=d.salary||0;
+emi.value=d.emi||0;
+rent.value=d.rent||0;
+petrol.value=d.petrol||0;
+other.value=d.other||0;
+
+totalAmount.value=d.totalAmount||0;
+downPayment.value=d.downPayment||0;
+interest.value=d.interest||0;
+tenure.value=d.tenure||0;
+
+}
 
 calculate();
 
 }
-
-
-/* AUTO EVENTS */
 
 document.querySelectorAll("input").forEach(i=>{
-i.addEventListener("input",calculate);
+i.addEventListener("input",()=>{
+calculate();
+autoSave();
+});
 });
 
-calculate();
-loadLastData();
+loadData();
 
 </script>
 
-
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
