@@ -599,12 +599,18 @@ db.collection("portfolio").doc("main").onSnapshot((doc)=>{
   document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
 
    /* 🔥 HEALTH INSURANCE LOAD */
-  const healthStatus = d.health ? "yes" : "no";
-  const healthSelect = document.getElementById("healthInsuranceStatus");
-  if(healthSelect){
+const healthSelect = document.getElementById("healthInsuranceStatus");
+
+let healthStatus = "no";
+
+if(d.health && d.health.status === true){
+    healthStatus = "yes";
+}
+
+if(healthSelect){
     healthSelect.value = healthStatus;
     updateHealthStyle(healthStatus);
-  }
+}
 
   render();
 });
@@ -640,7 +646,9 @@ function save(){
     retirementTarget: NUM(document.querySelector('[data-id="targetFund"]').innerText),
     loan: NUM(document.querySelector('[data-id="loan"]').innerText),
     emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
-    health: document.getElementById("healthInsuranceStatus").value === "yes",
+    health:{
+   status: document.getElementById("healthInsuranceStatus").value === "yes"
+},
     rows: data
   },{merge:true});
 }
@@ -911,5 +919,6 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
 
