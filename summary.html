@@ -343,7 +343,7 @@ targetBox.addEventListener("blur", function(){
 let val = targetBox.innerText.replace(/[^0-9.-]+/g,"");
 
 db.collection("portfolio").doc("main").update({
-target:Number(val)
+emergencyTarget:Number(val)
 })
 
 });
@@ -396,7 +396,7 @@ document.getElementById("dob").addEventListener("change",function(){
 let dob=this.value
 
 db.collection("portfolio").doc("main").update({
-emergencyTarget:Number(val)
+dob: dob
 })
 
 updateAllocation(dob)
