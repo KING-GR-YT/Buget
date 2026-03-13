@@ -44,45 +44,6 @@ padding:20px;
 margin-bottom:25px;
 }
 
-.scoreCard{
-    display: flex;
-    gap: 30px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-}
-
-.scoreBox{
-display:flex;
-flex-direction:column;
-height:280px;
-min-width:220px;
-}
-
-.scoreCenter{
-flex:1;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-}
-
-.score{
-font-size:60px;
-font-family:Orbitron;
-color:#00ffa6;
-text-shadow:0 0 15px #00ffa6;
-}
-    
-.chartBox{
-flex:2;
-min-width:350px;
-}
-
-.chartBox canvas{
-width:100%;
-height:280px;
-}
-  
 .sectionTitle{
 font-family:Orbitron;
 color:#ADD8E6;
@@ -96,13 +57,13 @@ display:flex;
 flex-wrap:wrap;
 gap:20px;
 text-align:center;
-border-top: 1px solid #ADD8E6;
+border-top:1px solid #ADD8E6;
 }
 
 .stat{
 flex:1;
 min-width:180px;
-margin-top: 20px;
+margin-top:20px;
 }
 
 .stat span{
@@ -115,6 +76,14 @@ display:block;
 margin-top:5px;
 font-size:20px;
 color:#00ffa6;
+}
+
+input,select{
+background:#0b0f19;
+border:1px solid #1f2a44;
+padding:8px;
+color:white;
+border-radius:5px;
 }
 
 .score{
@@ -148,33 +117,9 @@ text-align:center;
 border-bottom:1px solid #1f2a44;
 }
 
-input{
-background:#0b0f19;
-border:1px solid #1f2a44;
-padding:8px;
-color:white;
-border-radius:5px;
-}
-
-canvas{
-background:#0b0f19;
-border-radius:10px;
-}
-
-.statusUnder{
-color:#ff4d4d;
-font-weight:600;
-}
-
-.statusBalanced{
-color:#ffd166;
-font-weight:600;
-}
-
-.statusOver{
-color:#00ffa6;
-font-weight:600;
-}
+.statusUnder{color:#ff4d4d;font-weight:600;}
+.statusBalanced{color:#ffd166;font-weight:600;}
+.statusOver{color:#00ffa6;font-weight:600;}
 
 .home-link {
 padding:8px 14px;
@@ -183,60 +128,31 @@ text-decoration:none;
 background:rgba(0,255,255,0.15);
 color:#00ffff;
 border:1px solid rgba(0,255,255,0.4);
-transition:.3s;
 float:right;
 }
 
-.home-link:hover {
-background:#00ffff;
-color:#001f1f;
-box-shadow:0 0 10px #00ffff;
-}
-    
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="header">Financial Summary
+<div class="header">
+Financial Summary
 <a href="main.html" class="home-link">🏠 Home</a>
 </div>
-
 
 <!-- FINANCIAL SCORE -->
 
 <div class="card">
 
-<div class="scoreCard">
-
-<!-- LEFT SIDE -->
-<div class="scoreBox">
-
 <div class="sectionTitle">Financial Health Score</div>
 
-<div class="scoreCenter">
 <div class="score" id="score">0</div>
 <div class="grade" id="grade">-</div>
-</div>
 
 </div>
-
-<!-- RIGHT SIDE -->
-<div class="chartBox">
-
-<div class="sectionTitle">Net Worth Growth</div>
-
-<canvas id="chart"></canvas>
-
-</div>
-
-</div>
-
-</div>
-
 
 <!-- NET WORTH -->
 
@@ -262,9 +178,7 @@ box-shadow:0 0 10px #00ffff;
 </div>
 
 </div>
-
 </div>
-
 
 <!-- EMERGENCY FUND -->
 
@@ -290,7 +204,30 @@ box-shadow:0 0 10px #00ffff;
 </div>
 
 </div>
+</div>
 
+<!-- HEALTH INSURANCE -->
+
+<div class="card">
+
+<div class="sectionTitle">Health Insurance</div>
+
+<div class="row">
+
+<div class="stat">
+<span>Status</span>
+<select id="healthStatus">
+<option value="false">No</option>
+<option value="true">Yes</option>
+</select>
+</div>
+
+<div class="stat">
+<span>Coverage Amount</span>
+<input type="number" id="healthAmount">
+</div>
+
+</div>
 </div>
 
 <!-- AGE + ALLOCATION -->
@@ -349,267 +286,113 @@ box-shadow:0 0 10px #00ffff;
 
 </div>
 
-
 </div>
-
 
 <script>
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.appspot.com",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain:"personal-budget-1cbbe.firebaseapp.com",
+projectId:"personal-budget-1cbbe",
+storageBucket:"personal-budget-1cbbe.appspot.com",
+messagingSenderId:"133591748262",
+appId:"1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+const auth=firebase.auth();
+const db=firebase.firestore();
 
-/* PAGE SECURITY */
+const ADMIN_UID="7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
-document.body.style.display="block";
-
-auth.onAuthStateChanged(function(user){
-
-if(!user || user.uid !== ADMIN_UID){
+auth.onAuthStateChanged(user=>{
+if(!user || user.uid!==ADMIN_UID){
 window.location.href="index.html";
-}else{
-document.body.style.display="block";
 }
-
 });
-  
-/* FORMAT INR */
 
 function INR(n){
-return new Intl.NumberFormat('en-IN',{
-style:'currency',
-currency:'INR'
-}).format(n||0)
+return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n||0)
 }
 
-/* TARGET EDIT SAVE */
+const healthStatus=document.getElementById("healthStatus");
+const healthAmount=document.getElementById("healthAmount");
 
-const targetBox = document.getElementById("target");
+healthStatus.addEventListener("change",function(){
 
-targetBox.addEventListener("blur", function(){
-
-let val = targetBox.innerText.replace(/[^0-9.-]+/g,"");
+let val=this.value==="true";
 
 db.collection("portfolio").doc("main").update({
-emergencyTarget:Number(val)
-})
+"health.status":val
+});
+
+healthAmount.disabled=!val;
 
 });
 
-/* AGE CALCULATION */
+healthAmount.addEventListener("blur",function(){
 
-function calcAge(d){
-
-let b=new Date(d)
-let t=new Date()
-
-let age=t.getFullYear()-b.getFullYear()
-
-let m=t.getMonth()-b.getMonth()
-
-if(m<0 || (m===0 && t.getDate()<b.getDate())) age--
-
-return age
-}
-
-
-/* ALLOCATION TABLE */
-
-function getAllocation(age){
-
-if(age<=30) return {e:75,d:15,g:10}
-if(age<=35) return {e:70,d:20,g:10}
-if(age<=40) return {e:65,d:25,g:10}
-if(age<=50) return {e:60,d:30,g:10}
-return {e:50,d:40,g:10}
-
-}
-
-
-/* STATUS CHECK */
-
-function status(c,r){
-
-if(Math.abs(c-r)<=5) return "Balanced"
-if(c>r) return "Over"
-return "Under"
-
-}
-
-
-/* DOB SAVE */
-
-document.getElementById("dob").addEventListener("change",function(){
-
-let dob=this.value
+if(healthStatus.value!=="true") return;
 
 db.collection("portfolio").doc("main").update({
-dob: dob
-})
+"health.amount":Number(healthAmount.value)||0
+});
 
-updateAllocation(dob)
+});
 
-})
+db.collection("portfolio").doc("main").onSnapshot(doc=>{
 
+let d=doc.data()||{}
+let rows=d.rows||[]
 
-/* UPDATE ALLOCATION */
-
-function updateAllocation(dob){
-
-if(!dob) return
-
-let age=calcAge(dob)
-
-document.getElementById("age").innerText=age
-
-let r=getAllocation(age)
-
-document.getElementById("eqReq").innerText=r.e+"%"
-document.getElementById("gReq").innerText=r.g+"%"
-document.getElementById("dReq").innerText=r.d+"%"
-
-}
-
-
-
-/* FIREBASE PORTFOLIO SYNC */
-
-db.collection("portfolio")
-.doc("main")
-.onSnapshot((doc)=>{
-
-let d = doc.data() || {}
-
-let rows = d.rows || []
-
-let equity=0
-let gold=0
-let debt=0
-
-let invested=0
+let equity=0,gold=0,debt=0
 let current=0
 
-
 rows.forEach(r=>{
-
-invested += Number(r.invested)||0
-current += Number(r.current)||0
-
+current+=Number(r.current)||0
 if(r.category==="Equity") equity+=Number(r.current)||0
 if(r.category==="Gold") gold+=Number(r.current)||0
 if(r.category==="Debt") debt+=Number(r.current)||0
+});
 
-})
+let emergency=Number(d.emergency)||0
+let loan=Number(d.loan)||0
+let target=Number(d.emergencyTarget)||0
+let networth=current+emergency-loan
 
+document.getElementById("asset").innerText=INR(current+emergency)
+document.getElementById("liability").innerText=INR(loan)
+document.getElementById("networth").innerText=INR(networth)
 
-/* LOAD DOB */
+document.getElementById("fund").innerText=INR(emergency)
+document.getElementById("pending").innerText=INR(target-emergency)
+document.getElementById("target").innerText=INR(target)
 
-if(d.dob){
+let eqP=current?(equity/current)*100:0
+let gP=current?(gold/current)*100:0
+let dP=current?(debt/current)*100:0
 
-document.getElementById("dob").value=d.dob
-updateAllocation(d.dob)
+document.getElementById("eqCur").innerText=eqP.toFixed(1)+"%"
+document.getElementById("gCur").innerText=gP.toFixed(1)+"%"
+document.getElementById("dCur").innerText=dP.toFixed(1)+"%"
 
-}
+let health=d.health||{status:false,amount:0}
 
-
-/* FINANCIAL VALUES */
-
-let emergency = Number(d.emergency)||0
-let loan = Number(d.loan)||0
-let target = Number(d.emergencyTarget)||0 
-
-let networth = current + emergency - loan
-
-
-
-/* NET WORTH UI */
-
-document.getElementById("asset").innerText = INR(current + emergency)
-document.getElementById("liability").innerText = INR(loan)
-document.getElementById("networth").innerText = INR(networth)
-
-
-
-/* EMERGENCY FUND */
-
-document.getElementById("target").innerText = INR(target)
-document.getElementById("fund").innerText = INR(emergency)
-document.getElementById("pending").innerText = INR(target-emergency)
-
-
-
-/* CURRENT % */
-
-let eqP = current ? (equity/current)*100 : 0
-let gP = current ? (gold/current)*100 : 0
-let dP = current ? (debt/current)*100 : 0
-
-document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%"
-document.getElementById("gCur").innerText = gP.toFixed(1)+"%"
-document.getElementById("dCur").innerText = dP.toFixed(1)+"%"
-
-
-
-/* REQUIRED */
-
-let eqReq=parseFloat(document.getElementById("eqReq").innerText)||0
-let gReq=parseFloat(document.getElementById("gReq").innerText)||0
-let dReq=parseFloat(document.getElementById("dReq").innerText)||0
-
-
-
-/* STATUS */
-
-setStatus("eqStat",eqP,eqReq)
-setStatus("gStat",gP,gReq)
-setStatus("dStat",dP,dReq)
-  
-function setStatus(id,current,required){
-
-let s = status(current,required)
-
-let el = document.getElementById(id)
-
-el.innerText = s
-
-el.classList.remove("statusUnder","statusBalanced","statusOver")
-
-if(s==="Under") el.classList.add("statusUnder")
-else if(s==="Balanced") el.classList.add("statusBalanced")
-else if(s==="Over") el.classList.add("statusOver")
-
-}
-
-
-/* FINANCIAL HEALTH SCORE */
+healthStatus.value=String(health.status)
+healthAmount.value=health.amount||0
+healthAmount.disabled=!health.status
 
 let score=0
 
-if(networth>0) score+=25
-if(emergency>=target) score+=25
+if(networth>0) score+=20
+if(emergency>=target) score+=20
 if(eqP>=50) score+=20
-if(gP>=10) score+=15
-if(dP<=30) score+=15
+if(gP>=10) score+=10
+if(dP<=30) score+=10
+if(health.status) score+=20
 
 document.getElementById("score").innerText=score
-
-
-
-/* GRADE */
 
 let grade="Risk"
 
@@ -620,8 +403,7 @@ else if(score>=40) grade="Weak"
 
 document.getElementById("grade").innerText=grade
 
-
-})
+});
 
 </script>
 
