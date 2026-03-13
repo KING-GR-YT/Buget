@@ -288,7 +288,10 @@ const db = firebase.database();
 /* FORMAT INR */
 
 function INR(n){
-return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n||0)
+return new Intl.NumberFormat('en-IN',{
+style:'currency',
+currency:'INR'
+}).format(n||0)
 }
 
 
@@ -317,13 +320,12 @@ if(age<=30) return {e:75,d:15,g:10}
 if(age<=35) return {e:70,d:20,g:10}
 if(age<=40) return {e:65,d:25,g:10}
 if(age<=50) return {e:60,d:30,g:10}
-if(age<=60) return {e:50,d:40,g:10} 
-return {e:40,d:50,g:10}
+return {e:50,d:40,g:10}
 
 }
 
 
-/* STATUS */
+/* STATUS CHECK */
 
 function status(c,r){
 
@@ -334,14 +336,22 @@ return "Under"
 }
 
 
-/* DOB CHANGE */
+/* DOB SAVE */
 
-document.getElementById("dob").addEventListener("change",updateAllocation)
+document.getElementById("dob").addEventListener("change",function(){
+
+let dob=this.value
+
+db.ref("portfolio/dob").set(dob)
+
+updateAllocation(dob)
+
+})
 
 
-function updateAllocation(){
+/* UPDATE ALLOCATION */
 
-let dob=document.getElementById("dob").value
+function updateAllocation(dob){
 
 if(!dob) return
 
@@ -363,34 +373,48 @@ document.getElementById("dReq").innerText=r.d+"%"
 
 db.ref("portfolio").on("value",snap=>{
 
-let d = snap.val() || {};
+let d = snap.val() || {}
 
-let rows = d.rows || [];
+let rows = d.rows || []
 
-let equity = 0;
-let gold = 0;
-let debt = 0;
+let equity=0
+let gold=0
+let debt=0
 
-let invested = 0;
-let current = 0;
+let invested=0
+let current=0
+
 
 rows.forEach(r=>{
 
-invested += Number(r.invested) || 0;
-current += Number(r.current) || 0;
+invested += Number(r.invested)||0
+current += Number(r.current)||0
 
-if(r.category==="Equity") equity += Number(r.current) || 0;
-if(r.category==="Gold") gold += Number(r.current) || 0;
-if(r.category==="Debt") debt += Number(r.current) || 0;
+if(r.category==="Equity") equity+=Number(r.current)||0
+if(r.category==="Gold") gold+=Number(r.current)||0
+if(r.category==="Debt") debt+=Number(r.current)||0
 
-});
+})
 
 
-let emergency = Number(d.emergency) || 0;
-let loan = Number(d.loan) || 0;
-let target = Number(d.target) || 0;
+/* LOAD DOB */
 
-let networth = current + emergency - loan;
+if(d.dob){
+
+document.getElementById("dob").value=d.dob
+updateAllocation(d.dob)
+
+}
+
+
+/* FINANCIAL VALUES */
+
+let emergency = Number(d.emergency)||0
+let loan = Number(d.loan)||0
+let target = Number(d.target)||0
+
+let networth = current + emergency - loan
+
 
 
 /* NET WORTH UI */
@@ -398,6 +422,7 @@ let networth = current + emergency - loan;
 document.getElementById("asset").innerText = INR(current + emergency)
 document.getElementById("liability").innerText = INR(loan)
 document.getElementById("networth").innerText = INR(networth)
+
 
 
 /* EMERGENCY FUND */
@@ -410,20 +435,25 @@ document.getElementById("pending").innerText = INR(target-emergency)
 
 /* CURRENT % */
 
-let eqP = current ? (equity/current)*100 : 0;
-let gP = current ? (gold/current)*100 : 0;
-let dP = current ? (debt/current)*100 : 0;
+let eqP = current ? (equity/current)*100 : 0
+let gP = current ? (gold/current)*100 : 0
+let dP = current ? (debt/current)*100 : 0
 
 document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%"
 document.getElementById("gCur").innerText = gP.toFixed(1)+"%"
 document.getElementById("dCur").innerText = dP.toFixed(1)+"%"
 
 
-/* REQUIRED STATUS */
+
+/* REQUIRED */
 
 let eqReq=parseFloat(document.getElementById("eqReq").innerText)||0
 let gReq=parseFloat(document.getElementById("gReq").innerText)||0
 let dReq=parseFloat(document.getElementById("dReq").innerText)||0
+
+
+
+/* STATUS */
 
 document.getElementById("eqStat").innerText=status(eqP,eqReq)
 document.getElementById("gStat").innerText=status(gP,gReq)
@@ -433,7 +463,7 @@ document.getElementById("dStat").innerText=status(dP,dReq)
 
 /* FINANCIAL HEALTH SCORE */
 
-let score = 0
+let score=0
 
 if(networth>0) score+=25
 if(emergency>=target) score+=25
@@ -458,7 +488,6 @@ document.getElementById("grade").innerText=grade
 
 
 })
-
 
 </script>
 
