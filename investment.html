@@ -8,10 +8,8 @@
 <link rel="apple-touch-icon" href="icon-512.png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
+    
 :root {
 --blue:#00f7ff;
 --green:#00ff9d;
@@ -562,7 +560,7 @@ firebase.initializeApp(firebaseConfig);
 
 
 const auth = firebase.auth();
-const db = firebase.database();
+const db = firebase.firestore();
 const firestore = firebase.firestore();
 
         
@@ -592,8 +590,8 @@ let data = [];
 
 /* ================== LOAD ================== */
 
-db.ref("portfolio").on("value",snap=>{
-  const d = snap.val() || {};
+db.collection("portfolio").doc("main").onSnapshot((doc)=>{
+  const d = doc.data() || {};
   data = d.rows || [];
 
   document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
@@ -638,7 +636,7 @@ firestore.collection("financeSummary")
 /* ================== SAVE ================== */
 
 function save(){
-  db.ref("portfolio").set({
+  db.collection("portfolio").doc("main").set({
     target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
     loan: NUM(document.querySelector('[data-id="loan"]').innerText),
     emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
@@ -913,3 +911,4 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
