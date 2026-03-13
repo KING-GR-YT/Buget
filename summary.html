@@ -283,13 +283,14 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* PAGE SECURITY */
 
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-document.body.style.display="none";
+document.body.style.display="block";
 
 auth.onAuthStateChanged(function(user){
 
