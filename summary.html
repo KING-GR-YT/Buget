@@ -44,6 +44,29 @@ padding:20px;
 margin-bottom:25px;
 }
 
+.scoreCard{
+display:flex;
+gap:30px;
+align-items:center;
+flex-wrap:wrap;
+}
+
+.scoreBox{
+flex:1;
+min-width:220px;
+text-align:center;
+}
+
+.chartBox{
+flex:2;
+min-width:350px;
+}
+
+.chartBox canvas{
+width:100%;
+height:280px;
+}
+  
 .sectionTitle{
 font-family:Orbitron;
 color:#00ffa6;
@@ -146,21 +169,30 @@ font-weight:600;
 
 <div class="card">
 
+<div class="scoreCard">
+
+<!-- LEFT SIDE -->
+<div class="scoreBox">
+
 <div class="sectionTitle">Financial Health Score</div>
 
 <div class="score" id="score">0</div>
 
 <div class="grade" id="grade">-</div>
-  
-<div class="card">
+
+</div>
+
+<!-- RIGHT SIDE -->
+<div class="chartBox">
 
 <div class="sectionTitle">Net Worth Growth</div>
 
-<canvas id="chart" width="900" height="300"></canvas>
+<canvas id="chart"></canvas>
 
 </div>
+
 </div>
-  
+
 </div>
 
 
