@@ -117,6 +117,20 @@ background:#0b0f19;
 border-radius:10px;
 }
 
+.statusUnder{
+color:#ff4d4d;
+font-weight:600;
+}
+
+.statusBalanced{
+color:#ffd166;
+font-weight:600;
+}
+
+.statusOver{
+color:#00ffa6;
+font-weight:600;
+}
 </style>
 
 </head>
@@ -179,7 +193,7 @@ border-radius:10px;
 
 <div class="stat">
 <span>Target</span>
-<b id="target">₹0</b>
+<b id="target" contenteditable="true">₹0</b>
 </div>
 
 <div class="stat">
@@ -311,6 +325,19 @@ currency:'INR'
 }).format(n||0)
 }
 
+/* TARGET EDIT SAVE */
+
+const targetBox = document.getElementById("target");
+
+targetBox.addEventListener("blur", function(){
+
+let val = targetBox.innerText.replace(/[^0-9.-]+/g,"");
+
+db.collection("portfolio").doc("main").update({
+target:Number(val)
+})
+
+});
 
 /* AGE CALCULATION */
 
@@ -476,10 +503,25 @@ let dReq=parseFloat(document.getElementById("dReq").innerText)||0
 
 /* STATUS */
 
-document.getElementById("eqStat").innerText=status(eqP,eqReq)
-document.getElementById("gStat").innerText=status(gP,gReq)
-document.getElementById("dStat").innerText=status(dP,dReq)
+setStatus("eqStat",eqP,eqReq)
+setStatus("gStat",gP,gReq)
+setStatus("dStat",dP,dReq)
+  
+function setStatus(id,current,required){
 
+let s = status(current,required)
+
+let el = document.getElementById(id)
+
+el.innerText = s
+
+el.classList.remove("statusUnder","statusBalanced","statusOver")
+
+if(s==="Under") el.classList.add("statusUnder")
+else if(s==="Balanced") el.classList.add("statusBalanced")
+else if(s==="Over") el.classList.add("statusOver")
+
+}
 
 
 /* FINANCIAL HEALTH SCORE */
