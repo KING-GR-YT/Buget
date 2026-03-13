@@ -1,40 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Dashboard</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
-<link rel="apple-touch-icon" href="icon-512.png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<title>Investment Dashboard</title>
+
+<link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <style>
-:root {
+
+:root{
 --blue:#00f7ff;
 --green:#00ff9d;
 --red:#ff2e63;
 --gold:#ffc857;
 }
 
-/* ---------------- BASE ---------------- */
-
-body {
+body{
 margin:0;
 background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
 font-family:Inter;
 color:white;
 }
 
-.container {
+.container{
 max-width:1800px;
 margin:auto;
 padding:30px;
 }
 
-.header {
+.header{
 font-family:Orbitron;
 font-size:30px;
 color:var(--blue);
@@ -42,9 +46,7 @@ text-shadow:0 0 15px var(--blue);
 margin-bottom:25px;
 }
 
-/* ---------------- GLASS ---------------- */
-
-.glass {
+.glass{
 background:rgba(255,255,255,.05);
 border:1px solid rgba(0,247,255,.3);
 backdrop-filter:blur(15px);
@@ -54,337 +56,93 @@ margin-bottom:30px;
 box-shadow:0 0 25px rgba(0,247,255,.25);
 }
 
-/* ---------------- SUMMARY LAYOUT ---------------- */
-
 .top{
 display:flex;
 flex-wrap:wrap;
 justify-content:space-between;
-align-items:center;
 gap:22px;
 }
 
 .stat1{
 flex:1 1 200px;
 min-width:180px;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
 text-align:center;
-gap:12px;
 }
 
 .stat1 span{
-font-size:20px;
-color:var(--green);
-letter-spacing:.7px;
 font-family:Orbitron;
-text-shadow:0 0 14px rgba(0, 179, 255, 0.7);
+color:var(--green);
+font-size:18px;
 }
 
-/* ---------------- PROGRESS RING ---------------- */
-
 .mini-progress{
-width:150px;
-height:150px;
-border:5px solid #3a3a3a;
+width:140px;
+height:140px;
 border-radius:50%;
+border:5px solid #333;
 display:flex;
 align-items:center;
 justify-content:center;
-transition:.35s;
-box-shadow:inset 0 0 18px rgba(0,0,0,.6), 0 0 10px rgba(0,247,255,.15);
+margin:auto;
 }
 
 .percent{
-font-size:28px;
-font-weight:600;
-letter-spacing:1px;
+font-size:24px;
+font-family:Orbitron;
 }
 
-/* risk colors glow */
-.low{
-border-color:#ff3b3b !important;
-color:#ff3b3b;
-box-shadow:0 0 18px #ff3b3b55, inset 0 0 20px #ff3b3b33;
-}
-
-.medium{
-border-color:#ffb300 !important;
-color:#ffb300;
-box-shadow:0 0 18px #ffb30066, inset 0 0 20px #ffb30033;
-}
-
-.high{
-border-color:#00ff9d !important;
-color:#00ff9d;
-box-shadow:0 0 20px #00ff9d66, inset 0 0 25px #00ff9d33;
-}
-
-/* ---------------- SECOND SUMMARY ---------------- */
-
-.stat {
-            display:flex;
-            flex-direction:column;
-            gap:5px;
-            min-width:150px;
-        }
-
-        .stat span {
-            font-size:20px;
-            color:var(--green);
-            letter-spacing:0.8px;
-            text-align: center;
-        }
-
-        .stat b {
-            font-family:Orbitron;
-            font-size:20px;
-            font-weight:600;
-            letter-spacing:1.2px;
-            color:Chartreuse;
-            text-shadow:0 0 14px rgba(0,247,255,0.7);
-            text-align:center;
-        }
-
-        .stat b.positive {
-            color:var(--green);
-            text-shadow:0 0 18px rgba(0,255,157,0.8);
-        }
-
-        .stat b.negative {
-            color:var(--red);
-            text-shadow:0 0 18px rgba(255,46,99,0.8);
-        }
-
-
-/* ---------------- INPUTS ---------------- */
-
-input, button, select { 
-    background:#081321;
-    border:1px solid var(--blue);
-    border-radius:8px;
-    color:white; padding:10px 12px;
-    font-family:Orbitron;
-    font-size:14px;
-}
-
-/* ---------------- ADD INVESTMENT INLINE ---------------- */
-
-.glass:has(#invName){
+.stat{
 display:flex;
-flex-wrap:wrap;
-align-items:center;
-gap:14px;
+flex-direction:column;
+gap:5px;
+min-width:150px;
+text-align:center;
 }
 
-#invName{ width:230px; }
-#category{ width:180px; }
-#invInvested{ width:170px; }
-#invCurrent{ width:170px; }
-
-.glass:has(#invName) button{
-padding:10px 20px;
-white-space:nowrap;
-transition:.25s;
+.stat span{
+font-size:16px;
+color:var(--green);
 }
 
-.glass:has(#invName) button:hover{
-background:var(--green);
-color:black;
-box-shadow:0 0 12px var(--green);
+.stat b{
+font-family:Orbitron;
+font-size:18px;
+color:Chartreuse;
 }
 
-/* ---------------- TABLE ---------------- */
+input,select,button{
+background:#081321;
+border:1px solid var(--blue);
+border-radius:8px;
+color:white;
+padding:10px;
+font-family:Orbitron;
+}
 
-table { width:100%; border-collapse:collapse; }
+table{
+width:100%;
+border-collapse:collapse;
+}
 
-th {
+th{
 color:var(--gold);
 padding:12px;
 border-bottom:2px solid var(--blue);
 }
 
-td {
-text-align:center;
+td{
 padding:10px;
+text-align:center;
 border-bottom:1px solid rgba(255,255,255,.1);
 }
 
-.positive { color:var(--green); }
-.negative { color:var(--red); }
+.positive{color:var(--green);}
+.negative{color:var(--red);}
 
-/* ---------------- HOME BUTTON ---------------- */
-
-.home-link {
-padding:8px 14px;
-border-radius:8px;
-text-decoration:none;
-background:rgba(0,255,255,0.15);
-color:#00ffff;
-border:1px solid rgba(0,255,255,0.4);
-transition:.3s;
+.home-link{
 float:right;
-}
-
-.home-link:hover {
-background:#00ffff;
-color:#001f1f;
-box-shadow:0 0 10px #00ffff;
-}
-
-.neon-select{
-background:transparent;
-border:none;
-outline:none;
-appearance:none;
--webkit-appearance:none;
--moz-appearance:none;
-
-font-family:Orbitron;
-font-size:20px;
-font-weight:600;
-letter-spacing:1.2px;
-
-cursor:pointer;
-padding:0;
-text-align:center;
-}
-
-/* YES Style */
-.neon-select.yes{
-color:var(--green);
-text-shadow:0 0 18px rgba(0,255,157,0.9);
-}
-
-/* NO Style */
-.neon-select.no{
-color:var(--red);
-text-shadow:0 0 18px rgba(255,46,99,0.9);
-}
-
-/* ============================= */
-/* 📱 MOBILE RESPONSIVE */
-/* ============================= */
-
-@media (max-width: 1024px) {
-
-    .container {
-        padding:20px;
-    }
-
-    .header {
-        font-size:24px;
-        text-align:center;
-    }
-
-    /* Top summary stack */
-    .top {
-        flex-direction:column;
-        align-items:center;
-        gap:30px;
-    }
-
-    .stat1 {
-        width:100%;
-    }
-
-    .mini-progress {
-        width:130px;
-        height:130px;
-    }
-
-    .percent {
-        font-size:22px;
-    }
-
-    /* Add Investment section stack */
-    .glass:has(#invName) {
-        flex-direction:column;
-        align-items:stretch;
-    }
-
-    #invName,
-    #category,
-    #invInvested,
-    #invCurrent {
-        width:100%;
-    }
-
-    .glass:has(#invName) button {
-        width:100%;
-    }
-
-    /* Stats block responsive */
-    .stat {
-        width:100%;
-        align-items:center;
-    }
-
-    .stat span {
-        font-size:16px;
-    }
-
-    .stat b {
-        font-size:18px;
-    }
-
-    /* Table responsive scroll */
-    table {
-        display:block;
-        overflow-x:auto;
-        white-space:nowrap;
-    }
-
-    th, td {
-        font-size:14px;
-        padding:8px;
-    }
-
-    /* Home button adjust */
-    .home-link {
-        float:none;
-        display:block;
-        text-align:center;
-        margin-bottom:15px;
-    }
-
-}
-
-
-/* ============================= */
-/* 📱 SMALL MOBILE (Below 600px) */
-/* ============================= */
-
-@media (max-width: 600px) {
-
-    .header {
-        font-size:20px;
-    }
-
-    .mini-progress {
-        width:110px;
-        height:110px;
-    }
-
-    .percent {
-        font-size:18px;
-    }
-
-    input, button, select {
-        font-size:13px;
-        padding:8px 10px;
-    }
-
-    .stat span {
-        font-size:14px;
-    }
-
-    .stat b {
-        font-size:16px;
-    }
-
+text-decoration:none;
+color:#00ffff;
 }
 
 </style>
@@ -392,296 +150,226 @@ text-shadow:0 0 18px rgba(255,46,99,0.9);
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <div class="header">
-            ⚡ Investment Dashboard
-            <a href="main.html" class="home-link">🏠 Home</a>
-        </div>
+<div class="header">
+⚡ Investment Dashboard
+<a href="main.html" class="home-link">🏠 Home</a>
+</div>
 
-<!-- SUMMARY 1-->
+<!-- SUMMARY -->
+
 <div class="glass top">
 
 <div class="stat1">
-    <span>Net Worth %</span>
-    <div class="mini-progress">
-        <div class="percent" id="pFund">0%</div>
-    </div>
+<span>Net Worth %</span>
+<div class="mini-progress"><div class="percent" id="pFund">0%</div></div>
 </div>
 
 <div class="stat1">
-    <span>Equity %</span>
-    <div class="mini-progress">
-        <div class="percent" id="pEquity">0%</div>
-    </div>
+<span>Equity %</span>
+<div class="mini-progress"><div class="percent" id="pEquity">0%</div></div>
 </div>
 
 <div class="stat1">
-    <span>Gold %</span>
-    <div class="mini-progress">
-        <div class="percent" id="pGold">0%</div>
-    </div>
+<span>Gold %</span>
+<div class="mini-progress"><div class="percent" id="pGold">0%</div></div>
 </div>
 
 <div class="stat1">
-    <span>Debt %</span>
-    <div class="mini-progress">
-        <div class="percent" id="pDebt">0%</div>
-    </div>
+<span>Debt %</span>
+<div class="mini-progress"><div class="percent" id="pDebt">0%</div></div>
 </div>
 
 <div class="stat1">
-    <span>Growth %</span>
-    <div class="mini-progress">
-        <div class="percent" id="pGrowth">0%</div>
-    </div>
-</div>
+<span>Growth %</span>
+<div class="mini-progress"><div class="percent" id="pGrowth">0%</div></div>
 </div>
 
-<!-- SUMMARY 2-->
+</div>
+
+<!-- SUMMARY 2 -->
+
 <div class="glass top">
 
 <div class="stat">
-    <span>XIRR %</span>
-        <b id="xirr">0%</b>
-</div>
-            
-<div class="stat">
-    <span>Current Net Worth</span>
-        <b id="networth">₹0.00</b>
+<span>XIRR %</span>
+<b id="xirr">0%</b>
 </div>
 
 <div class="stat">
-    <span>Current Fund</span>
-        <b id="currentFundValue">₹0.00</b>
+<span>Current Net Worth</span>
+<b id="networth">₹0</b>
 </div>
 
 <div class="stat">
-    <span>Pending Loan</span>
-        <b data-id="loan">₹0.00</b>
+<span>Current Fund</span>
+<b id="currentFundValue">₹0</b>
 </div>
 
 <div class="stat">
-    <span>Emergency Fund</span>
-        <b data-id="emergencyFund">₹0</b>
+<span>Pending Loan</span>
+<b data-id="loan">₹0</b>
+</div>
+
+<div class="stat">
+<span>Emergency Fund</span>
+<b data-id="emergencyFund">₹0</b>
 </div>
 
 <div class="stat">
 <span>Health Insurance</span>
-<select id="healthInsuranceStatus" class="neon-select">
+<select id="healthInsuranceStatus">
 <option value="no">NO</option>
 <option value="yes">YES</option>
 </select>
 </div>
 
 <div class="stat">
-    <span>Target Fund</span>
-        <b class="editable" data-id="targetFund">₹0</b>
+<span>Target Fund</span>
+<b data-id="targetFund">₹0</b>
 </div>
 
 </div>
+
 <!-- ADD INVESTMENT -->
-    <div class="glass">
-        <h3 style="font-family:Orbitron;color:var(--green)">
-         ➕ Add Investment
-        </h3>
 
-        <input id="invName" placeholder="Investment Name">
-         <div class="stat">
-                <select id="category" class="input-like">
-    <option value="Equity">Equity</option>
-    <option value="Gold">Gold</option>
-    <option value="Debt">Debt</option>
+<div class="glass">
+
+<h3 style="font-family:Orbitron;color:var(--green)">➕ Add Investment</h3>
+
+<input id="invName" placeholder="Investment Name">
+<select id="category">
+<option value="Equity">Equity</option>
+<option value="Gold">Gold</option>
+<option value="Debt">Debt</option>
 </select>
-        </div>   
-        <input id="invInvested" type="number" placeholder="Invested Amount">
-        <input id="invCurrent" type="number" placeholder="Current Value">
-        <button onclick="addInvestment()">Add Investment</button>
-    </div>
 
-        <!-- TABLE -->
-        <div class="glass">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Investment</th>
-                        <th>Alloc %</th>
-                        <th>Catagory</th>
-                        <th>Invested</th>
-                        <th>Current</th>
-                        <th>Profit</th>
-                        <th>XIRR %</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
+<input id="invInvested" type="number" placeholder="Invested Amount">
+<input id="invCurrent" type="number" placeholder="Current Value">
 
-                <tbody id="tbody"></tbody>
+<button onclick="addInvestment()">Add Investment</button>
+
+</div>
+
+<!-- TABLE -->
+
+<div class="glass">
+
+<table>
+
+<thead>
+<tr>
+<th>Investment</th>
+<th>Alloc %</th>
+<th>Category</th>
+<th>Invested</th>
+<th>Current</th>
+<th>Profit</th>
+<th>XIRR %</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
 
 <tfoot>
-    <tr>
-        <tfoot>
-            <tr>
-            <th>Total</th>
-            <th id="totalAlloc"></th>
-            <th></th>
-            <th id="totalInvested"></th>
-            <th id="totalCurrent"></th>
-            <th id="totalProfit"></th>
-            <th></th>
-            <th></th>
-            </tr>
-        </tfoot>
-    </tr>
+<tr>
+<th>Total</th>
+<th id="totalAlloc"></th>
+<th></th>
+<th id="totalInvested"></th>
+<th id="totalCurrent"></th>
+<th id="totalProfit"></th>
+<th></th>
+<th></th>
+</tr>
 </tfoot>
-            </table>
-        </div>
 
-    </div>
+</table>
+
+</div>
+
+</div>
 
 <script>
 
-/* 🔥 FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.appspot.com",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
-};
+/* FIREBASE */
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+const firebaseConfig = {
+apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+authDomain:"personal-budget-1cbbe.firebaseapp.com",
+projectId:"personal-budget-1cbbe",
+};
 
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const firestore = firebase.firestore();
+const firestore=firebase.firestore();
 
-/* 🔐 PAGE PROTECTION */
+/* ELEMENTS */
 
-document.body.style.display = "none";
+const invName=document.getElementById("invName");
+const invInvested=document.getElementById("invInvested");
+const invCurrent=document.getElementById("invCurrent");
+const category=document.getElementById("category");
 
-auth.onAuthStateChanged(function(user){
-  if(!user || user.uid !== ADMIN_UID){
-    window.location.href = "index.html";
-  } else {
-    document.body.style.display = "block";
-  }
-});
+const tbody=document.getElementById("tbody");
 
-/* ================= UTILS ================= */
+const totalInvested=document.getElementById("totalInvested");
+const totalCurrent=document.getElementById("totalCurrent");
+const totalProfit=document.getElementById("totalProfit");
+const totalAlloc=document.getElementById("totalAlloc");
 
-const INR = n => new Intl.NumberFormat('en-IN',{
-  style:'currency',
-  currency:'INR'
-}).format(n||0);
+let data=[];
 
-const NUM = v => Number(String(v).replace(/[^0-9.-]+/g,''))||0;
+/* UTILS */
 
-/* ================= STATE ================= */
+const INR=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n||0);
 
-let data = [];
+/* LOAD */
 
-/* ================= LOAD FROM FIRESTORE ================= */
+firestore.collection("portfolio").doc("main").onSnapshot(doc=>{
 
-firestore.collection("portfolio")
-.doc("main")
-.onSnapshot(doc=>{
+if(!doc.exists)return;
 
-if(!doc.exists) return;
+const d=doc.data();
 
-const d = doc.data();
-
-data = d.rows || [];
-
-document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
-document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
-document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
-
-const healthStatus = d.health ? "yes" : "no";
-
-const healthSelect = document.getElementById("healthInsuranceStatus");
-
-if(healthSelect){
-healthSelect.value = healthStatus;
-updateHealthStyle(healthStatus);
-}
+data=d.rows||[];
 
 render();
 
 });
 
-/* ================= SAVE TO FIRESTORE ================= */
+/* SAVE */
 
 function save(){
 
-let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
-let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
-let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
+firestore.collection("portfolio").doc("main").set({
 
-let totalI = 0;
-let totalC = 0;
-
-let equity = 0;
-let gold = 0;
-let debt = 0;
-
-data.forEach(r=>{
-
-totalI += r.invested;
-totalC += r.current;
-
-if(r.category==="Equity") equity += r.current;
-if(r.category==="Gold") gold += r.current;
-if(r.category==="Debt") debt += r.current;
-
-});
-
-let growth = totalI ? ((totalC-totalI)/totalI)*100 : 0;
-
-let eqp = totalC ? (equity/totalC)*100 : 0;
-let gdp = totalC ? (gold/totalC)*100 : 0;
-let dbp = totalC ? (debt/totalC)*100 : 0;
-
-let netWorth = totalC + emergency - loan;
-
-firestore.collection("portfolio")
-.doc("main")
-.set({
-
-target: target,
-loan: loan,
-emergency: emergency,
-health: document.getElementById("healthInsuranceStatus").value==="yes",
-
-totalInvested: totalI,
-totalCurrent: totalC,
-growth: growth,
-netWorth: netWorth,
-
-equityPercent: eqp,
-goldPercent: gdp,
-debtPercent: dbp,
-
-rows: data
+rows:data
 
 });
 
 }
 
-/* ================= ADD INVESTMENT ================= */
+/* ADD */
 
 function addInvestment(){
 
-if(!invName.value) return alert("Enter name");
+if(!invName.value.trim()){
+
+alert("Enter Investment Name");
+return;
+
+}
 
 data.push({
 
-name: invName.value,
-category: document.getElementById("category").value,
+name:invName.value,
+category:category.value,
+invested:Number(invInvested.value)||0,
+current:Number(invCurrent.value)||0,
 alloc:0,
-invested:+invInvested.value||0,
-current:+invCurrent.value||0,
 xirr:0
 
 });
@@ -695,7 +383,7 @@ save();
 
 }
 
-/* ================= DELETE ================= */
+/* DELETE */
 
 function deleteRow(i){
 
@@ -706,69 +394,27 @@ save();
 
 }
 
-/* ================= EDITABLE ================= */
-
-function editable(el,isNum){
-
-el.onclick=()=>{
-
-let v = isNum ? NUM(el.innerText) : el.innerText.replace('%','');
-
-el.innerHTML=`<input value="${v}">`;
-
-let input=el.firstChild;
-
-input.focus();
-
-input.onblur=()=>{
-
-let row = el.parentElement.rowIndex-1;
-
-if(el.classList.contains("xirrCell")){
-
-data[row].xirr = Number(input.value)||0;
-el.innerText=data[row].xirr+"%";
-
-}
-
-else if(el.cellIndex==3){
-
-data[row].invested = Number(input.value)||0;
-el.innerText = INR(data[row].invested);
-
-}
-
-else if(el.cellIndex==4){
-
-data[row].current = Number(input.value)||0;
-el.innerText = INR(data[row].current);
-
-}
-
-else{
-
-el.innerText = INR(input.value);
-
-}
-
-calculate();
-save();
-
-};
-
-};
-
-}
-
-/* ================= RENDER ================= */
+/* RENDER */
 
 function render(){
 
-data.sort((a,b)=>b.invested-a.invested);
-
 tbody.innerHTML="";
 
+let totalI=0;
+let totalC=0;
+
 data.forEach((r,i)=>{
+
+totalI+=r.invested;
+totalC+=r.current;
+
+});
+
+data.forEach((r,i)=>{
+
+r.alloc=((r.invested/totalI)*100||0).toFixed(1);
+
+let profit=r.current-r.invested;
 
 tbody.innerHTML+=`
 
@@ -777,10 +423,10 @@ tbody.innerHTML+=`
 <td>${r.name}</td>
 <td>${r.alloc}%</td>
 <td>${r.category}</td>
-<td class="editable number">${INR(r.invested)}</td>
-<td class="editable number">${INR(r.current)}</td>
-<td class="profit"></td>
-<td class="editable xirrCell">${r.xirr||0}%</td>
+<td>${INR(r.invested)}</td>
+<td>${INR(r.current)}</td>
+<td class="${profit>=0?'positive':'negative'}">${INR(profit)}</td>
+<td>${r.xirr}%</td>
 <td><button onclick="deleteRow(${i})">🗑</button></td>
 
 </tr>
@@ -789,178 +435,16 @@ tbody.innerHTML+=`
 
 });
 
-document.querySelectorAll(".editable").forEach(el=>{
-editable(el,el.classList.contains("number"));
-});
-
-editable(document.querySelector('[data-id="targetFund"]'),true);
-
-calculate();
-
-}
-
-/* ================= CALCULATE ================= */
-
-function calculate(){
-
-let totalI=0;
-let totalC=0;
-
-let equity=0;
-let gold=0;
-let debt=0;
-
-data.forEach(r=>{
-
-totalI+=r.invested;
-totalC+=r.current;
-
-if(r.category==="Equity") equity+=r.current;
-if(r.category==="Gold") gold+=r.current;
-if(r.category==="Debt") debt+=r.current;
-
-});
-
-/* allocation */
-
-data.forEach(r=>{
-
-r.alloc = totalI>0 ? ((r.invested/totalI)*100).toFixed(2) : 0;
-
-});
-
-/* update table */
-
-[...tbody.rows].forEach((row,index)=>{
-
-let r=data[index];
-
-let p=r.current-r.invested;
-
-row.cells[1].innerText=r.alloc+"%";
-
-row.cells[5].innerText=INR(p);
-row.cells[5].className=p>=0?"positive":"negative";
-
-});
-
-/* totals */
-
+totalAlloc.innerText="100%";
 totalInvested.innerText=INR(totalI);
 totalCurrent.innerText=INR(totalC);
 totalProfit.innerText=INR(totalC-totalI);
 
-/* growth */
-
-let growth = totalI ? ((totalC-totalI)/totalI)*100 : 0;
-
-document.getElementById("pGrowth").innerText=growth.toFixed(1)+"%";
-
-/* category */
-
-let eqp = totalC? equity/totalC*100:0;
-let gdp = totalC? gold/totalC*100:0;
-let dbp = totalC? debt/totalC*100:0;
-
-document.getElementById("pEquity").innerText=eqp.toFixed(1)+"%";
-document.getElementById("pGold").innerText=gdp.toFixed(1)+"%";
-document.getElementById("pDebt").innerText=dbp.toFixed(1)+"%";
-
-/* net worth */
-
-let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
-let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
-
-let net = totalC + emergency - loan;
-
-const netBox = document.getElementById("networth");
-
-netBox.innerText=INR(net);
-netBox.className = net>=0?"positive":"negative";
-
-/* progress */
-
-let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
-
-updateProgress(net,target);
+document.getElementById("pGrowth").innerText=((totalC-totalI)/totalI*100||0).toFixed(1)+"%";
 
 }
-
-/* ================= PROGRESS ================= */
-
-function updateProgress(val,target){
-
-if(!target){
-
-document.getElementById("pFund").innerText="0%";
-return;
-
-}
-
-let p=Math.min((val/target)*100,100);
-
-document.getElementById("pFund").innerText=p.toFixed(1)+"%";
-
-}
-
-/* ================= HEALTH STYLE ================= */
-
-function updateHealthStyle(value){
-
-const select=document.getElementById("healthInsuranceStatus");
-
-if(value==="yes"){
-
-select.classList.add("yes");
-select.classList.remove("no");
-
-}else{
-
-select.classList.add("no");
-select.classList.remove("yes");
-
-}
-
-}
-
-document.getElementById("healthInsuranceStatus").addEventListener("change",()=>{
-
-updateHealthStyle(document.getElementById("healthInsuranceStatus").value);
-
-save();
-
-});
 
 </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
