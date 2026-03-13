@@ -447,7 +447,7 @@ db.collection("portfolio").doc("main").onSnapshot((doc)=>{
 
     let emergency = Number(d.emergency)||0
     let loan = Number(d.loan)||0
-    let target = Number(d.emergencyTarget)||0
+    let target = Number(d.retirementTargetTarget)||0
     let networth = currentTotal + emergency - loan
 
     /* NET WORTH UI */
