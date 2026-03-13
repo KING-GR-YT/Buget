@@ -16,33 +16,32 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
-
-body{
-margin:0;
-background:#0b0f19;
-font-family:Inter;
-color:white;
+body {
+    margin:0;
+    background:#0b0f19;
+    font-family:Inter;
+    color:white;
 }
 
 .container{
-max-width:1400px;
-margin:auto;
-padding:30px;
+    max-width:1400px;
+    margin:auto;
+    padding:30px;
 }
 
 .header{
-font-family:Orbitron;
-font-size:28px;
-color:#FFD700;
-margin-bottom:25px;
+    font-family:Orbitron;
+    font-size:28px;
+    color:#FFD700;
+    margin-bottom:25px;
 }
 
 .card{
-background:#121829;
-border:1px solid #1f2a44;
-border-radius:10px;
-padding:20px;
-margin-bottom:25px;
+    background:#121829;
+    border:1px solid #1f2a44;
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:25px;
 }
 
 .scoreCard{
@@ -53,184 +52,173 @@ margin-bottom:25px;
 }
 
 .scoreBox{
-display:flex;
-flex-direction:column;
-height:280px;
-min-width:220px;
+    display:flex;
+    flex-direction:column;
+    height:280px;
+    min-width:220px;
 }
 
 .scoreCenter{
-flex:1;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
 }
 
 .score{
-font-size:60px;
-font-family:Orbitron;
-color:#00ffa6;
-text-shadow:0 0 15px #00ffa6;
+    font-size:60px;
+    font-family:Orbitron;
+    color:#00ffa6;
+    text-shadow:0 0 15px #00ffa6;
 }
-    
+
 .chartBox{
-flex:2;
-min-width:350px;
+    flex:2;
+    min-width:350px;
 }
 
 .chartBox canvas{
-width:100%;
-height:280px;
+    width:100%;
+    height:280px;
 }
-  
+
 .sectionTitle{
-font-family:Orbitron;
-color:#ADD8E6;
-margin-bottom:15px;
-text-align:center;
-font-size:22px;
+    font-family:Orbitron;
+    color:#ADD8E6;
+    margin-bottom:15px;
+    text-align:center;
+    font-size:22px;
 }
 
 .row{
-display:flex;
-flex-wrap:wrap;
-gap:20px;
-text-align:center;
-border-top: 1px solid #ADD8E6;
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    text-align:center;
+    border-top: 1px solid #ADD8E6;
 }
 
 .stat{
-flex:1;
-min-width:180px;
-margin-top: 20px;
+    flex:1;
+    min-width:180px;
+    margin-top: 20px;
 }
 
 .stat span{
-font-size:20px;
-color:#aaa;
+    font-size:20px;
+    color:#aaa;
 }
 
 .stat b{
-display:block;
-margin-top:5px;
-font-size:20px;
-color:#00ffa6;
-}
-
-.score{
-font-size:60px;
-font-family:Orbitron;
-text-align:center;
-color:#00ffa6;
+    display:block;
+    margin-top:5px;
+    font-size:20px;
+    color:#00ffa6;
 }
 
 .grade{
-text-align:center;
-font-size:30px;
-font-family:Orbitron;
-margin-top:10px;
+    text-align:center;
+    font-size:30px;
+    font-family:Orbitron;
+    margin-top:10px;
 }
 
 table{
-width:100%;
-border-collapse:collapse;
+    width:100%;
+    border-collapse:collapse;
 }
 
 th{
-padding:10px;
-color:#ffd166;
-border-bottom:2px solid #1f2a44;
+    padding:10px;
+    color:#ffd166;
+    border-bottom:2px solid #1f2a44;
 }
 
 td{
-padding:10px;
-text-align:center;
-border-bottom:1px solid #1f2a44;
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #1f2a44;
 }
 
 input{
-background:#0b0f19;
-border:1px solid #1f2a44;
-padding:8px;
-color:white;
-border-radius:5px;
-}
-
-canvas{
-background:#0b0f19;
-border-radius:10px;
+    background:#0b0f19;
+    border:1px solid #1f2a44;
+    padding:8px;
+    color:white;
+    border-radius:5px;
 }
 
 .statusUnder{
-color:#ff4d4d;
-font-weight:600;
+    color:#ff4d4d;
+    font-weight:600;
 }
 
 .statusBalanced{
-color:#ffd166;
-font-weight:600;
+    color:#ffd166;
+    font-weight:600;
 }
 
 .statusOver{
-color:#00ffa6;
-font-weight:600;
+    color:#00ffa6;
+    font-weight:600;
 }
 
 .home-link {
-padding:8px 14px;
-border-radius:8px;
-text-decoration:none;
-background:rgba(0,255,255,0.15);
-color:#00ffff;
-border:1px solid rgba(0,255,255,0.4);
-transition:.3s;
-float:right;
+    padding:8px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    background:rgba(0,255,255,0.15);
+    color:#00ffff;
+    border:1px solid rgba(0,255,255,0.4);
+    transition:.3s;
+    float:right;
 }
 
 .home-link:hover {
-background:#00ffff;
-color:#001f1f;
-box-shadow:0 0 10px #00ffff;
+    background:#00ffff;
+    color:#001f1f;
+    box-shadow:0 0 10px #00ffff;
 }
 
 .mini-progress{
-  width:150px;
-  height:150px;
-  border:5px solid #3a3a3a;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:.35s;
-  box-shadow:inset 0 0 18px rgba(0,0,0,.6), 0 0 10px rgba(0,255,255,.15);
+    width:150px;
+    height:150px;
+    border:5px solid #3a3a3a;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.35s;
+    box-shadow:inset 0 0 18px rgba(0,0,0,.6), 0 0 10px rgba(0,255,255,.15);
+    margin:auto;
 }
 
 .percent{
-  font-size:28px;
-  font-weight:600;
-  letter-spacing:1px;
+    font-size:28px;
+    font-weight:600;
+    letter-spacing:1px;
 }
 
 /* risk colors glow */
 .low{
-  border-color:#ff3b3b !important;
-  color:#ff3b3b;
-  box-shadow:0 0 18px #ff3b3b55, inset 0 0 20px #ff3b3b33;
+    border-color:#ff3b3b !important;
+    color:#ff3b3b;
+    box-shadow:0 0 18px #ff3b3b55, inset 0 0 20px #ff3b3b33;
 }
 
 .medium{
-  border-color:#ffb300 !important;
-  color:#ffb300;
-  box-shadow:0 0 18px #ffb30066, inset 0 0 20px #ffb30033;
+    border-color:#ffb300 !important;
+    color:#ffb300;
+    box-shadow:0 0 18px #ffb30066, inset 0 0 20px #ffb30033;
 }
 
 .high{
-  border-color:#00ff9d !important;
-  color:#00ff9d;
-  box-shadow:0 0 20px #00ff9d66, inset 0 0 25px #00ff9d33;
+    border-color:#00ff9d !important;
+    color:#00ff9d;
+    box-shadow:0 0 20px #00ff9d66, inset 0 0 25px #00ff9d33;
 }
-    
+
 </style>
 
 </head>
@@ -242,7 +230,6 @@ box-shadow:0 0 10px #00ffff;
 <div class="header">Financial Summary
 <a href="main.html" class="home-link">🏠 Home</a>
 </div>
-
 
 <!-- FINANCIAL SCORE -->
 
@@ -265,22 +252,23 @@ box-shadow:0 0 10px #00ffff;
 <!-- RIGHT SIDE -->
 <div class="chartBox">
 
-  <div class="stat1">
+<div class="stat1">
     <span>Net Worth %</span>
     <div class="mini-progress">
-      <div class="percent" id="pFund">0%</div>
+        <div class="percent" id="pFund">0%</div>
     </div>
-  </div>
+</div>
 
-  <div class="stat1">
+<div class="stat1">
     <span>Growth %</span>
     <div class="mini-progress">
-      <div class="percent" id="pGrowth">0%</div>
+        <div class="percent" id="pGrowth">0%</div>
     </div>
-  </div>
+</div>
 
 </div>
 
+</div>
 
 <!-- NET WORTH -->
 
@@ -308,7 +296,6 @@ box-shadow:0 0 10px #00ffff;
 </div>
 
 </div>
-
 
 <!-- EMERGENCY FUND -->
 
@@ -393,9 +380,7 @@ box-shadow:0 0 10px #00ffff;
 
 </div>
 
-
 </div>
-
 
 <script>
 
@@ -422,113 +407,50 @@ const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 document.body.style.display="block";
 
 auth.onAuthStateChanged(function(user){
-
-if(!user || user.uid !== ADMIN_UID){
-window.location.href="index.html";
-}else{
-document.body.style.display="block";
-}
-
+    if(!user || user.uid !== ADMIN_UID){
+        window.location.href="index.html";
+    }else{
+        document.body.style.display="block";
+    }
 });
-  
+
 /* FORMAT INR */
-
 function INR(n){
-return new Intl.NumberFormat('en-IN',{
-style:'currency',
-currency:'INR'
-}).format(n||0)
+    return new Intl.NumberFormat('en-IN',{
+        style:'currency',
+        currency:'INR'
+    }).format(n||0)
 }
 
-/* TARGET EDIT SAVE */
+/* PROGRESS RING */
+function updateProgress(val, target){
+    if(!target || target<=0){
+        document.getElementById("pFund").innerText="0%";
+        return;
+    }
 
-const targetBox = document.getElementById("target");
+    let p = Math.min((val / target) * 100, 100);
+    const box = document.getElementById("pFund").parentElement;
+    const percentText = document.getElementById("pFund");
 
-targetBox.addEventListener("blur", function(){
+    percentText.innerText = p.toFixed(1) + "%";
 
-let val = targetBox.innerText.replace(/[^0-9.-]+/g,"");
+    box.classList.remove("low","medium","high");
+    percentText.classList.remove("low","medium","high");
 
-db.collection("portfolio").doc("main").update({
-emergencyTarget:Number(val)
-})
-
-});
-
-/* AGE CALCULATION */
-
-function calcAge(d){
-
-let b=new Date(d)
-let t=new Date()
-
-let age=t.getFullYear()-b.getFullYear()
-
-let m=t.getMonth()-b.getMonth()
-
-if(m<0 || (m===0 && t.getDate()<b.getDate())) age--
-
-return age
+    if(p < 40){
+        box.classList.add("low");
+        percentText.classList.add("low");
+    }
+    else if(p <= 70){
+        box.classList.add("medium");
+        percentText.classList.add("medium");
+    }
+    else{
+        box.classList.add("high");
+        percentText.classList.add("high");
+    }
 }
-
-
-/* ALLOCATION TABLE */
-
-function getAllocation(age){
-
-if(age<=30) return {e:75,d:15,g:10}
-if(age<=35) return {e:70,d:20,g:10}
-if(age<=40) return {e:65,d:25,g:10}
-if(age<=50) return {e:60,d:30,g:10}
-return {e:50,d:40,g:10}
-
-}
-
-
-/* STATUS CHECK */
-
-function status(c,r){
-
-if(Math.abs(c-r)<=5) return "Balanced"
-if(c>r) return "Over"
-return "Under"
-
-}
-
-
-/* DOB SAVE */
-
-document.getElementById("dob").addEventListener("change",function(){
-
-let dob=this.value
-
-db.collection("portfolio").doc("main").update({
-dob: dob
-})
-
-updateAllocation(dob)
-
-})
-
-
-/* UPDATE ALLOCATION */
-
-function updateAllocation(dob){
-
-if(!dob) return
-
-let age=calcAge(dob)
-
-document.getElementById("age").innerText=age
-
-let r=getAllocation(age)
-
-document.getElementById("eqReq").innerText=r.e+"%"
-document.getElementById("gReq").innerText=r.g+"%"
-document.getElementById("dReq").innerText=r.d+"%"
-
-}
-
-
 
 /* FIREBASE PORTFOLIO SYNC */
 
@@ -536,169 +458,147 @@ db.collection("portfolio")
 .doc("main")
 .onSnapshot((doc)=>{
 
-let d = doc.data() || {}
+    let d = doc.data() || {}
+    let rows = d.rows || []
 
-let rows = d.rows || []
+    let equity=0, gold=0, debt=0
+    let invested=0, currentTotal=0
 
-let equity=0
-let gold=0
-let debt=0
+    rows.forEach(r=>{
+        invested += Number(r.invested)||0
+        currentTotal += Number(r.current)||0
+        if(r.category==="Equity") equity += Number(r.current)||0
+        if(r.category==="Gold") gold += Number(r.current)||0
+        if(r.category==="Debt") debt += Number(r.current)||0
+    })
 
-let invested=0
-let current=0
+    /* DOB & Allocation */
+    if(d.dob){
+        document.getElementById("dob").value=d.dob
+        updateAllocation(d.dob)
+    }
 
+    let emergency = Number(d.emergency)||0
+    let loan = Number(d.loan)||0
+    let target = Number(d.emergencyTarget)||0
+    let networth = currentTotal + emergency - loan
 
-rows.forEach(r=>{
+    /* NET WORTH UI */
+    document.getElementById("asset").innerText = INR(currentTotal + emergency)
+    document.getElementById("liability").innerText = INR(loan)
+    document.getElementById("networth").innerText = INR(networth)
 
-invested += Number(r.invested)||0
-current += Number(r.current)||0
+    /* EMERGENCY FUND */
+    document.getElementById("target").innerText = INR(target)
+    document.getElementById("fund").innerText = INR(emergency)
+    document.getElementById("pending").innerText = INR(target - emergency)
 
-if(r.category==="Equity") equity+=Number(r.current)||0
-if(r.category==="Gold") gold+=Number(r.current)||0
-if(r.category==="Debt") debt+=Number(r.current)||0
+    /* CURRENT % */
+    let eqP = currentTotal ? (equity/currentTotal)*100 : 0
+    let gP = currentTotal ? (gold/currentTotal)*100 : 0
+    let dP = currentTotal ? (debt/currentTotal)*100 : 0
 
+    document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%"
+    document.getElementById("gCur").innerText = gP.toFixed(1)+"%"
+    document.getElementById("dCur").innerText = dP.toFixed(1)+"%"
+
+    /* STATUS */
+    function statusCheck(c,r){
+        if(Math.abs(c-r)<=5) return "Balanced"
+        if(c>r) return "Over"
+        return "Under"
+    }
+
+    function setStatus(id,current,required){
+        let s = statusCheck(current,required)
+        let el = document.getElementById(id)
+        el.innerText = s
+        el.classList.remove("statusUnder","statusBalanced","statusOver")
+        if(s==="Under") el.classList.add("statusUnder")
+        else if(s==="Balanced") el.classList.add("statusBalanced")
+        else el.classList.add("statusOver")
+    }
+
+    let eqReq=parseFloat(document.getElementById("eqReq").innerText)||0
+    let gReq=parseFloat(document.getElementById("gReq").innerText)||0
+    let dReq=parseFloat(document.getElementById("dReq").innerText)||0
+
+    setStatus("eqStat",eqP,eqReq)
+    setStatus("gStat",gP,gReq)
+    setStatus("dStat",dP,dReq)
+
+    /* FINANCIAL HEALTH SCORE */
+    let score=0
+    if(networth>0) score+=25
+    if(emergency>=target) score+=25
+    if(eqP>=50) score+=20
+    if(gP>=10) score+=15
+    if(dP<=30) score+=15
+
+    document.getElementById("score").innerText=score
+
+    /* GRADE */
+    let grade="Risk"
+    if(score>=90) grade="Elite"
+    else if(score>=75) grade="Strong"
+    else if(score>=60) grade="Stable"
+    else if(score>=40) grade="Weak"
+    document.getElementById("grade").innerText=grade
+
+    /* NET WORTH % */
+    updateProgress(networth, target)
+
+    /* GROWTH % */
+    let growth = invested ? ((currentTotal - invested)/invested)*100 : 0
+    const growthBox = document.getElementById("pGrowth").parentElement
+    const growthText = document.getElementById("pGrowth")
+    growthText.innerText = growth.toFixed(1) + "%"
+    growthBox.classList.remove("low","medium","high")
+    if(growth < 0) growthBox.classList.add("low")
+    else if(growth < 15) growthBox.classList.add("medium")
+    else growthBox.classList.add("high")
 })
 
-
-/* LOAD DOB */
-
-if(d.dob){
-
-document.getElementById("dob").value=d.dob
-updateAllocation(d.dob)
-
-}
-
-
-/* FINANCIAL VALUES */
-
-let emergency = Number(d.emergency)||0
-let loan = Number(d.loan)||0
-let target = Number(d.emergencyTarget)||0 
-
-let networth = current + emergency - loan
-
-
-
-/* NET WORTH UI */
-
-document.getElementById("asset").innerText = INR(current + emergency)
-document.getElementById("liability").innerText = INR(loan)
-document.getElementById("networth").innerText = INR(networth)
-
-
-
-/* EMERGENCY FUND */
-
-document.getElementById("target").innerText = INR(target)
-document.getElementById("fund").innerText = INR(emergency)
-document.getElementById("pending").innerText = INR(target-emergency)
-
-
-
-/* CURRENT % */
-
-let eqP = current ? (equity/current)*100 : 0
-let gP = current ? (gold/current)*100 : 0
-let dP = current ? (debt/current)*100 : 0
-
-document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%"
-document.getElementById("gCur").innerText = gP.toFixed(1)+"%"
-document.getElementById("dCur").innerText = dP.toFixed(1)+"%"
-
-
-
-/* REQUIRED */
-
-let eqReq=parseFloat(document.getElementById("eqReq").innerText)||0
-let gReq=parseFloat(document.getElementById("gReq").innerText)||0
-let dReq=parseFloat(document.getElementById("dReq").innerText)||0
-
-
-
-/* STATUS */
-
-setStatus("eqStat",eqP,eqReq)
-setStatus("gStat",gP,gReq)
-setStatus("dStat",dP,dReq)
-  
-function setStatus(id,current,required){
-
-let s = status(current,required)
-
-let el = document.getElementById(id)
-
-el.innerText = s
-
-el.classList.remove("statusUnder","statusBalanced","statusOver")
-
-if(s==="Under") el.classList.add("statusUnder")
-else if(s==="Balanced") el.classList.add("statusBalanced")
-else if(s==="Over") el.classList.add("statusOver")
-
-}
-
-
-/* FINANCIAL HEALTH SCORE */
-
-let score=0
-
-if(networth>0) score+=25
-if(emergency>=target) score+=25
-if(eqP>=50) score+=20
-if(gP>=10) score+=15
-if(dP<=30) score+=15
-
-document.getElementById("score").innerText=score
-
-
-
-/* GRADE */
-
-let grade="Risk"
-
-if(score>=90) grade="Elite"
-else if(score>=75) grade="Strong"
-else if(score>=60) grade="Stable"
-else if(score>=40) grade="Weak"
-
-document.getElementById("grade").innerText=grade
-
-
+/* TARGET EDIT SAVE */
+document.getElementById("target").addEventListener("blur", function(){
+    let val = this.innerText.replace(/[^0-9.-]+/g,"")
+    db.collection("portfolio").doc("main").update({emergencyTarget:Number(val)})
 })
 
-// Net Worth %
-let loan = Number(d.loan || 0);
-let emergency = Number(d.emergency || 0);
-let networth = (current || 0) + emergency - loan;
-let target = Number(d.emergencyTarget || 0); // or retirement target
-
-updateProgress(networth, target);
-
-// Growth %
-let invested = 0;
-let currentTotal = 0;
-d.rows.forEach(r=>{
-  invested += Number(r.invested)||0;
-  currentTotal += Number(r.current)||0;
-});
-
-let growth = invested ? ((currentTotal - invested)/invested)*100 : 0;
-
-const growthBox = document.getElementById("pGrowth").parentElement;
-const growthText = document.getElementById("pGrowth");
-
-growthText.innerText = growth.toFixed(1) + "%";
-growthBox.classList.remove("low","medium","high");
-
-if(growth < 0){
-    growthBox.classList.add("low");
-} else if(growth < 15){
-    growthBox.classList.add("medium");
-} else{
-    growthBox.classList.add("high");
+/* AGE CALCULATION & ALLOCATION */
+function calcAge(d){
+    let b=new Date(d), t=new Date()
+    let age=t.getFullYear()-b.getFullYear()
+    let m=t.getMonth()-b.getMonth()
+    if(m<0 || (m===0 && t.getDate()<b.getDate())) age--
+    return age
 }
-    
+
+function getAllocation(age){
+    if(age<=30) return {e:75,d:15,g:10}
+    if(age<=35) return {e:70,d:20,g:10}
+    if(age<=40) return {e:65,d:25,g:10}
+    if(age<=50) return {e:60,d:30,g:10}
+    return {e:50,d:40,g:10}
+}
+
+function updateAllocation(dob){
+    if(!dob) return
+    let age = calcAge(dob)
+    document.getElementById("age").innerText=age
+    let r=getAllocation(age)
+    document.getElementById("eqReq").innerText=r.e+"%"
+    document.getElementById("gReq").innerText=r.g+"%"
+    document.getElementById("dReq").innerText=r.d+"%"
+}
+
+/* DOB SAVE */
+document.getElementById("dob").addEventListener("change",function(){
+    let dob=this.value
+    db.collection("portfolio").doc("main").update({dob: dob})
+    updateAllocation(dob)
+})
+
 </script>
 
 </body>
