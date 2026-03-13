@@ -1,0 +1,499 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Financial Health System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+
+body{
+margin:0;
+background:#0b0f19;
+font-family:Inter;
+color:white;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+padding:30px;
+}
+
+.header{
+font-family:Orbitron;
+font-size:28px;
+color:#00e5ff;
+margin-bottom:30px;
+}
+
+.card{
+background:#121829;
+border:1px solid #1f2a44;
+border-radius:10px;
+padding:20px;
+margin-bottom:25px;
+}
+
+.sectionTitle{
+font-family:Orbitron;
+color:#00ffa6;
+margin-bottom:15px;
+}
+
+.row{
+display:flex;
+flex-wrap:wrap;
+gap:20px;
+}
+
+.stat{
+flex:1;
+min-width:180px;
+}
+
+.stat span{
+font-size:13px;
+color:#aaa;
+}
+
+.stat b{
+display:block;
+margin-top:5px;
+font-size:20px;
+color:#00ffa6;
+}
+
+.score{
+font-size:60px;
+font-family:Orbitron;
+text-align:center;
+color:#00ffa6;
+}
+
+.grade{
+font-size:24px;
+text-align:center;
+margin-top:10px;
+font-family:Orbitron;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+color:#ffd166;
+padding:10px;
+border-bottom:2px solid #1f2a44;
+}
+
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #1f2a44;
+}
+
+canvas{
+background:#0b0f19;
+border-radius:10px;
+margin-top:10px;
+}
+
+input{
+background:#0b0f19;
+border:1px solid #1f2a44;
+padding:8px;
+color:white;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">Financial Health Dashboard</div>
+
+
+<!-- FINANCIAL SCORE -->
+
+<div class="card">
+
+<div class="sectionTitle">Financial Health Score</div>
+
+<div class="score" id="score">0</div>
+
+<div class="grade" id="grade">-</div>
+
+</div>
+
+
+
+<!-- NET WORTH -->
+
+<div class="card">
+
+<div class="sectionTitle">Net Worth</div>
+
+<div class="row">
+
+<div class="stat">
+<span>Total Assets</span>
+<b id="asset">₹0</b>
+</div>
+
+<div class="stat">
+<span>Total Liability</span>
+<b id="liability">₹0</b>
+</div>
+
+<div class="stat">
+<span>Net Worth</span>
+<b id="networth">₹0</b>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- EMERGENCY FUND -->
+
+<div class="card">
+
+<div class="sectionTitle">Emergency Fund</div>
+
+<div class="row">
+
+<div class="stat">
+<span>Target</span>
+<b id="target">₹0</b>
+</div>
+
+<div class="stat">
+<span>Available</span>
+<b id="fund">₹0</b>
+</div>
+
+<div class="stat">
+<span>Pending</span>
+<b id="pending">₹0</b>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- DOB -->
+
+<div class="card">
+
+<div class="sectionTitle">Age & Allocation</div>
+
+<div class="row">
+
+<div class="stat">
+<span>Date of Birth</span>
+<input type="date" id="dob">
+</div>
+
+<div class="stat">
+<span>Current Age</span>
+<b id="age">0</b>
+</div>
+
+</div>
+
+<br>
+
+<table>
+
+<tr>
+<th>Asset</th>
+<th>Current %</th>
+<th>Required %</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Equity</td>
+<td id="eqCur">0%</td>
+<td id="eqReq">0%</td>
+<td id="eqStat">-</td>
+</tr>
+
+<tr>
+<td>Gold</td>
+<td id="gCur">0%</td>
+<td id="gReq">15%</td>
+<td id="gStat">-</td>
+</tr>
+
+<tr>
+<td>Debt</td>
+<td id="dCur">0%</td>
+<td id="dReq">0%</td>
+<td id="dStat">-</td>
+</tr>
+
+</table>
+
+</div>
+
+
+
+<!-- RETIREMENT -->
+
+<div class="card">
+
+<div class="sectionTitle">Retirement Readiness</div>
+
+<div class="score" id="retireScore">0</div>
+
+</div>
+
+
+
+<!-- NET WORTH TRACKER -->
+
+<div class="card">
+
+<div class="sectionTitle">Net Worth Growth</div>
+
+<canvas id="netChart" width="900" height="300"></canvas>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+/* FIREBASE CONFIG */
+
+const firebaseConfig={
+apiKey:"APIKEY",
+authDomain:"APP.firebaseapp.com",
+databaseURL:"https://APP-default-rtdb.firebaseio.com",
+projectId:"APP"
+}
+
+firebase.initializeApp(firebaseConfig)
+
+const db=firebase.database()
+
+
+
+/* FORMAT */
+
+function INR(n){
+return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n)
+}
+
+
+
+/* AGE */
+
+function ageCalc(d){
+
+let b=new Date(d)
+let t=new Date()
+
+let a=t.getFullYear()-b.getFullYear()
+
+let m=t.getMonth()-b.getMonth()
+
+if(m<0 || (m===0 && t.getDate()<b.getDate())) a--
+
+return a
+}
+
+
+
+/* ALLOCATION TABLE */
+
+function allocation(age){
+
+if(age<=27) return{e:75,d:15,g:15}
+if(age<=32) return{e:70,d:20,g:15}
+if(age<=37) return{e:65,d:25,g:15}
+if(age<=45) return{e:60,d:30,g:15}
+return{e:50,d:40,g:15}
+
+}
+
+
+
+/* STATUS */
+
+function stat(c,r){
+
+if(Math.abs(c-r)<=5) return "Balanced"
+if(c>r) return "Over"
+return "Under"
+
+}
+
+
+
+/* FIREBASE SYNC */
+
+db.ref("portfolio").on("value",snap=>{
+
+let data=snap.val()||{}
+let rows=data.rows||[]
+
+let eq=0,g=0,d=0
+
+rows.forEach(x=>{
+
+if(x.category=="Equity") eq+=x.current
+if(x.category=="Gold") g+=x.current
+if(x.category=="Debt") d+=x.current
+
+})
+
+let total=eq+g+d
+
+let emergency=data.emergency||0
+let loan=data.loan||0
+
+let asset=total+emergency
+let net=asset-loan
+
+document.getElementById("asset").innerText=INR(asset)
+document.getElementById("liability").innerText=INR(loan)
+document.getElementById("networth").innerText=INR(net)
+
+
+
+/* EMERGENCY */
+
+let target=100000
+
+document.getElementById("target").innerText=INR(target)
+document.getElementById("fund").innerText=INR(emergency)
+document.getElementById("pending").innerText=INR(target-emergency)
+
+
+
+/* CURRENT % */
+
+let eqP=eq/total*100
+let gP=g/total*100
+let dP=d/total*100
+
+document.getElementById("eqCur").innerText=eqP.toFixed(1)+"%"
+document.getElementById("gCur").innerText=gP.toFixed(1)+"%"
+document.getElementById("dCur").innerText=dP.toFixed(1)+"%"
+
+
+
+/* DOB EVENT */
+
+document.getElementById("dob").onchange=function(){
+
+let age=ageCalc(this.value)
+
+document.getElementById("age").innerText=age
+
+let r=allocation(age)
+
+document.getElementById("eqReq").innerText=r.e+"%"
+document.getElementById("gReq").innerText=r.g+"%"
+document.getElementById("dReq").innerText=r.d+"%"
+
+document.getElementById("eqStat").innerText=stat(eqP,r.e)
+document.getElementById("gStat").innerText=stat(gP,r.g)
+document.getElementById("dStat").innerText=stat(dP,r.d)
+
+
+
+/* RETIREMENT SCORE */
+
+let retire=0
+
+if(net>1000000) retire+=40
+if(eqP>=50) retire+=30
+if(emergency>=target) retire+=30
+
+document.getElementById("retireScore").innerText=retire
+
+}
+
+
+
+/* HEALTH SCORE */
+
+let score=0
+
+if(net>0) score+=25
+if(emergency>=target) score+=25
+if(eqP>50) score+=20
+if(gP>=10) score+=15
+if(dP<=30) score+=15
+
+document.getElementById("score").innerText=score
+
+
+
+/* GRADE */
+
+let grade="Risk"
+
+if(score>=90) grade="Elite"
+else if(score>=75) grade="Strong"
+else if(score>=60) grade="Stable"
+else if(score>=40) grade="Weak"
+
+document.getElementById("grade").innerText=grade
+
+
+
+/* NET WORTH TRACKER */
+
+let ctx=document.getElementById("netChart").getContext("2d")
+
+let history=data.history||[]
+
+ctx.beginPath()
+
+history.forEach((v,i)=>{
+
+let x=i*80
+let y=300-(v/10000)
+
+if(i==0) ctx.moveTo(x,y)
+else ctx.lineTo(x,y)
+
+})
+
+ctx.strokeStyle="#00e5ff"
+ctx.lineWidth=3
+ctx.stroke()
+
+})
+
+</script>
+
+</body>
+</html>
