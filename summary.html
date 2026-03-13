@@ -269,7 +269,7 @@ border-radius:10px;
 
 <script>
 
-/* FIREBASE CONFIG (USE YOUR REAL CONFIG) */
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
@@ -285,13 +285,14 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 
+/* FORMAT INR */
 
 function INR(n){
 return new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(n||0)
 }
 
 
-/* AGE CALC */
+/* AGE CALCULATION */
 
 function calcAge(d){
 
@@ -305,7 +306,6 @@ let m=t.getMonth()-b.getMonth()
 if(m<0 || (m===0 && t.getDate()<b.getDate())) age--
 
 return age
-
 }
 
 
@@ -333,11 +333,9 @@ return "Under"
 }
 
 
-
 /* DOB CHANGE */
 
 document.getElementById("dob").addEventListener("change",updateAllocation)
-
 
 
 function updateAllocation(){
@@ -360,7 +358,7 @@ document.getElementById("dReq").innerText=r.d+"%"
 
 
 
-/* FIREBASE PORTFOLIO */
+/* FIREBASE PORTFOLIO SYNC */
 
 db.ref("portfolio").on("value",snap=>{
 
@@ -377,25 +375,36 @@ let current = 0;
 
 rows.forEach(r=>{
 
-invested += r.invested || 0;
-current += r.current || 0;
+invested += Number(r.invested) || 0;
+current += Number(r.current) || 0;
 
-if(r.category==="Equity") equity += r.current || 0;
-if(r.category==="Gold") gold += r.current || 0;
-if(r.category==="Debt") debt += r.current || 0;
+if(r.category==="Equity") equity += Number(r.current) || 0;
+if(r.category==="Gold") gold += Number(r.current) || 0;
+if(r.category==="Debt") debt += Number(r.current) || 0;
 
 });
 
-let emergency = d.emergency || 0;
-let loan = d.loan || 0;
+
+let emergency = Number(d.emergency) || 0;
+let loan = Number(d.loan) || 0;
+let target = Number(d.target) || 0;
 
 let networth = current + emergency - loan;
 
 
-/* NET WORTH */
+/* NET WORTH UI */
 
-document.getElementById("networth").innerText =
-new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(networth);
+document.getElementById("asset").innerText = INR(current + emergency)
+document.getElementById("liability").innerText = INR(loan)
+document.getElementById("networth").innerText = INR(networth)
+
+
+/* EMERGENCY FUND */
+
+document.getElementById("target").innerText = INR(target)
+document.getElementById("fund").innerText = INR(emergency)
+document.getElementById("pending").innerText = INR(target-emergency)
+
 
 
 /* CURRENT % */
@@ -404,43 +413,28 @@ let eqP = current ? (equity/current)*100 : 0;
 let gP = current ? (gold/current)*100 : 0;
 let dP = current ? (debt/current)*100 : 0;
 
-document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%";
-document.getElementById("gCur").innerText = gP.toFixed(1)+"%";
-document.getElementById("dCur").innerText = dP.toFixed(1)+"%";
+document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%"
+document.getElementById("gCur").innerText = gP.toFixed(1)+"%"
+document.getElementById("dCur").innerText = dP.toFixed(1)+"%"
+
+
+/* REQUIRED STATUS */
+
+let eqReq=parseFloat(document.getElementById("eqReq").innerText)||0
+let gReq=parseFloat(document.getElementById("gReq").innerText)||0
+let dReq=parseFloat(document.getElementById("dReq").innerText)||0
+
+document.getElementById("eqStat").innerText=status(eqP,eqReq)
+document.getElementById("gStat").innerText=status(gP,gReq)
+document.getElementById("dStat").innerText=status(dP,dReq)
+
 
 
 /* FINANCIAL HEALTH SCORE */
 
-let score = 0;
+let score = 0
 
-if(networth > 0) score += 25;
-if(emergency > 0) score += 20;
-if(eqP >= 50) score += 20;
-if(gP >= 10) score += 15;
-if(dP <= 30) score += 20;
-
-document.getElementById("score").innerText = score;
-
-
-/* GRADE */
-
-let grade = "Risk";
-
-if(score >= 90) grade = "Elite";
-else if(score >= 75) grade = "Strong";
-else if(score >= 60) grade = "Stable";
-else if(score >= 40) grade = "Weak";
-
-document.getElementById("grade").innerText = grade;
-
-});
-
-
-/* SCORE */
-
-let score=0
-
-if(net>0) score+=25
+if(networth>0) score+=25
 if(emergency>=target) score+=25
 if(eqP>=50) score+=20
 if(gP>=10) score+=15
@@ -462,64 +456,9 @@ else if(score>=40) grade="Weak"
 document.getElementById("grade").innerText=grade
 
 
-
-/* NET WORTH CHART */
-
-let history=data.history||[]
-
-let c=document.getElementById("chart")
-
-let ctx=c.getContext("2d")
-
-ctx.clearRect(0,0,c.width,c.height)
-
-ctx.beginPath()
-
-history.forEach((v,i)=>{
-
-let x=i*80
-let y=300-(v/10000)
-
-if(i==0) ctx.moveTo(x,y)
-else ctx.lineTo(x,y)
-
 })
 
-ctx.strokeStyle="#00e5ff"
-ctx.lineWidth=3
-ctx.stroke()
 
-})
-
-  document.getElementById("dob").addEventListener("change",function(){
-
-let dob = new Date(this.value);
-let today = new Date();
-
-let age = today.getFullYear() - dob.getFullYear();
-
-let m = today.getMonth() - dob.getMonth();
-
-if(m < 0 || (m===0 && today.getDate() < dob.getDate())) age--;
-
-document.getElementById("age").innerText = age;
-
-
-/* ALLOCATION TABLE */
-
-let equity=50,debt=40,gold=15;
-
-if(age<=27){ equity=75; debt=15;}
-else if(age<=32){ equity=70; debt=20;}
-else if(age<=37){ equity=65; debt=25;}
-else if(age<=45){ equity=60; debt=30;}
-
-document.getElementById("eqReq").innerText = equity+"%";
-document.getElementById("dReq").innerText = debt+"%";
-document.getElementById("gReq").innerText = gold+"%";
-
-});
-  
 </script>
 
 </body>
