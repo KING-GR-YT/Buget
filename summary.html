@@ -488,11 +488,12 @@ function updateMonthlyChart(rows) {
         }]
       },
       options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero:true }
-        }
-      }
+  responsive: true,
+  maintainAspectRatio: false, // <-- this ensures CSS height is respected
+  scales: {
+    y: { beginAtZero:true }
+  }
+}
     });
   }
 }
