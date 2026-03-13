@@ -512,7 +512,7 @@ db.collection("portfolio").doc("main").onSnapshot((doc)=>{
     document.getElementById("grade").innerText=grade
 
     /* NET WORTH % */
-    updateProgress(networth, target, "pFund")
+    updateProgress(networth, target);
 
     /* GROWTH % */
     let growth = invested ? ((currentTotal - invested)/invested)*100 : 0;
