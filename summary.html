@@ -11,7 +11,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <style>
 
@@ -269,22 +270,37 @@ border-radius:10px;
 
 <script>
 
-/* FIREBASE CONFIG */
-
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "personal-budget-1cbbe",
   storageBucket: "personal-budget-1cbbe.appspot.com",
   messagingSenderId: "133591748262",
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
+const db = firebase.firestore();
 
+/* PAGE SECURITY */
+
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+document.body.style.display="none";
+
+auth.onAuthStateChanged(function(user){
+
+if(!user || user.uid !== ADMIN_UID){
+window.location.href="index.html";
+}else{
+document.body.style.display="block";
+}
+
+});
+  
 /* FORMAT INR */
 
 function INR(n){
@@ -342,7 +358,9 @@ document.getElementById("dob").addEventListener("change",function(){
 
 let dob=this.value
 
-db.ref("portfolio/dob").set(dob)
+db.collection("portfolio").doc("main").update({
+  dob: dob
+})
 
 updateAllocation(dob)
 
@@ -371,9 +389,11 @@ document.getElementById("dReq").innerText=r.d+"%"
 
 /* FIREBASE PORTFOLIO SYNC */
 
-db.ref("portfolio").on("value",snap=>{
+db.collection("portfolio")
+.doc("main")
+.onSnapshot((doc)=>{
 
-let d = snap.val() || {}
+let d = doc.data() || {}
 
 let rows = d.rows || []
 
