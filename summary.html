@@ -396,7 +396,7 @@ document.getElementById("dob").addEventListener("change",function(){
 let dob=this.value
 
 db.collection("portfolio").doc("main").update({
-  dob: dob
+emergencyTarget:Number(val)
 })
 
 updateAllocation(dob)
@@ -468,7 +468,7 @@ updateAllocation(d.dob)
 
 let emergency = Number(d.emergency)||0
 let loan = Number(d.loan)||0
-let target = Number(d.target)||0
+let target = Number(d.emergencyTarget)||0 
 
 let networth = current + emergency - loan
 
