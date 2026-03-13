@@ -9,7 +9,7 @@
 <title>Financial Health Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -488,68 +488,32 @@ document.getElementById("dReq").innerText=r.d+"%"
 
 /* FIREBASE PORTFOLIO SYNC */
 
-let chart; // global variable to hold the chart instance
-
 db.collection("portfolio")
 .doc("main")
-.onSnapshot((doc) => {
+.onSnapshot((doc)=>{
 
-  let d = doc.data() || {};
-  let rows = d.rows || [];
+let d = doc.data() || {}
 
-  let equity = 0, gold = 0, debt = 0;
-  let invested = 0, current = 0;
+let rows = d.rows || []
 
-  rows.forEach(r => {
-    invested += Number(r.invested) || 0;
-    current += Number(r.current) || 0;
+let equity=0
+let gold=0
+let debt=0
 
-    if(r.category === "Equity") equity += Number(r.current) || 0;
-    if(r.category === "Gold") gold += Number(r.current) || 0;
-    if(r.category === "Debt") debt += Number(r.current) || 0;
-  });
+let invested=0
+let current=0
 
-  // ---- NET WORTH GROWTH DATA ----
-  // For simplicity, let's assume `rows` is ordered by date
-  let labels = rows.map(r => r.date || ""); // or r.name if no date
-  let dataValues = rows.map(r => Number(r.current) || 0);
 
-  const ctx = document.getElementById('chart').getContext('2d');
+rows.forEach(r=>{
 
-  if(chart) chart.destroy(); // destroy previous chart if exists
+invested += Number(r.invested)||0
+current += Number(r.current)||0
 
-  chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Net Worth Growth',
-        data: dataValues,
-        backgroundColor: 'rgba(0, 255, 166, 0.2)',
-        borderColor: '#00ffa6',
-        borderWidth: 2,
-        tension: 0.3,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: { mode: 'index', intersect: false }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) { return '₹' + value.toLocaleString('en-IN'); }
-          }
-        }
-      }
-    }
-  });
+if(r.category==="Equity") equity+=Number(r.current)||0
+if(r.category==="Gold") gold+=Number(r.current)||0
+if(r.category==="Debt") debt+=Number(r.current)||0
 
-});
+})
 
 
 /* LOAD DOB */
