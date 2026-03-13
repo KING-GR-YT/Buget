@@ -272,15 +272,17 @@ border-radius:10px;
 /* FIREBASE CONFIG (USE YOUR REAL CONFIG) */
 
 const firebaseConfig = {
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_PROJECT.firebaseapp.com",
-databaseURL: "YOUR_DB_URL",
-projectId: "YOUR_PROJECT_ID"
-}
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  databaseURL: "https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.appspot.com",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+};
 
-firebase.initializeApp(firebaseConfig)
-
-const db=firebase.database()
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
 
 
@@ -362,55 +364,76 @@ document.getElementById("dReq").innerText=r.d+"%"
 
 db.ref("portfolio").on("value",snap=>{
 
-let data=snap.val()||{}
+let d = snap.val() || {};
 
-let rows=data.rows||[]
+let rows = d.rows || [];
 
-let equity=0
-let gold=0
-let debt=0
+let equity = 0;
+let gold = 0;
+let debt = 0;
 
-rows.forEach(x=>{
+let invested = 0;
+let current = 0;
 
-if(x.category=="Equity") equity+=x.current
-if(x.category=="Gold") gold+=x.current
-if(x.category=="Debt") debt+=x.current
+rows.forEach(r=>{
 
-})
+invested += r.invested || 0;
+current += r.current || 0;
 
-let total=equity+gold+debt
+if(r.category==="Equity") equity += r.current || 0;
+if(r.category==="Gold") gold += r.current || 0;
+if(r.category==="Debt") debt += r.current || 0;
 
-let emergency=data.emergency||0
-let loan=data.loan||0
+});
 
-let asset=total+emergency
+let emergency = d.emergency || 0;
+let loan = d.loan || 0;
 
-let net=asset-loan
-
-
-document.getElementById("asset").innerText=INR(asset)
-document.getElementById("liability").innerText=INR(loan)
-document.getElementById("networth").innerText=INR(net)
+let networth = current + emergency - loan;
 
 
-let target=100000
+/* NET WORTH */
 
-document.getElementById("target").innerText=INR(target)
-document.getElementById("fund").innerText=INR(emergency)
-document.getElementById("pending").innerText=INR(target-emergency)
-
+document.getElementById("networth").innerText =
+new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(networth);
 
 
 /* CURRENT % */
 
-let eqP=(equity/total)*100||0
-let gP=(gold/total)*100||0
-let dP=(debt/total)*100||0
+let eqP = current ? (equity/current)*100 : 0;
+let gP = current ? (gold/current)*100 : 0;
+let dP = current ? (debt/current)*100 : 0;
 
-document.getElementById("eqCur").innerText=eqP.toFixed(1)+"%"
-document.getElementById("gCur").innerText=gP.toFixed(1)+"%"
-document.getElementById("dCur").innerText=dP.toFixed(1)+"%"
+document.getElementById("eqCur").innerText = eqP.toFixed(1)+"%";
+document.getElementById("gCur").innerText = gP.toFixed(1)+"%";
+document.getElementById("dCur").innerText = dP.toFixed(1)+"%";
 
+
+/* FINANCIAL HEALTH SCORE */
+
+let score = 0;
+
+if(networth > 0) score += 25;
+if(emergency > 0) score += 20;
+if(eqP >= 50) score += 20;
+if(gP >= 10) score += 15;
+if(dP <= 30) score += 20;
+
+document.getElementById("score").innerText = score;
+
+
+/* GRADE */
+
+let grade = "Risk";
+
+if(score >= 90) grade = "Elite";
+else if(score >= 75) grade = "Strong";
+else if(score >= 60) grade = "Stable";
+else if(score >= 40) grade = "Weak";
+
+document.getElementById("grade").innerText = grade;
+
+});
 
 
 /* SCORE */
@@ -468,6 +491,35 @@ ctx.stroke()
 
 })
 
+  document.getElementById("dob").addEventListener("change",function(){
+
+let dob = new Date(this.value);
+let today = new Date();
+
+let age = today.getFullYear() - dob.getFullYear();
+
+let m = today.getMonth() - dob.getMonth();
+
+if(m < 0 || (m===0 && today.getDate() < dob.getDate())) age--;
+
+document.getElementById("age").innerText = age;
+
+
+/* ALLOCATION TABLE */
+
+let equity=50,debt=40,gold=15;
+
+if(age<=27){ equity=75; debt=15;}
+else if(age<=32){ equity=70; debt=20;}
+else if(age<=37){ equity=65; debt=25;}
+else if(age<=45){ equity=60; debt=30;}
+
+document.getElementById("eqReq").innerText = equity+"%";
+document.getElementById("dReq").innerText = debt+"%";
+document.getElementById("gReq").innerText = gold+"%";
+
+});
+  
 </script>
 
 </body>
