@@ -594,7 +594,7 @@ db.collection("portfolio").doc("main").onSnapshot((doc)=>{
   const d = doc.data() || {};
   data = d.rows || [];
 
-  document.querySelector('[data-id="targetFund"]').innerText = INR(d.target||0);
+  document.querySelector('[data-id="targetFund"]').innerText = INR(d.retirementTarget || 0);
   document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
   document.querySelector('[data-id="emergencyFund"]').innerText = INR(d.emergency||0);
 
@@ -637,12 +637,12 @@ firestore.collection("financeSummary")
 
 function save(){
   db.collection("portfolio").doc("main").set({
-    target: NUM(document.querySelector('[data-id="targetFund"]').innerText),
+    retirementTarget: NUM(document.querySelector('[data-id="targetFund"]').innerText),
     loan: NUM(document.querySelector('[data-id="loan"]').innerText),
     emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
     health: document.getElementById("healthInsuranceStatus").value === "yes",
     rows: data
-  });
+  },{merge:true});
 }
 
 /* ================== ADD ================== */
@@ -911,4 +911,5 @@ if(healthSelect){
 </script>
 </body>
 </html>
+
 
