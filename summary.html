@@ -193,6 +193,43 @@ background:#00ffff;
 color:#001f1f;
 box-shadow:0 0 10px #00ffff;
 }
+
+.mini-progress{
+  width:150px;
+  height:150px;
+  border:5px solid #3a3a3a;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.35s;
+  box-shadow:inset 0 0 18px rgba(0,0,0,.6), 0 0 10px rgba(0,255,255,.15);
+}
+
+.percent{
+  font-size:28px;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
+/* risk colors glow */
+.low{
+  border-color:#ff3b3b !important;
+  color:#ff3b3b;
+  box-shadow:0 0 18px #ff3b3b55, inset 0 0 20px #ff3b3b33;
+}
+
+.medium{
+  border-color:#ffb300 !important;
+  color:#ffb300;
+  box-shadow:0 0 18px #ffb30066, inset 0 0 20px #ffb30033;
+}
+
+.high{
+  border-color:#00ff9d !important;
+  color:#00ff9d;
+  box-shadow:0 0 20px #00ff9d66, inset 0 0 25px #00ff9d33;
+}
     
 </style>
 
@@ -228,13 +265,19 @@ box-shadow:0 0 10px #00ffff;
 <!-- RIGHT SIDE -->
 <div class="chartBox">
 
-<div class="sectionTitle">Net Worth Growth</div>
+  <div class="stat1">
+    <span>Net Worth %</span>
+    <div class="mini-progress">
+      <div class="percent" id="pFund">0%</div>
+    </div>
+  </div>
 
-<canvas id="chart"></canvas>
-
-</div>
-
-</div>
+  <div class="stat1">
+    <span>Growth %</span>
+    <div class="mini-progress">
+      <div class="percent" id="pGrowth">0%</div>
+    </div>
+  </div>
 
 </div>
 
@@ -624,6 +667,38 @@ document.getElementById("grade").innerText=grade
 
 })
 
+// Net Worth %
+let loan = Number(d.loan || 0);
+let emergency = Number(d.emergency || 0);
+let networth = (current || 0) + emergency - loan;
+let target = Number(d.emergencyTarget || 0); // or retirement target
+
+updateProgress(networth, target);
+
+// Growth %
+let invested = 0;
+let currentTotal = 0;
+d.rows.forEach(r=>{
+  invested += Number(r.invested)||0;
+  currentTotal += Number(r.current)||0;
+});
+
+let growth = invested ? ((currentTotal - invested)/invested)*100 : 0;
+
+const growthBox = document.getElementById("pGrowth").parentElement;
+const growthText = document.getElementById("pGrowth");
+
+growthText.innerText = growth.toFixed(1) + "%";
+growthBox.classList.remove("low","medium","high");
+
+if(growth < 0){
+    growthBox.classList.add("low");
+} else if(growth < 15){
+    growthBox.classList.add("medium");
+} else{
+    growthBox.classList.add("high");
+}
+    
 </script>
 
 </body>
