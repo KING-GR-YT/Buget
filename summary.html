@@ -218,7 +218,6 @@ input{
     color:#00ff9d;
     box-shadow:0 0 20px #00ff9d66, inset 0 0 25px #00ff9d33;
 }
-
 </style>
 
 </head>
@@ -232,21 +231,17 @@ input{
 </div>
 
 <!-- FINANCIAL SCORE -->
-
 <div class="card">
 
 <div class="scoreCard">
 
 <!-- LEFT SIDE -->
 <div class="scoreBox">
-
 <div class="sectionTitle">Financial Health Score</div>
-
 <div class="scoreCenter">
 <div class="score" id="score">0</div>
 <div class="grade" id="grade">-</div>
 </div>
-
 </div>
 
 <!-- RIGHT SIDE -->
@@ -269,15 +264,12 @@ input{
 </div>
 
 </div>
+</div>
 
 <!-- NET WORTH -->
-
 <div class="card">
-
 <div class="sectionTitle">Net Worth</div>
-
 <div class="row">
-
 <div class="stat">
 <span>Total Assets</span>
 <b id="asset">₹0</b>
@@ -292,19 +284,13 @@ input{
 <span>Net Worth</span>
 <b id="networth">₹0</b>
 </div>
-
 </div>
-
 </div>
 
 <!-- EMERGENCY FUND -->
-
 <div class="card">
-
 <div class="sectionTitle">Emergency Fund</div>
-
 <div class="row">
-
 <div class="stat">
 <span>Target</span>
 <b id="target" contenteditable="true">₹0</b>
@@ -319,35 +305,26 @@ input{
 <span>Pending</span>
 <b id="pending">₹0</b>
 </div>
-
 </div>
-
 </div>
 
 <!-- AGE + ALLOCATION -->
-
 <div class="card">
-
 <div class="sectionTitle">Investment Allocation</div>
-
 <div class="row">
-
 <div class="stat">
 <span>DOB</span>
 <input type="date" id="dob">
 </div>
-
 <div class="stat">
 <span>Age</span>
 <b id="age">0</b>
 </div>
-
 </div>
 
 <br>
 
 <table>
-
 <tr>
 <th>Asset</th>
 <th>Current %</th>
@@ -377,13 +354,10 @@ input{
 </tr>
 
 </table>
-
 </div>
-
 </div>
 
 <script>
-
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
@@ -401,9 +375,7 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* PAGE SECURITY */
-
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
 document.body.style.display="block";
 
 auth.onAuthStateChanged(function(user){
@@ -422,17 +394,19 @@ function INR(n){
     }).format(n||0)
 }
 
-/* PROGRESS RING */
-function updateProgress(val, target){
-    if(!target || target<=0){
-        document.getElementById("pFund").innerText="0%";
+/* PROGRESS RING FUNCTION */
+function updateProgress(val, target, circleId){
+    const percentText = document.getElementById(circleId);
+    const box = percentText.parentElement;
+
+    if(!target || target <= 0){
+        percentText.innerText = "0%";
+        box.classList.remove("low","medium","high");
+        percentText.classList.remove("low","medium","high");
         return;
     }
 
     let p = Math.min((val / target) * 100, 100);
-    const box = document.getElementById("pFund").parentElement;
-    const percentText = document.getElementById("pFund");
-
     percentText.innerText = p.toFixed(1) + "%";
 
     box.classList.remove("low","medium","high");
@@ -441,28 +415,21 @@ function updateProgress(val, target){
     if(p < 40){
         box.classList.add("low");
         percentText.classList.add("low");
-    }
-    else if(p <= 70){
+    } else if(p <= 70){
         box.classList.add("medium");
         percentText.classList.add("medium");
-    }
-    else{
+    } else {
         box.classList.add("high");
         percentText.classList.add("high");
     }
 }
 
 /* FIREBASE PORTFOLIO SYNC */
-
-db.collection("portfolio")
-.doc("main")
-.onSnapshot((doc)=>{
-
+db.collection("portfolio").doc("main").onSnapshot((doc)=>{
     let d = doc.data() || {}
     let rows = d.rows || []
 
-    let equity=0, gold=0, debt=0
-    let invested=0, currentTotal=0
+    let equity=0, gold=0, debt=0, invested=0, currentTotal=0;
 
     rows.forEach(r=>{
         invested += Number(r.invested)||0
@@ -534,7 +501,6 @@ db.collection("portfolio")
     if(eqP>=50) score+=20
     if(gP>=10) score+=15
     if(dP<=30) score+=15
-
     document.getElementById("score").innerText=score
 
     /* GRADE */
@@ -546,47 +512,11 @@ db.collection("portfolio")
     document.getElementById("grade").innerText=grade
 
     /* NET WORTH % */
-    /* PROGRESS RING (Net Worth %) */
-function updateProgress(val, target){
-    const percentText = document.getElementById("pFund");
-    const box = percentText.parentElement;
-
-    if(!target || target <= 0){
-        percentText.innerText = "0%";
-        box.classList.remove("low","medium","high");
-        percentText.classList.remove("low","medium","high");
-        return;
-    }
-
-    let p = Math.min((val / target) * 100, 100);
-    percentText.innerText = p.toFixed(1) + "%";
-
-    // Remove previous classes
-    box.classList.remove("low","medium","high");
-    percentText.classList.remove("low","medium","high");
-
-    // Add color based on % thresholds
-    if(p < 40){
-        box.classList.add("low");
-        percentText.classList.add("low");
-    } else if(p <= 70){
-        box.classList.add("medium");
-        percentText.classList.add("medium");
-    } else {
-        box.classList.add("high");
-        percentText.classList.add("high");
-    }
-}
+    updateProgress(networth, target, "pFund")
 
     /* GROWTH % */
-    let growth = invested ? ((currentTotal - invested)/invested)*100 : 0
-    const growthBox = document.getElementById("pGrowth").parentElement
-    const growthText = document.getElementById("pGrowth")
-    growthText.innerText = growth.toFixed(1) + "%"
-    growthBox.classList.remove("low","medium","high")
-    if(growth < 0) growthBox.classList.add("low")
-    else if(growth < 15) growthBox.classList.add("medium")
-    else growthBox.classList.add("high")
+    let growth = invested ? ((currentTotal - invested)/invested)*100 : 0;
+    updateProgress(growth, 100, "pGrowth")
 })
 
 /* TARGET EDIT SAVE */
@@ -628,7 +558,6 @@ document.getElementById("dob").addEventListener("change",function(){
     db.collection("portfolio").doc("main").update({dob: dob})
     updateAllocation(dob)
 })
-
 </script>
 
 </body>
