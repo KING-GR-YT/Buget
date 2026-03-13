@@ -546,7 +546,37 @@ db.collection("portfolio")
     document.getElementById("grade").innerText=grade
 
     /* NET WORTH % */
-    updateProgress(networth, target)
+    /* PROGRESS RING (Net Worth %) */
+function updateProgress(val, target){
+    const percentText = document.getElementById("pFund");
+    const box = percentText.parentElement;
+
+    if(!target || target <= 0){
+        percentText.innerText = "0%";
+        box.classList.remove("low","medium","high");
+        percentText.classList.remove("low","medium","high");
+        return;
+    }
+
+    let p = Math.min((val / target) * 100, 100);
+    percentText.innerText = p.toFixed(1) + "%";
+
+    // Remove previous classes
+    box.classList.remove("low","medium","high");
+    percentText.classList.remove("low","medium","high");
+
+    // Add color based on % thresholds
+    if(p < 40){
+        box.classList.add("low");
+        percentText.classList.add("low");
+    } else if(p <= 70){
+        box.classList.add("medium");
+        percentText.classList.add("medium");
+    } else {
+        box.classList.add("high");
+        percentText.classList.add("high");
+    }
+}
 
     /* GROWTH % */
     let growth = invested ? ((currentTotal - invested)/invested)*100 : 0
