@@ -1066,8 +1066,22 @@ let risk = "Safe";
 if(score >= 60) risk = "Risk";
 else if(score >=30) risk = "Moderate";
 
-document.getElementById("healthScore").innerText =
-score + " " + risk;
+const scoreText = document.getElementById("healthScore");
+const scoreBox = scoreText.parentElement;
+
+scoreText.innerText = score;
+
+scoreBox.classList.remove("low","medium","high");
+
+if(score >= 60){
+    scoreBox.classList.add("low");
+}
+else if(score >= 30){
+    scoreBox.classList.add("medium");
+}
+else{
+    scoreBox.classList.add("high");
+}
 
 }
 
