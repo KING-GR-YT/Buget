@@ -376,122 +376,47 @@ font-weight:600;
 }
     
 /* ================= MOBILE RESPONSIVE ================= */
+@media (max-width:700px){
 
-@media (max-width:900px){
-
-.container{
-padding:10px;
+table thead{
+display:none;
 }
 
-/* header */
-.header{
-font-size:22px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-gap:10px;
-}
-
-.home-link{
-float:none;
-font-size:14px;
-}
-
-/* summary cards */
-.top{
-justify-content:center;
-gap:15px;
-}
-
-.stat1{
-flex:1 1 140px;
-min-width:130px;
-}
-
-.stat span{
-font-size:16px;
-}
-
-.stat b{
-font-size:18px;
-}
-
-/* progress circles smaller */
-.mini-progress{
-width:110px;
-height:110px;
-}
-
-.percent{
-font-size:22px;
-}
-
-/* health score */
-.health-value{
-font-size:34px;
-}
-
-/* allocation header */
-.alloc-title{
-font-size:20px;
-}
-
-.alloc-f{
-font-size:20px;
-}
-
-/* add investment form stack */
-.glass:has(#invName){
-flex-direction:column;
-align-items:stretch;
-}
-
-#invName,
-#category,
-#invInvested,
-#invCurrent{
+table, 
+table tbody, 
+table tr, 
+table td{
+display:block;
 width:100%;
 }
 
-/* table scroll */
-.glass table{
-min-width:700px;
+table tr{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(0,247,255,.25);
+border-radius:12px;
+padding:12px;
+margin-bottom:14px;
+box-shadow:0 0 12px rgba(0,247,255,.15);
 }
 
-.glass{
-overflow-x:auto;
+table td{
+text-align:left;
+padding:6px 8px;
+border:none;
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:14px;
 }
 
+table td::before{
+content:attr(data-label);
+font-weight:600;
+color:var(--gold);
 }
 
-/* ================= SMALL PHONES ================= */
-
-@media (max-width:500px){
-
-.header{
-font-size:18px;
-}
-
-.stat1{
-flex:1 1 100%;
-}
-
-.mini-progress{
-width:95px;
-height:95px;
-}
-
-.percent{
-font-size:20px;
-}
-
-.stat b{
-font-size:16px;
-}
-
-.alloc-f{
-font-size:18px;
+table td:last-child{
+justify-content:flex-end;
 }
 
 }
@@ -937,16 +862,16 @@ function render(){
 
   data.forEach((r,i)=>{
 
-    tbody.innerHTML+=`
+tbody.innerHTML+=`
 <tr>
-<td>${r.name}</td>
-<td>${r.alloc}%</td>
-<td>${r.category || "-"}</td>
-<td class="editable number">${INR(r.invested)}</td>
-<td class="editable number">${INR(r.current)}</td>
-<td class="profit"></td>
-<td class="editable xirrCell">${r.xirr || 0}%</td>
-<td><button onclick="deleteRow(${i})">🗑</button></td>
+<td data-label="Investment">${r.name}</td>
+<td data-label="Alloc %">${r.alloc}%</td>
+<td data-label="Category">${r.category || "-"}</td>
+<td data-label="Invested" class="editable number">${INR(r.invested)}</td>
+<td data-label="Current" class="editable number">${INR(r.current)}</td>
+<td data-label="Profit" class="profit"></td>
+<td data-label="XIRR %" class="editable xirrCell">${r.xirr || 0}%</td>
+<td data-label="Delete"><button onclick="deleteRow(${i})">🗑</button></td>
 </tr>`;
 
   });
