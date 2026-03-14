@@ -958,6 +958,16 @@ colorCategoryCircle("pEquity",eqp);
 colorCategoryCircle("pGold",gdp);
 colorCategoryCircle("pDebt",dbp);
 
+document.getElementById("allocEquity").innerText = eqp.toFixed(1)+"%";
+document.getElementById("allocGold").innerText = gdp.toFixed(1)+"%";
+document.getElementById("allocDebt").innerText = dbp.toFixed(1)+"%";
+
+allocationStatus(eqp,75,"statusEquity");
+allocationStatus(gdp,10,"statusGold");
+allocationStatus(dbp,15,"statusDebt");
+
+updateHealthScore(eqp,gdp,dbp);
+    
 // ================= NET WORTH =================
 
 let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
