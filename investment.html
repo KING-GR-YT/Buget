@@ -283,16 +283,21 @@ color:yellow;
 text-shadow:0 0 18px rgba(255,255,0,.8);
 }
 
+.score-wrap{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
+
 #grade{
 font-family:Orbitron;
-font-size:18px;
+font-size:14px;
 letter-spacing:2px;
 color:var(--gold);
-text-shadow:0 0 12px var(--gold);
-margin-top:8px;
-text-align:center;
-}
-    
+text-shadow:0 0 10px var(--gold);
+margin-top:2px;
+} 
 /* ---------------- ALLOCATION TABLE ---------------- */
 
 .alloc-title{
@@ -472,10 +477,13 @@ text-shadow:0 0 10px var(--green);
 <span>Financial Score</span>
 
 <div class="mini-progress">
-<div class="percent" id="healthScore">0</div>
-</div>
 
-<div id="grade"></div>
+    <div class="score-wrap">
+        <div class="percent" id="healthScore">0</div>
+        <div id="grade"></div>
+    </div>
+
+</div>
 
 </div>
     
