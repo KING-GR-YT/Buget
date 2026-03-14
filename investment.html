@@ -634,6 +634,7 @@ font-size:18px;
 <th>Current %</th>
 <th>Required %</th>
 <th>Status</th>
+<th>Rebalance</th>
 </tr>
 </thead>
 
@@ -644,6 +645,7 @@ font-size:18px;
 <td id="allocEquity">0%</td>
 <td id="reqEquity">75%</td>
 <td id="statusEquity"></td>
+<td id="rebalanceEquity"></td>
 </tr>
 
 <tr>
@@ -651,6 +653,7 @@ font-size:18px;
 <td id="allocGold">0%</td>
 <td id="reqGold">10%</td>
 <td id="statusGold"></td>
+<td id="rebalanceGold"></td>
 </tr>
 
 <tr>
@@ -658,6 +661,7 @@ font-size:18px;
 <td id="allocDebt">0%</td>
 <td id="reqDebt">15%</td>
 <td id="statusDebt"></td>
+<td id="rebalanceDebt"></td>
 </tr>
 
 </tbody>
@@ -1052,6 +1056,8 @@ allocationStatus(eqp,req.e,"statusEquity");
 allocationStatus(gdp,req.g,"statusGold");
 allocationStatus(dbp,req.d,"statusDebt");
 
+rebalanceSuggestion(totalC, equity, gold, debt, req);
+
   let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
   let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
 
@@ -1222,7 +1228,29 @@ document.getElementById("age").innerText = age;
 save();
 
 });
+    
+/* ================= Rebalance Suggestion ================= */
+function rebalanceSuggestion(total, eq, gd, db, req){
 
+    let eqTarget = total * req.e / 100;
+    let gdTarget = total * req.g / 100;
+    let dbTarget = total * req.d / 100;
+
+    let eqDiff = eqTarget - eq;
+    let gdDiff = gdTarget - gd;
+    let dbDiff = dbTarget - db;
+
+    // Helper
+   const formatDiff = (diff) => {
+    if(Math.abs(diff/total*100) <= 5) return "✔ Balanced";
+    return (diff>0 ? "Add " : "Reduce ") + INR(Math.abs(diff));
+}
+
+    document.getElementById("rebalanceEquity").innerText = formatDiff(eqDiff);
+    document.getElementById("rebalanceGold").innerText   = formatDiff(gdDiff);
+    document.getElementById("rebalanceDebt").innerText   = formatDiff(dbDiff);
+}
+    
 </script>
 </body>
 </html>
