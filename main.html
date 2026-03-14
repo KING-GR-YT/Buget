@@ -244,125 +244,81 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* MOUSE */
+/* PARTICLES */
 
-let mouse={x:0,y:0};
-
-window.addEventListener("mousemove",e=>{
-mouse.x=e.clientX;
-mouse.y=e.clientY;
-});
-
-/* MATRIX */
-
-const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
-const matrix=letters.split("");
-
-const fontSize=16;
-const columns=canvas.width/fontSize;
-
-const drops=[];
-
-for(let i=0;i<columns;i++){
-drops[i]=Math.random()*canvas.height;
-}
-
-/* NODES */
-
-let nodes=[];
+let particles = [];
 
 for(let i=0;i<80;i++){
-
-nodes.push({
+particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-vx:(Math.random()-0.5)*0.7,
-vy:(Math.random()-0.5)*0.7
+speed:Math.random()*0.5+0.2,
+size:Math.random()*2
 });
-
 }
 
-let scanY=0;
+/* GRID */
+
+let gridOffset = 0;
 
 function draw(){
 
-ctx.fillStyle="rgba(0,0,0,0.08)";
+/* DARK BACKGROUND */
+
+let gradient = ctx.createLinearGradient(0,0,0,canvas.height);
+gradient.addColorStop(0,"#020b10");
+gradient.addColorStop(1,"#000000");
+
+ctx.fillStyle = gradient;
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-/* MATRIX */
 
-ctx.fillStyle="#00ff66";
-ctx.font=fontSize+"px monospace";
+/* CYBER GRID */
 
-for(let i=0;i<drops.length;i++){
+ctx.strokeStyle="rgba(0,255,255,0.06)";
+ctx.lineWidth=1;
 
-let text=matrix[Math.floor(Math.random()*matrix.length)];
+gridOffset += 0.3;
 
-ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-
-if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
-drops[i]=0;
-
-drops[i]++;
-
-}
-
-/* NODES */
-
-ctx.strokeStyle="rgba(0,255,255,0.15)";
-ctx.fillStyle="#00ffff";
-
-nodes.forEach(n=>{
-
-n.x+=n.vx;
-n.y+=n.vy;
-
-let dx=mouse.x-n.x;
-let dy=mouse.y-n.y;
-
-let dist=Math.sqrt(dx*dx+dy*dy);
-
-if(dist<120){
-
-n.x-=dx*0.02;
-n.y-=dy*0.02;
-
-}
-
-if(n.x<0||n.x>canvas.width) n.vx*=-1;
-if(n.y<0||n.y>canvas.height) n.vy*=-1;
+for(let x=0;x<canvas.width;x+=60){
 
 ctx.beginPath();
-ctx.arc(n.x,n.y,2,0,Math.PI*2);
-ctx.fill();
-
-nodes.forEach(m=>{
-
-let dx=n.x-m.x;
-let dy=n.y-m.y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-
-if(dist<120){
-
-ctx.beginPath();
-ctx.moveTo(n.x,n.y);
-ctx.lineTo(m.x,m.y);
+ctx.moveTo(x,0);
+ctx.lineTo(x,canvas.height);
 ctx.stroke();
 
 }
 
-});
+for(let y=0;y<canvas.height;y+=60){
+
+ctx.beginPath();
+ctx.moveTo(0,y+gridOffset);
+ctx.lineTo(canvas.width,y+gridOffset);
+ctx.stroke();
+
+}
+
+
+/* PARTICLES */
+
+ctx.fillStyle="#00ffff";
+
+particles.forEach(p=>{
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fill();
+
+p.y += p.speed;
+
+if(p.y > canvas.height){
+
+p.y = -10;
+p.x = Math.random()*canvas.width;
+
+}
 
 });
-
-/* SCAN */
-
-ctx.fillStyle="rgba(0,255,255,0.15)";
-ctx.fillRect(0,scanY,canvas.width,2);
-
-scanY+=2;
-
-if(scanY>canvas.height) scanY=0;
 
 requestAnimationFrame(draw);
 
@@ -370,10 +326,12 @@ requestAnimationFrame(draw);
 
 draw();
 
+/* RESIZE */
+
 window.addEventListener("resize",()=>{
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 });
 
