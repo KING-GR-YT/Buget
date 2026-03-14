@@ -262,6 +262,63 @@ color:var(--red);
 text-shadow:0 0 18px rgba(255,46,99,0.9);
 }
 
+/* ---------------- FINANCIAL HEALTH ---------------- */
+
+.health-score{
+text-align:center;
+font-family:Orbitron;
+}
+
+.health-title{
+font-size:22px;
+color:var(--blue);
+text-shadow:0 0 12px var(--blue);
+margin-bottom:15px;
+}
+
+.health-value{
+font-size:48px;
+letter-spacing:3px;
+color:yellow;
+text-shadow:0 0 18px rgba(255,255,0,.8);
+}
+
+/* ---------------- ALLOCATION TABLE ---------------- */
+
+.alloc-title{
+font-family:Orbitron;
+text-align:center;
+font-size:24px;
+color:var(--blue);
+text-shadow:0 0 15px var(--blue);
+margin-bottom:15px;
+}
+
+.alloc-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.alloc-top span{
+font-family:Orbitron;
+color:#ccc;
+}
+
+.alloc-age{
+color:var(--green);
+font-weight:600;
+font-size:18px;
+text-shadow:0 0 10px var(--green);
+}
+
+.status-under{color:#ff3b3b;}
+.status-over{color:#00ff9d;}
+.status-balanced{color:var(--gold);}
+    
 /* ============================= */
 /* 📱 MOBILE RESPONSIVE */
 /* ============================= */
@@ -478,6 +535,73 @@ text-shadow:0 0 18px rgba(255,46,99,0.9);
 </div>
 
 </div>
+        
+<!-- FINANCIAL HEALTH SCORE -->
+
+<div class="glass health-score">
+<div class="health-title">Financial Health Score</div>
+<div class="health-value" id="healthScore">0 Risk</div>
+</div>
+
+
+<!-- INVESTMENT ALLOCATION -->
+
+<div class="glass">
+
+<div class="alloc-title">Investment Allocation</div>
+
+<div class="alloc-top">
+
+<div>
+<span>DOB</span>
+<input type="date" id="dob">
+</div>
+
+<div>
+<span>Age</span>
+<span class="alloc-age" id="age">0</span>
+</div>
+
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Asset</th>
+<th>Current %</th>
+<th>Required %</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>Equity</td>
+<td id="allocEquity">0%</td>
+<td>75%</td>
+<td id="statusEquity"></td>
+</tr>
+
+<tr>
+<td>Gold</td>
+<td id="allocGold">0%</td>
+<td>10%</td>
+<td id="statusGold"></td>
+</tr>
+
+<tr>
+<td>Debt</td>
+<td id="allocDebt">0%</td>
+<td>15%</td>
+<td id="statusDebt"></td>
+</tr>
+
+</tbody>
+</table>
+
+</div>
+        
 <!-- ADD INVESTMENT -->
     <div class="glass">
         <h3 style="font-family:Orbitron;color:var(--green)">
@@ -916,6 +1040,58 @@ if(healthSelect){
   });
 }
 
+/* ================= FINANCIAL HEALTH ================= */
+
+function updateHealthScore(eq,gold,debt){
+
+let score = 0;
+
+if(eq < 40) score += 40;
+if(gold > 20) score += 30;
+if(debt > 40) score += 30;
+
+let risk = "Safe";
+
+if(score >= 60) risk = "Risk";
+else if(score >=30) risk = "Moderate";
+
+document.getElementById("healthScore").innerText =
+score + " " + risk;
+
+}
+
+/* ================= ALLOCATION STATUS ================= */
+
+function allocationStatus(current,required,id){
+
+let el = document.getElementById(id);
+
+if(current < required){
+el.innerText = "Under";
+el.className="status-under";
+}
+else if(current > required){
+el.innerText = "Over";
+el.className="status-over";
+}
+else{
+el.innerText = "Balanced";
+el.className="status-balanced";
+}
+
+}
+
+/* ================= AGE ================= */
+
+document.getElementById("dob").addEventListener("change",function(){
+
+let birth = new Date(this.value);
+let age = new Date().getFullYear() - birth.getFullYear();
+
+document.getElementById("age").innerText = age;
+
+});
+        
 </script>
 </body>
 </html>
