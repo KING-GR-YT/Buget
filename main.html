@@ -19,12 +19,20 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    background-attachment:fixed;
-    background:url("background.jpeg") no-repeat center center/cover;
-
+    background:#020617;
+    overflow:hidden;
     color:#00ffff;
 }
 
+#grid-bg{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+    
 /* GLASS CARD */
 .glass-container{
     position:relative;
@@ -129,6 +137,7 @@ h1{
 
 <body>
 
+<canvas id="grid-bg"></canvas>
 
 <div class="glass-container">
 
@@ -162,7 +171,57 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     await logout();
 });
 </script>
+<script>
 
+const canvas = document.getElementById("grid-bg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let offset = 0;
+
+function drawGrid(){
+
+ctx.fillStyle="#020617";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.strokeStyle="rgba(0,255,255,0.25)";
+ctx.lineWidth=1;
+
+let size = 50;
+
+for(let x=0;x<canvas.width;x+=size){
+    ctx.beginPath();
+    ctx.moveTo(x+offset,0);
+    ctx.lineTo(x+offset,canvas.height);
+    ctx.stroke();
+}
+
+for(let y=0;y<canvas.height;y+=size){
+    ctx.beginPath();
+    ctx.moveTo(0,y+offset);
+    ctx.lineTo(canvas.width,y+offset);
+    ctx.stroke();
+}
+
+offset+=0.2;
+
+if(offset>size){
+offset=0;
+}
+
+requestAnimationFrame(drawGrid);
+}
+
+drawGrid();
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+</script>
 
 </body>
 </html>
