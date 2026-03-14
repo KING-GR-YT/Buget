@@ -773,6 +773,13 @@ let data = [];
 /* ================== LOAD ================== */
 
 db.collection("portfolio").doc("main").onSnapshot((doc)=>{
+  if(d.dob){
+  document.getElementById("dob").value = d.dob;
+
+  let birth = new Date(d.dob);
+  let age = new Date().getFullYear() - birth.getFullYear();
+  document.getElementById("age").innerText = age;
+  }
   const d = doc.data() || {};
   data = d.rows || [];
 
@@ -827,6 +834,7 @@ function save(){
     health:{
       status: document.getElementById("healthInsuranceStatus").value === "yes"
     },
+    dob: document.getElementById("dob").value,
     rows: data
   },{merge:true});
 }
@@ -1165,10 +1173,12 @@ el.className="status-balanced";
 
 document.getElementById("dob").addEventListener("change",function(){
 
-let birth=new Date(this.value);
-let age=new Date().getFullYear()-birth.getFullYear();
+let birth = new Date(this.value);
+let age = new Date().getFullYear() - birth.getFullYear();
 
-document.getElementById("age").innerText=age;
+document.getElementById("age").innerText = age;
+
+save();
 
 });
 
