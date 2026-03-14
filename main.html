@@ -181,67 +181,148 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* MATRIX RAIN */
+/* ---------- MATRIX PARTICLES ---------- */
 
-const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&";
+const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
 const matrix = letters.split("");
 
 const fontSize = 16;
-const columns = canvas.width/fontSize;
+const columns = canvas.width / fontSize;
 const drops = [];
 
-for(let x=0;x<columns;x++) drops[x]=1;
-
-/* NEURAL NODES */
-
-let nodes=[];
-
-for(let i=0;i<60;i++){
-nodes.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-vx:(Math.random()-0.5)*0.5,
-vy:(Math.random()-0.5)*0.5
-});
+for (let i = 0; i < columns; i++) {
+    drops[i] = Math.random() * canvas.height;
 }
+
+/* ---------- CYBER NODES ---------- */
+
+let nodes = [];
+
+for (let i = 0; i < 70; i++) {
+    nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6
+    });
+}
+
+/* ---------- FALLING PARTICLES ---------- */
+
+let particles = [];
+
+for (let i = 0; i < 120; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: Math.random() * 3 + 1,
+        size: Math.random() * 2 + 1
+    });
+}
+
+/* ---------- VERTICAL CYBER LINES ---------- */
+
+let lines = [];
+
+for (let i = 0; i < 60; i++) {
+    lines.push({
+        x: Math.random() * canvas.width,
+        speed: Math.random() * 0.3 + 0.1
+    });
+}
+
+/* ---------- SCAN LINE ---------- */
 
 let scanY = 0;
 
-function draw(){
+/* ---------- DRAW LOOP ---------- */
 
-ctx.fillStyle="rgba(0,0,0,0.07)";
+function draw() {
+
+ctx.fillStyle = "rgba(0,0,0,0.08)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-/* MATRIX */
 
-ctx.fillStyle="#00ff41";
-ctx.font=fontSize+"px monospace";
+/* ===== MATRIX RAIN ===== */
 
-for(let i=0;i<drops.length;i++){
+ctx.fillStyle = "#00ff66";
+ctx.font = fontSize + "px monospace";
+
+for (let i = 0; i < drops.length; i++) {
 
 let text = matrix[Math.floor(Math.random()*matrix.length)];
 
-ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+ctx.fillText(text, i*fontSize, drops[i]*fontSize);
 
-if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
-drops[i]=0;
+if (drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+drops[i] = 0;
 
 drops[i]++;
 
 }
 
-/* NODES */
 
-ctx.strokeStyle="rgba(0,255,255,0.2)";
+/* ===== CYBER LINES ===== */
+
+lines.forEach(l => {
+
+ctx.beginPath();
+ctx.strokeStyle = "rgba(0,255,150,0.06)";
+ctx.lineWidth = 1;
+
+ctx.moveTo(l.x,0);
+ctx.lineTo(l.x,canvas.height);
+
+ctx.stroke();
+
+l.x += l.speed;
+
+if(l.x > canvas.width) l.x = 0;
+
+});
+
+
+/* ===== PARTICLES ===== */
+
+particles.forEach(p => {
+
+ctx.beginPath();
+
+let gradient = ctx.createRadialGradient(
+p.x,p.y,0,
+p.x,p.y,20
+);
+
+gradient.addColorStop(0,"#00ffaa");
+gradient.addColorStop(1,"rgba(0,255,150,0)");
+
+ctx.fillStyle = gradient;
+
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fill();
+
+p.y += p.speed;
+
+if(p.y > canvas.height){
+p.y = -10;
+p.x = Math.random()*canvas.width;
+}
+
+});
+
+
+/* ===== NEURAL NETWORK ===== */
+
+ctx.strokeStyle="rgba(0,255,255,0.15)";
 ctx.fillStyle="#00ffff";
 
 nodes.forEach(n=>{
 
-n.x+=n.vx;
-n.y+=n.vy;
+n.x += n.vx;
+n.y += n.vy;
 
-if(n.x<0||n.x>canvas.width) n.vx*=-1;
-if(n.y<0||n.y>canvas.height) n.vy*=-1;
+if(n.x<0 || n.x>canvas.width) n.vx *= -1;
+if(n.y<0 || n.y>canvas.height) n.vy *= -1;
 
 ctx.beginPath();
 ctx.arc(n.x,n.y,2,0,Math.PI*2);
@@ -249,11 +330,12 @@ ctx.fill();
 
 nodes.forEach(m=>{
 
-let dx=n.x-m.x;
-let dy=n.y-m.y;
-let dist=Math.sqrt(dx*dx+dy*dy);
+let dx = n.x-m.x;
+let dy = n.y-m.y;
 
-if(dist<120){
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+if(dist < 120){
 
 ctx.beginPath();
 ctx.moveTo(n.x,n.y);
@@ -266,14 +348,16 @@ ctx.stroke();
 
 });
 
-/* SCAN LINE */
 
-ctx.fillStyle="rgba(0,255,255,0.1)";
+/* ===== SCAN LINE ===== */
+
+ctx.fillStyle="rgba(0,255,255,0.15)";
 ctx.fillRect(0,scanY,canvas.width,2);
 
-scanY+=1;
+scanY += 2;
 
-if(scanY>canvas.height) scanY=0;
+if(scanY > canvas.height) scanY = 0;
+
 
 requestAnimationFrame(draw);
 
@@ -281,9 +365,13 @@ requestAnimationFrame(draw);
 
 draw();
 
+/* ---------- RESIZE ---------- */
+
 window.addEventListener("resize",()=>{
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 });
 
 </script>
