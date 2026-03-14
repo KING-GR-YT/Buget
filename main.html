@@ -246,126 +246,114 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 }
 resize();
-window.addEventListener("resize", resize);
-
-
-/* DATA STREAM LINES */
-
-let streams = [];
-
-for(let i=0;i<90;i++){
-streams.push({
-x:Math.random()*canvas.width,
-speed:Math.random()*0.4+0.1,
-opacity:Math.random()*0.15+0.03
-});
-}
+window.addEventListener("resize",resize);
 
 
 /* PARTICLES */
 
-let particles = [];
+let particles=[];
 
-for(let i=0;i<150;i++){
+for(let i=0;i<140;i++){
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-speed:Math.random()*1.5+0.5,
-size:Math.random()*2+0.5
+size:Math.random()*2+1,
+speed:Math.random()*1+0.3
 });
 }
 
 
-/* SMALL SPARKLES */
+/* CYBER LINES */
 
-let sparkles = [];
+let lines=[];
 
-for(let i=0;i<80;i++){
-sparkles.push({
+for(let i=0;i<50;i++){
+lines.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-alpha:Math.random(),
-pulse:Math.random()*0.02
+len:Math.random()*200+100,
+speed:Math.random()*0.7+0.2
 });
 }
 
+
+/* DRAW */
 
 function draw(){
 
-/* DARK CYBER GRADIENT */
+/* BACKGROUND */
 
-let bg = ctx.createLinearGradient(0,0,0,canvas.height);
-bg.addColorStop(0,"#041418");
+let bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+bg.addColorStop(0,"#03171c");
 bg.addColorStop(1,"#000000");
 
-ctx.fillStyle = bg;
+ctx.fillStyle=bg;
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
 
-/* VERTICAL DATA STREAMS */
+/* CYBER LINES */
 
-streams.forEach(s=>{
+ctx.strokeStyle="rgba(0,255,255,0.35)";
+ctx.lineWidth=2;
 
-ctx.strokeStyle = "rgba(0,255,180,"+s.opacity+")";
-ctx.lineWidth = 1;
+lines.forEach(l=>{
 
 ctx.beginPath();
-ctx.moveTo(s.x,0);
-ctx.lineTo(s.x,canvas.height);
+ctx.moveTo(l.x,l.y);
+ctx.lineTo(l.x+l.len,l.y);
 ctx.stroke();
 
-s.x += s.speed;
+l.x+=l.speed;
 
-if(s.x > canvas.width){
-s.x = 0;
+if(l.x>canvas.width){
+l.x=-l.len;
+l.y=Math.random()*canvas.height;
 }
 
 });
 
 
-/* FALLING DATA PARTICLES */
+/* PARTICLES */
 
 particles.forEach(p=>{
 
-let g = ctx.createRadialGradient(
+let glow = ctx.createRadialGradient(
 p.x,p.y,0,
-p.x,p.y,25
+p.x,p.y,20
 );
 
-g.addColorStop(0,"#00ffc8");
-g.addColorStop(1,"rgba(0,255,200,0)");
+glow.addColorStop(0,"#00ffff");
+glow.addColorStop(1,"rgba(0,255,255,0)");
 
-ctx.fillStyle = g;
+ctx.fillStyle=glow;
 
 ctx.beginPath();
 ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
 ctx.fill();
 
-p.y += p.speed;
+p.y+=p.speed;
 
-if(p.y > canvas.height){
-p.y = -10;
-p.x = Math.random()*canvas.width;
+if(p.y>canvas.height){
+p.y=-10;
+p.x=Math.random()*canvas.width;
 }
 
 });
 
 
-/* CYBER SPARKLES */
+/* HACKER TEXT */
 
-sparkles.forEach(s=>{
+ctx.font="bold 120px Arial";
+ctx.textAlign="center";
 
-ctx.fillStyle = "rgba(0,255,200,"+s.alpha+")";
+ctx.strokeStyle="#00eaff";
+ctx.lineWidth=3;
+ctx.shadowColor="#00eaff";
+ctx.shadowBlur=25;
 
-ctx.fillRect(s.x,s.y,2,2);
+ctx.strokeText("HACKER",canvas.width/2,canvas.height/2);
 
-s.alpha += s.pulse;
-
-if(s.alpha > 1 || s.alpha < 0){
-s.pulse *= -1;
-}
-
-});
+ctx.shadowBlur=0;
 
 
 requestAnimationFrame(draw);
@@ -375,6 +363,5 @@ requestAnimationFrame(draw);
 draw();
 
 </script>
-
 </body>
 </html>
