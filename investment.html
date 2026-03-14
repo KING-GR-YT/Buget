@@ -642,21 +642,21 @@ font-weight:600;
 <tr>
 <td>Equity</td>
 <td id="allocEquity">0%</td>
-<td>75%</td>
+<td id="reqEquity">75%</td>
 <td id="statusEquity"></td>
 </tr>
 
 <tr>
 <td>Gold</td>
 <td id="allocGold">0%</td>
-<td>10%</td>
+<td id="reqGold">10%</td>
 <td id="statusGold"></td>
 </tr>
 
 <tr>
 <td>Debt</td>
 <td id="allocDebt">0%</td>
-<td>15%</td>
+<td id="reqDebt">15%</td>
 <td id="statusDebt"></td>
 </tr>
 
@@ -1040,9 +1040,19 @@ function calculate(){
   document.getElementById("allocGold").innerText=gdp.toFixed(1)+"%";
   document.getElementById("allocDebt").innerText=dbp.toFixed(1)+"%";
 
-  allocationStatus(eqp,75,"statusEquity");
-  allocationStatus(gdp,10,"statusGold");
-  allocationStatus(dbp,15,"statusDebt");
+  let age = Number(document.getElementById("age").innerText) || 0;
+
+let req = getAllocation(age);
+
+// update required UI
+document.getElementById("reqEquity").innerText = req.e + "%";
+document.getElementById("reqGold").innerText = req.g + "%";
+document.getElementById("reqDebt").innerText = req.d + "%";
+
+// status check
+allocationStatus(eqp,req.e,"statusEquity");
+allocationStatus(gdp,req.g,"statusGold");
+allocationStatus(dbp,req.d,"statusDebt");
 
   let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
   let emergency = NUM(document.querySelector('[data-id="emergencyFund"]').innerText);
@@ -1184,6 +1194,16 @@ el.className="status-balanced";
 
 }
 
+function getAllocation(age){
+
+if(age<=30) return {e:75,d:15,g:10}
+if(age<=35) return {e:70,d:20,g:10}
+if(age<=40) return {e:65,d:25,g:10}
+if(age<=50) return {e:60,d:30,g:10}
+return {e:50,d:40,g:10}
+
+}
+    
 /* ================= AGE ================= */
 
 document.getElementById("dob").addEventListener("change",function(){
