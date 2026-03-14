@@ -773,15 +773,26 @@ let data = [];
 /* ================== LOAD ================== */
 
 db.collection("portfolio").doc("main").onSnapshot((doc)=>{
-  if(d.dob){
-  document.getElementById("dob").value = d.dob;
 
-  let birth = new Date(d.dob);
-  let age = new Date().getFullYear() - birth.getFullYear();
-  document.getElementById("age").innerText = age;
-  }
   const d = doc.data() || {};
   data = d.rows || [];
+
+  // DOB LOAD
+  if(d.dob){
+    document.getElementById("dob").value = d.dob;
+
+    let birth = new Date(d.dob);
+    let today = new Date();
+
+    let age = today.getFullYear() - birth.getFullYear();
+    let m = today.getMonth() - birth.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+
+    document.getElementById("age").innerText = age;
+  }
 
   document.querySelector('[data-id="targetFund"]').innerText = INR(d.retirementTarget || 0);
   document.querySelector('[data-id="loan"]').innerText = INR(d.loan||0);
