@@ -283,6 +283,15 @@ color:yellow;
 text-shadow:0 0 18px rgba(255,255,0,.8);
 }
 
+#grade{
+font-family:Orbitron;
+font-size:20px;
+letter-spacing:2px;
+color:var(--gold);
+text-shadow:0 0 12px var(--gold);
+margin-bottom:5px;
+}
+    
 /* ---------------- ALLOCATION TABLE ---------------- */
 
 .alloc-title{
@@ -967,8 +976,6 @@ allocationStatus(eqp,75,"statusEquity");
 allocationStatus(gdp,10,"statusGold");
 allocationStatus(dbp,15,"statusDebt");
 
-updateHealthScore(net, emergency, target, eqp, gdp, dbp);
-    
 // ================= NET WORTH =================
 
 let loan = NUM(document.querySelector('[data-id="loan"]').innerText);
@@ -980,10 +987,14 @@ const netBox = document.getElementById("networth");
 netBox.innerText = INR(net);
 netBox.className = net >= 0 ? "positive" : "negative";
 
-// CURRENT FUND CIRCLE (Networth / Target)
+// CURRENT FUND CIRCLE
 let target = NUM(document.querySelector('[data-id="targetFund"]').innerText);
 updateProgress(net, target);
-}
+
+// 🔥 NOW CALL HEALTH SCORE
+let grade = updateHealthScore(net, emergency, target, eqp, gdp, dbp);
+document.getElementById("grade").innerText = grade;
+    
 
 function colorCategoryCircle(id,value){
     const box = document.getElementById(id).parentElement;
@@ -1055,8 +1066,6 @@ if(healthSelect){
 
 function updateHealthScore(networth, emergency, target, eqP, gP, dP){
 
-/* FINANCIAL HEALTH SCORE */
-
 let score = 0;
 
 if(networth > 0) score += 25;
@@ -1070,8 +1079,6 @@ const scoreBox = scoreText.parentElement;
 
 scoreText.innerText = score;
 
-/* COLOR */
-
 scoreBox.classList.remove("low","medium","high");
 
 if(score >= 75){
@@ -1084,8 +1091,6 @@ else{
     scoreBox.classList.add("low");
 }
 
-/* GRADE */
-
 let grade = "Risk";
 
 if(score >= 90) grade = "Elite";
@@ -1093,9 +1098,7 @@ else if(score >= 75) grade = "Strong";
 else if(score >= 60) grade = "Stable";
 else if(score >= 40) grade = "Weak";
 
-/* Optional if you want grade later */
-console.log("Financial Grade:", grade);
-
+return grade;   // 🔥 ADD THIS
 }
 
 /* ================= ALLOCATION STATUS ================= */
