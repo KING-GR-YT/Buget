@@ -376,50 +376,121 @@ font-weight:600;
 }
     
 /* ================= MOBILE RESPONSIVE ================= */
-@media (max-width:700px){
 
-table thead{
-display:none;
+@media (max-width:900px){
+
+.container{
+padding:10px;
 }
 
-table, 
-table tbody, 
-table tr, 
-table td{
-display:block;
-width:100%;
-}
-
-table tr{
-background:rgba(255,255,255,.04);
-border:1px solid rgba(0,247,255,.25);
-border-radius:12px;
-padding:12px;
-margin-bottom:14px;
-box-shadow:0 0 12px rgba(0,247,255,.15);
-}
-
-table td{
-text-align:left;
-padding:6px 8px;
-border:none;
+/* header */
+.header{
+font-size:22px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.home-link{
+float:none;
 font-size:14px;
 }
 
-table td::before{
-content:attr(data-label);
-font-weight:600;
-color:var(--gold);
+/* summary cards */
+.top{
+justify-content:center;
+gap:14px;
 }
 
-table td:last-child{
-justify-content:flex-end;
+.stat1{
+flex:1 1 140px;
+min-width:130px;
+}
+
+.stat span{
+font-size:16px;
+}
+
+.stat b{
+font-size:18px;
+}
+
+/* progress circles smaller */
+.mini-progress{
+width:110px;
+height:110px;
+}
+
+.percent{
+font-size:22px;
+}
+
+/* allocation header */
+.alloc-title{
+font-size:20px;
+}
+
+.alloc-f{
+font-size:20px;
+}
+
+/* add investment form stack */
+.glass:has(#invName){
+flex-direction:column;
+align-items:stretch;
+}
+
+#invName,
+#category,
+#invInvested,
+#invCurrent{
+width:100%;
+}
+
+/* responsive table */
+.glass table{
+min-width:700px;
+}
+
+.glass{
+overflow-x:auto;
 }
 
 }
+
+/* ================= SMALL PHONES ================= */
+
+@media (max-width:500px){
+
+.header{
+font-size:18px;
+}
+
+.stat1{
+flex:1 1 100%;
+}
+
+.mini-progress{
+width:95px;
+height:95px;
+}
+
+.percent{
+font-size:20px;
+}
+
+.stat b{
+font-size:16px;
+}
+
+.alloc-f{
+font-size:18px;
+}
+
+}
+    
 </style>
 </head>
 
