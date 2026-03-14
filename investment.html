@@ -298,6 +298,45 @@ letter-spacing:1px;
 color:var(--gold);
 text-shadow:0 0 10px var(--gold);
 } 
+
+/* ================= SCORE GLOW ================= */
+
+.score-risk{
+border-color:#ff2e2e !important;
+color:#ff2e2e;
+box-shadow:
+0 0 18px #ff2e2e,
+0 0 35px #ff2e2e55,
+inset 0 0 20px #ff2e2e33;
+}
+
+.score-stable{
+border-color:#ffe600 !important;
+color:#ffe600;
+box-shadow:
+0 0 18px #ffe600,
+0 0 35px #ffe60055,
+inset 0 0 20px #ffe60033;
+}
+
+.score-strong{
+border-color:#00b3ff !important;
+color:#00b3ff;
+box-shadow:
+0 0 18px #00b3ff,
+0 0 35px #00b3ff55,
+inset 0 0 20px #00b3ff33;
+}
+
+.score-elite{
+border-color:#00ff9d !important;
+color:#00ff9d;
+box-shadow:
+0 0 22px #00ff9d,
+0 0 45px #00ff9d66,
+inset 0 0 25px #00ff9d33;
+}
+    
 /* ---------------- ALLOCATION TABLE ---------------- */
 
 .alloc-title{
@@ -1070,27 +1109,37 @@ if(eqP>=50) score+=20;
 if(gP>=10) score+=15;
 if(dP<=30) score+=15;
 
-const scoreText=document.getElementById("healthScore");
-const scoreBox=scoreText.parentElement;
+const scoreText = document.getElementById("healthScore");
+const scoreBox = scoreText.closest(".mini-progress");
 
-scoreText.innerText=score;
+scoreText.innerText = score;
 
-scoreBox.classList.remove("low","medium","high");
-
-if(score>=75) scoreBox.classList.add("high");
-else if(score>=40) scoreBox.classList.add("medium");
-else scoreBox.classList.add("low");
+scoreBox.classList.remove(
+"score-risk",
+"score-stable",
+"score-strong",
+"score-elite"
+);
 
 let grade="Risk";
 
-if(score>=90) grade="Elite";
-else if(score>=75) grade="Strong";
-else if(score>=60) grade="Stable";
-else if(score>=40) grade="Weak";
+if(score>=90){
+grade="Elite";
+scoreBox.classList.add("score-elite");
+}
+else if(score>=75){
+grade="Strong";
+scoreBox.classList.add("score-strong");
+}
+else if(score>=50){
+grade="Stable";
+scoreBox.classList.add("score-stable");
+}
+else{
+scoreBox.classList.add("score-risk");
+}
 
 return grade;
-
-}
 
 /* ================= ALLOCATION STATUS ================= */
 
