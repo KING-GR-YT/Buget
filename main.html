@@ -237,127 +237,159 @@ await logout();
 
 
 <script>
-
 const canvas = document.getElementById("hacker-bg");
 const ctx = canvas.getContext("2d");
 
 function resize(){
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 resize();
-window.addEventListener("resize",resize);
-
+window.addEventListener("resize", resize);
 
 /* PARTICLES */
-
-let particles=[];
-
-for(let i=0;i<140;i++){
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2+1,
-speed:Math.random()*1+0.3
-});
+let particles = [];
+for(let i=0; i<140; i++){
+  particles.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    size: Math.random()*2+1,
+    speed: Math.random()*1+0.3
+  });
 }
-
 
 /* CYBER LINES */
-
-let lines=[];
-
-for(let i=0;i<50;i++){
-lines.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-len:Math.random()*200+100,
-speed:Math.random()*0.7+0.2
-});
+let lines = [];
+for(let i=0; i<50; i++){
+  lines.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    len: Math.random()*200+100,
+    speed: Math.random()*0.7+0.2
+  });
 }
 
+/* AI NETWORK NODES */
+const NODE_COUNT = 60;
+const MAX_CONNECTION_DISTANCE = 150;
+let nodes = [];
 
-/* DRAW */
+for(let i=0; i<NODE_COUNT; i++){
+  nodes.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    vx: (Math.random()-0.5)*0.3,
+    vy: (Math.random()-0.5)*0.3,
+    radius: 2 + Math.random()*1.5,
+    glowAlpha: Math.random() * 0.6 + 0.4
+  });
+}
 
+/* Draw loop */
 function draw(){
+  // Background gradient
+  let bg = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  bg.addColorStop(0, "#03171c");
+  bg.addColorStop(1, "#000000");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-/* BACKGROUND */
+  // Cyber lines
+  ctx.strokeStyle = "rgba(0,255,255,0.35)";
+  ctx.lineWidth = 2;
+  lines.forEach(l => {
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y);
+    ctx.lineTo(l.x + l.len, l.y);
+    ctx.stroke();
 
-let bg = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
-bg.addColorStop(0,"#03171c");
-bg.addColorStop(1,"#000000");
+    l.x += l.speed;
+    if(l.x > canvas.width){
+      l.x = -l.len;
+      l.y = Math.random()*canvas.height;
+    }
+  });
 
-ctx.fillStyle=bg;
-ctx.fillRect(0,0,canvas.width,canvas.height);
+  // Floating particles
+  particles.forEach(p => {
+    let glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 20);
+    glow.addColorStop(0, "#00ffff");
+    glow.addColorStop(1, "rgba(0,255,255,0)");
 
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
 
-/* CYBER LINES */
+    p.y += p.speed;
+    if(p.y > canvas.height){
+      p.y = -10;
+      p.x = Math.random()*canvas.width;
+    }
+  });
 
-ctx.strokeStyle="rgba(0,255,255,0.35)";
-ctx.lineWidth=2;
+  // AI Network nodes and connecting lines
+  // First update node positions
+  nodes.forEach(n => {
+    n.x += n.vx;
+    n.y += n.vy;
 
-lines.forEach(l=>{
+    // Bounce off edges
+    if(n.x < 0 || n.x > canvas.width) n.vx *= -1;
+    if(n.y < 0 || n.y > canvas.height) n.vy *= -1;
+  });
 
-ctx.beginPath();
-ctx.moveTo(l.x,l.y);
-ctx.lineTo(l.x+l.len,l.y);
-ctx.stroke();
+  // Draw connecting lines with glow
+  for(let i=0; i<nodes.length; i++){
+    for(let j=i+1; j<nodes.length; j++){
+      let a = nodes[i];
+      let b = nodes[j];
+      let dx = a.x - b.x;
+      let dy = a.y - b.y;
+      let dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < MAX_CONNECTION_DISTANCE){
+        let alpha = (1 - dist/MAX_CONNECTION_DISTANCE) * 0.3;
+        ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.shadowColor = 'rgba(0,255,255,0.5)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
 
-l.x+=l.speed;
+  // Draw nodes with glow and pulse effect
+  nodes.forEach(n => {
+    // Pulse alpha between 0.4 and 1
+    n.glowAlpha += (Math.random() - 0.5) * 0.03;
+    if(n.glowAlpha > 1) n.glowAlpha = 1;
+    if(n.glowAlpha < 0.4) n.glowAlpha = 0.4;
 
-if(l.x>canvas.width){
-l.x=-l.len;
-l.y=Math.random()*canvas.height;
-}
+    let glow = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 15);
+    glow.addColorStop(0, `rgba(0, 255, 255, ${n.glowAlpha})`);
+    glow.addColorStop(1, 'rgba(0,255,255,0)');
 
-});
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.radius, 0, Math.PI*2);
+    ctx.fill();
+  });
 
+  // Neon "HACKER" Text
+  ctx.font = "bold 120px Arial";
+  ctx.textAlign = "center";
+  ctx.strokeStyle = "#00eaff";
+  ctx.lineWidth = 3;
+  ctx.shadowColor = "#00eaff";
+  ctx.shadowBlur = 25;
+  ctx.strokeText("HACKER", canvas.width/2, canvas.height/2);
+  ctx.shadowBlur = 0;
 
-/* PARTICLES */
-
-particles.forEach(p=>{
-
-let glow = ctx.createRadialGradient(
-p.x,p.y,0,
-p.x,p.y,20
-);
-
-glow.addColorStop(0,"#00ffff");
-glow.addColorStop(1,"rgba(0,255,255,0)");
-
-ctx.fillStyle=glow;
-
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-ctx.fill();
-
-p.y+=p.speed;
-
-if(p.y>canvas.height){
-p.y=-10;
-p.x=Math.random()*canvas.width;
-}
-
-});
-
-
-/* HACKER TEXT */
-
-ctx.font="bold 120px Arial";
-ctx.textAlign="center";
-
-ctx.strokeStyle="#00eaff";
-ctx.lineWidth=3;
-ctx.shadowColor="#00eaff";
-ctx.shadowBlur=25;
-
-ctx.strokeText("HACKER",canvas.width/2,canvas.height/2);
-
-ctx.shadowBlur=0;
-
-
-requestAnimationFrame(draw);
-
+  requestAnimationFrame(draw);
 }
 
 draw();
