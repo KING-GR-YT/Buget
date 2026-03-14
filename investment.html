@@ -459,7 +459,7 @@ text-shadow:0 0 10px var(--green);
     
 <div class="stat1">
 <span>Financial Score</span>
-
+<div id="grade"></div>
 <div class="mini-progress">
 <div class="percent" id="healthScore">0</div>
 </div>
@@ -967,7 +967,7 @@ allocationStatus(eqp,75,"statusEquity");
 allocationStatus(gdp,10,"statusGold");
 allocationStatus(dbp,15,"statusDebt");
 
-updateHealthScore(eqp,gdp,dbp);
+updateHealthScore(net, emergency, target, eqp, gdp, dbp);
     
 // ================= NET WORTH =================
 
@@ -1053,35 +1053,48 @@ if(healthSelect){
 
 /* ================= FINANCIAL HEALTH ================= */
 
-function updateHealthScore(eq,gold,debt){
+function updateHealthScore(networth, emergency, target, eqP, gP, dP){
+
+/* FINANCIAL HEALTH SCORE */
 
 let score = 0;
 
-if(eq < 40) score += 40;
-if(gold > 20) score += 30;
-if(debt > 40) score += 30;
-
-let risk = "Safe";
-
-if(score >= 60) risk = "Risk";
-else if(score >=30) risk = "Moderate";
+if(networth > 0) score += 25;
+if(emergency >= target) score += 25;
+if(eqP >= 50) score += 20;
+if(gP >= 10) score += 15;
+if(dP <= 30) score += 15;
 
 const scoreText = document.getElementById("healthScore");
 const scoreBox = scoreText.parentElement;
 
 scoreText.innerText = score;
 
+/* COLOR */
+
 scoreBox.classList.remove("low","medium","high");
 
-if(score >= 60){
-    scoreBox.classList.add("low");
+if(score >= 75){
+    scoreBox.classList.add("high");
 }
-else if(score >= 30){
+else if(score >= 40){
     scoreBox.classList.add("medium");
 }
 else{
-    scoreBox.classList.add("high");
+    scoreBox.classList.add("low");
 }
+
+/* GRADE */
+
+let grade = "Risk";
+
+if(score >= 90) grade = "Elite";
+else if(score >= 75) grade = "Strong";
+else if(score >= 60) grade = "Stable";
+else if(score >= 40) grade = "Weak";
+
+/* Optional if you want grade later */
+console.log("Financial Grade:", grade);
 
 }
 
