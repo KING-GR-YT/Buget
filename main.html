@@ -3,133 +3,198 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finance Control Center</title>
-<link rel="preload" as="image" href="background.jpeg">
+
 <link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
+
 <style>
 
 *{
-    box-sizing:border-box;
-}
-
-#hacker-bg{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    z-index:-1;
+box-sizing:border-box;
 }
 
 body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:black;
-    overflow:hidden;
-    color:#00ffff;
+margin:0;
+font-family:Arial, sans-serif;
+background:black;
+overflow:hidden;
+color:#00ffff;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
 }
-    
+
+/* BACKGROUND CANVAS */
+
+#hacker-bg{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
 /* GLASS CARD */
+
 .glass-container{
-    position:relative;
-    backdrop-filter:blur(15px);
-    background:rgba(0, 255, 255, 0.08);
-    border:1px solid rgba(0,255,255,0.3);
-    padding:50px;
-    border-radius:20px;
-    box-shadow:0 0 40px rgba(0,255,255,0.2);
-    text-align:center;
-    width:90%;
-    max-width:1000px;
+
+position:relative;
+
+background:rgba(0,255,255,0.05);
+backdrop-filter:blur(15px);
+
+border:1px solid rgba(0,255,255,0.3);
+
+padding:50px;
+border-radius:20px;
+
+box-shadow:
+0 0 40px rgba(0,255,255,0.2),
+0 0 80px rgba(0,255,255,0.1);
+
+text-align:center;
+width:90%;
+max-width:1000px;
+
+animation:glowPulse 4s infinite alternate;
+
 }
 
-/* SIGN OUT BUTTON */
-.signout-btn{
-    position:absolute;
-    top:20px;
-    right:20px;
-    padding:8px 18px;
-    font-size:13px;
-    font-weight:bold;
-    border-radius:8px;
-    background:rgba(255,0,0,0.15);
-    border:1px solid rgba(255,0,0,0.5);
-    color:#ff4d4d;
-    cursor:pointer;
-    transition:0.3s ease;
+/* CYBER GLOW ANIMATION */
+
+@keyframes glowPulse{
+
+from{
+box-shadow:
+0 0 20px rgba(0,255,255,0.2),
+0 0 60px rgba(0,255,255,0.1);
 }
 
-.signout-btn:hover{
-    background:#ff4d4d;
-    color:#000;
-    box-shadow:0 0 15px #ff4d4d;
+to{
+box-shadow:
+0 0 40px rgba(0,255,255,0.4),
+0 0 120px rgba(0,255,255,0.2);
+}
+
 }
 
 /* TITLE */
+
 h1{
-    margin-bottom:40px;
-    letter-spacing:3px;
-    font-weight:bold;
+letter-spacing:4px;
+margin-bottom:40px;
+font-weight:bold;
+text-shadow:
+0 0 10px #00ffff,
+0 0 20px #00ffff;
+}
+
+/* SIGNOUT */
+
+.signout-btn{
+
+position:absolute;
+top:20px;
+right:20px;
+
+padding:8px 18px;
+font-size:13px;
+font-weight:bold;
+
+border-radius:8px;
+
+background:rgba(255,0,0,0.1);
+border:1px solid rgba(255,0,0,0.5);
+
+color:#ff4d4d;
+cursor:pointer;
+
+transition:0.3s;
+
+}
+
+.signout-btn:hover{
+
+background:#ff4d4d;
+color:black;
+
+box-shadow:0 0 15px #ff4d4d;
+
 }
 
 /* BUTTON GRID */
+
 .nav-container{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:30px;
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+
 }
 
-/* GLASS BUTTON */
+/* CYBER BUTTON */
+
 .nav-btn{
-    text-decoration:none;
-    padding:18px;
-    font-weight:bold;
-    letter-spacing:1px;
-    border-radius:12px;
-    background:rgba(0,255,255,0.15);
-    border:1px solid rgba(0,255,255,0.4);
-    color:#00ffff;
-    transition:0.3s ease;
-    backdrop-filter:blur(10px);
+
+text-decoration:none;
+
+padding:18px;
+
+font-weight:bold;
+letter-spacing:1px;
+
+border-radius:12px;
+
+background:rgba(0,255,255,0.15);
+border:1px solid rgba(0,255,255,0.4);
+
+color:#00ffff;
+
+transition:.3s;
+
+backdrop-filter:blur(10px);
+
 }
 
 .nav-btn:hover{
-    background:#00ffff;
-    color:#000;
-    box-shadow:0 0 25px #00ffff;
-    transform:translateY(-5px);
+
+background:#00ffff;
+color:black;
+
+box-shadow:
+0 0 20px #00ffff,
+0 0 40px #00ffff;
+
+transform:translateY(-6px);
+
 }
 
 /* RESPONSIVE */
+
 @media(max-width:900px){
-    .nav-container{
-        grid-template-columns:repeat(2, 1fr);
-    }
+
+.nav-container{
+grid-template-columns:repeat(2,1fr);
+}
+
 }
 
 @media(max-width:600px){
-    .nav-container{
-        grid-template-columns:1fr;
-    }
 
-    .glass-container{
-        padding:30px;
-    }
+.nav-container{
+grid-template-columns:1fr;
+}
 
-    h1{
-        font-size:20px;
-    }
+.glass-container{
+padding:30px;
+}
 
-    .signout-btn{
-        top:10px;
-        right:10px;
-        padding:6px 12px;
-        font-size:11px;
-    }
+h1{
+font-size:20px;
+}
+
 }
 
 </style>
@@ -146,16 +211,16 @@ h1{
 <h1>FINANCE CONTROL CENTER</h1>
 
 <div class="nav-container">
-    <a href="expense.html" class="nav-btn">Expense Dashboard</a>
-    <a href="dashboard.html" class="nav-btn">Monthly Dashboard</a>
-    <a href="investment.html" class="nav-btn">Investment Dashboard</a>
-    <a href="salary.html" class="nav-btn">Salary Dashboard</a>
-    <a href="loans.html" class="nav-btn">Loans Dashboard</a>
-    <a href="fd.html" class="nav-btn">FD Dashboard</a>
-    <a href="land record.html" class="nav-btn">Land Dashboard</a>
-    <a href="xirr.html" class="nav-btn">XIRR Dashboard</a>
-    
-    
+
+<a href="expense.html" class="nav-btn">Expense Dashboard</a>
+<a href="dashboard.html" class="nav-btn">Monthly Dashboard</a>
+<a href="investment.html" class="nav-btn">Investment Dashboard</a>
+<a href="salary.html" class="nav-btn">Salary Dashboard</a>
+<a href="loans.html" class="nav-btn">Loans Dashboard</a>
+<a href="fd.html" class="nav-btn">FD Dashboard</a>
+<a href="land record.html" class="nav-btn">Land Dashboard</a>
+<a href="xirr.html" class="nav-btn">XIRR Dashboard</a>
+
 </div>
 
 </div>
@@ -163,16 +228,14 @@ h1{
 <script type="module">
 import { protectPage, logout } from "./auth.js";
 
-/* Protect page */
 protectPage();
 
-/* Logout button */
 document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await logout();
+await logout();
 });
 </script>
 
-    
+
 <script>
 
 const canvas = document.getElementById("hacker-bg");
@@ -181,148 +244,93 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-/* ---------- MATRIX PARTICLES ---------- */
+/* MOUSE */
 
-const letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
-const matrix = letters.split("");
+let mouse={x:0,y:0};
 
-const fontSize = 16;
-const columns = canvas.width / fontSize;
-const drops = [];
+window.addEventListener("mousemove",e=>{
+mouse.x=e.clientX;
+mouse.y=e.clientY;
+});
 
-for (let i = 0; i < columns; i++) {
-    drops[i] = Math.random() * canvas.height;
+/* MATRIX */
+
+const letters="01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
+const matrix=letters.split("");
+
+const fontSize=16;
+const columns=canvas.width/fontSize;
+
+const drops=[];
+
+for(let i=0;i<columns;i++){
+drops[i]=Math.random()*canvas.height;
 }
 
-/* ---------- CYBER NODES ---------- */
+/* NODES */
 
-let nodes = [];
+let nodes=[];
 
-for (let i = 0; i < 70; i++) {
-    nodes.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6
-    });
+for(let i=0;i<80;i++){
+
+nodes.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+vx:(Math.random()-0.5)*0.7,
+vy:(Math.random()-0.5)*0.7
+});
+
 }
 
-/* ---------- FALLING PARTICLES ---------- */
+let scanY=0;
 
-let particles = [];
+function draw(){
 
-for (let i = 0; i < 120; i++) {
-    particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        speed: Math.random() * 3 + 1,
-        size: Math.random() * 2 + 1
-    });
-}
-
-/* ---------- VERTICAL CYBER LINES ---------- */
-
-let lines = [];
-
-for (let i = 0; i < 60; i++) {
-    lines.push({
-        x: Math.random() * canvas.width,
-        speed: Math.random() * 0.3 + 0.1
-    });
-}
-
-/* ---------- SCAN LINE ---------- */
-
-let scanY = 0;
-
-/* ---------- DRAW LOOP ---------- */
-
-function draw() {
-
-ctx.fillStyle = "rgba(0,0,0,0.08)";
+ctx.fillStyle="rgba(0,0,0,0.08)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
+/* MATRIX */
 
-/* ===== MATRIX RAIN ===== */
+ctx.fillStyle="#00ff66";
+ctx.font=fontSize+"px monospace";
 
-ctx.fillStyle = "#00ff66";
-ctx.font = fontSize + "px monospace";
+for(let i=0;i<drops.length;i++){
 
-for (let i = 0; i < drops.length; i++) {
+let text=matrix[Math.floor(Math.random()*matrix.length)];
 
-let text = matrix[Math.floor(Math.random()*matrix.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
 
-ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-
-if (drops[i]*fontSize > canvas.height && Math.random() > 0.975)
-drops[i] = 0;
+if(drops[i]*fontSize>canvas.height && Math.random()>0.975)
+drops[i]=0;
 
 drops[i]++;
 
 }
 
-
-/* ===== CYBER LINES ===== */
-
-lines.forEach(l => {
-
-ctx.beginPath();
-ctx.strokeStyle = "rgba(0,255,150,0.06)";
-ctx.lineWidth = 1;
-
-ctx.moveTo(l.x,0);
-ctx.lineTo(l.x,canvas.height);
-
-ctx.stroke();
-
-l.x += l.speed;
-
-if(l.x > canvas.width) l.x = 0;
-
-});
-
-
-/* ===== PARTICLES ===== */
-
-particles.forEach(p => {
-
-ctx.beginPath();
-
-let gradient = ctx.createRadialGradient(
-p.x,p.y,0,
-p.x,p.y,20
-);
-
-gradient.addColorStop(0,"#00ffaa");
-gradient.addColorStop(1,"rgba(0,255,150,0)");
-
-ctx.fillStyle = gradient;
-
-ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-ctx.fill();
-
-p.y += p.speed;
-
-if(p.y > canvas.height){
-p.y = -10;
-p.x = Math.random()*canvas.width;
-}
-
-});
-
-
-/* ===== NEURAL NETWORK ===== */
+/* NODES */
 
 ctx.strokeStyle="rgba(0,255,255,0.15)";
 ctx.fillStyle="#00ffff";
 
 nodes.forEach(n=>{
 
-n.x += n.vx;
-n.y += n.vy;
+n.x+=n.vx;
+n.y+=n.vy;
 
-if(n.x<0 || n.x>canvas.width) n.vx *= -1;
-if(n.y<0 || n.y>canvas.height) n.vy *= -1;
+let dx=mouse.x-n.x;
+let dy=mouse.y-n.y;
+
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<120){
+
+n.x-=dx*0.02;
+n.y-=dy*0.02;
+
+}
+
+if(n.x<0||n.x>canvas.width) n.vx*=-1;
+if(n.y<0||n.y>canvas.height) n.vy*=-1;
 
 ctx.beginPath();
 ctx.arc(n.x,n.y,2,0,Math.PI*2);
@@ -330,12 +338,11 @@ ctx.fill();
 
 nodes.forEach(m=>{
 
-let dx = n.x-m.x;
-let dy = n.y-m.y;
+let dx=n.x-m.x;
+let dy=n.y-m.y;
+let dist=Math.sqrt(dx*dx+dy*dy);
 
-let dist = Math.sqrt(dx*dx + dy*dy);
-
-if(dist < 120){
+if(dist<120){
 
 ctx.beginPath();
 ctx.moveTo(n.x,n.y);
@@ -348,16 +355,14 @@ ctx.stroke();
 
 });
 
-
-/* ===== SCAN LINE ===== */
+/* SCAN */
 
 ctx.fillStyle="rgba(0,255,255,0.15)";
 ctx.fillRect(0,scanY,canvas.width,2);
 
-scanY += 2;
+scanY+=2;
 
-if(scanY > canvas.height) scanY = 0;
-
+if(scanY>canvas.height) scanY=0;
 
 requestAnimationFrame(draw);
 
@@ -365,12 +370,10 @@ requestAnimationFrame(draw);
 
 draw();
 
-/* ---------- RESIZE ---------- */
-
 window.addEventListener("resize",()=>{
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
 });
 
