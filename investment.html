@@ -1137,29 +1137,9 @@ scoreBox.classList.add("score-stable");
 }
 else{
 scoreBox.classList.add("score-risk");
-
+}
 
 return grade;
-}
-/* ================= ALLOCATION STATUS ================= */
-
-function allocationStatus(current,required,id){
-
-let el=document.getElementById(id);
-
-if(current<required){
-el.innerText="Under";
-el.className="status-under";
-}
-else if(current>required){
-el.innerText="Over";
-el.className="status-over";
-}
-else{
-el.innerText="Balanced";
-el.className="status-balanced";
-}
-
 }
 
 /* ================= AGE ================= */
