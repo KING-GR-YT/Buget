@@ -695,8 +695,7 @@ font-size:18px;
 
                 <tbody id="tbody"></tbody>
 
-<tfoot>
-    <tr>
+
         <tfoot>
             <tr>
             <th>Total</th>
@@ -709,8 +708,7 @@ font-size:18px;
             <th></th>
             </tr>
         </tfoot>
-    </tr>
-</tfoot>
+    
             </table>
         </div>
 
@@ -1171,18 +1169,19 @@ return grade;
 function allocationStatus(current,required,id){
 
 let el=document.getElementById(id);
+let diff = current - required;
 
-if(current<required){
-el.innerText="Under";
+if(Math.abs(diff) <= 2){
+el.innerText="✔ Balanced";
+el.className="status-balanced";
+}
+else if(diff < 0){
+el.innerText="⚠ Underweight";
 el.className="status-under";
 }
-else if(current>required){
-el.innerText="Over";
-el.className="status-over";
-}
 else{
-el.innerText="Balanced";
-el.className="status-balanced";
+el.innerText="⚠ Overweight";
+el.className="status-over";
 }
 
 }
@@ -1202,7 +1201,14 @@ return {e:50,d:40,g:10}
 document.getElementById("dob").addEventListener("change",function(){
 
 let birth = new Date(this.value);
-let age = new Date().getFullYear() - birth.getFullYear();
+let today = new Date();
+
+let age = today.getFullYear() - birth.getFullYear();
+let m = today.getMonth() - birth.getMonth();
+
+if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+age--;
+}
 
 document.getElementById("age").innerText = age;
 
