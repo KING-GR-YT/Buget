@@ -1005,7 +1005,7 @@ function updateProgress(val, target){
     }
 
     let p = Math.min((val / target) * 100, 100);
-    const box = document.querySelectorAll(".mini-progress")[0];
+    const box = document.getElementById("pFund").parentElement;
     const percentText = document.getElementById("pFund");
 
     percentText.innerText = p.toFixed(1) + "%";
