@@ -1178,7 +1178,7 @@ function allocationStatus(current,required,id){
 let el=document.getElementById(id);
 let diff = current - required;
 
-if(Math.abs(diff) <= 2){
+if(Math.abs(diff) <= 5){
 el.innerText="✔ Balanced";
 el.className="status-balanced";
 }
