@@ -116,21 +116,84 @@ background:rgba(255,60,60,0.08);
 color:#ff5c5c;
 }
 
-/* MOBILE */
+/* ================= MOBILE RESPONSIVE ================= */
 
-@media (max-width:900px){
+@media (max-width:1000px){
 
 .container{
 grid-template-columns:1fr;
+gap:20px;
 }
 
-table{
+/* header */
+h1{
+font-size:26px;
+line-height:1.4;
+}
+
+.home-link{
+float:none;
+display:inline-block;
+margin-top:10px;
 font-size:14px;
 }
 
+/* sections */
+.section{
+padding:18px;
+border-radius:16px;
+}
+
+/* table text */
+table{
+font-size:18px;
+}
+
+th,td{
+padding:10px 6px;
+}
+
+/* input size */
+input{
+width:80px;
+font-size:16px;
+}
+
+}
+
+/* ===== SMALL PHONES ===== */
+
+@media (max-width:600px){
+
+body{
+padding:12px;
+}
+
+/* header */
+h1{
+font-size:22px;
+}
+
+/* table scroll */
+.section{
+overflow-x:auto;
+}
+
+/* table */
+table{
+font-size:16px;
+min-width:420px;
+}
+
+/* inputs */
 input{
 width:70px;
-font-size:14px;
+font-size:15px;
+}
+
+/* section titles */
+.section h2{
+font-size:18px;
 }
 
 }
