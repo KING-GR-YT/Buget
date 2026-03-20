@@ -8,9 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-/* =====================
-   MODERN FINTECH UI
-===================== */
 
 body{
     font-family: 'Inter', sans-serif;
@@ -62,50 +59,47 @@ body{
     color:#22c55e;
 }
 
-/* TABLE */
+/* =====================
+   TABLE (FIXED BORDER)
+===================== */
+
 table{
     width:100%;
     border-collapse:collapse;
+    border:1px solid #1f2937;   /* ✅ full outer border */
+}
+
+/* FULL INNER BORDER */
+th, td{
+    border:1px solid #1f2937;   /* ✅ inner borders added */
+    padding:10px;
+    font-size:16px;
 }
 
 /* HEADER */
 th{
-    font-size:14px;
-    font-weight:600;
     color:#9ca3af;
-    padding:10px;
-    border-bottom:1px solid #1f2937;
-}
-
-/* DATA */
-td{
-    font-size:16px;
-    padding:10px;
-    border-bottom:1px solid #1f2937;
-    font-variant-numeric: tabular-nums;
+    font-weight:600;
 }
 
 /* =====================
-   💰 CURRENCY STYLE
+   💰 CURRENCY FIX
 ===================== */
 
-/* RIGHT ALIGN MONEY */
+/* REMOVE OLD SYMBOL ISSUE */
+td::before{
+    content:none !important;
+}
+
+/* ALIGN NUMBER + ₹ TOGETHER */
 td:last-child,
 td:nth-child(2),
-td:nth-child(3),
-input{
+td:nth-child(3){
     text-align:right;
-    padding-right:12px;
+    font-variant-numeric: tabular-nums;
 }
 
-/* ADD ₹ SYMBOL VISUALLY */
-td:last-child::before{
-    content:"₹ ";
-    color:#9ca3af;
-    font-size:14px;
-}
-
-/* INPUT STYLE */
+/* INPUT */
 input{
     width:100%;
     border:none;
@@ -113,20 +107,16 @@ input{
     color:#22c55e;
     font-size:16px;
     font-weight:500;
+    text-align:center; /* ✅ center align inputs */
 }
 
-/* REMOVE ARROWS */
+/* REMOVE NUMBER ARROWS */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
 }
 input[type=number] {
     -moz-appearance: textfield;
-}
-
-/* FOCUS */
-td:focus-within{
-    background:#1f2937;
 }
 
 /* HOVER */
@@ -147,30 +137,32 @@ tr:hover td{
 }
 
 /* =====================
-   SUMMARY BOXES
+   NET BALANCE (FIXED VISIBILITY)
 ===================== */
 
-/* NET */
 .net{
     margin-top:15px;
-    padding:12px;
+    padding:14px;
     font-size:18px;
     text-align:center;
     font-weight:600;
     border-radius:10px;
-    background:#0f172a;
-    border:1px solid #1f2937;
-    color:#22c55e;
+    background:#e6fffa;     /* ✅ LIGHT BACKGROUND */
+    color:#065f46;          /* dark text */
+    border:1px solid #22c55e;
 }
 
-/* TOTAL BOX */
+/* =====================
+   TOTAL BOX CENTER ALIGN
+===================== */
+
 .total-box{
     margin-top:15px;
     padding:12px;
     font-size:16px;
     background:#0f172a;
     border:1px solid #1f2937;
-    text-align:center;
+    text-align:center;   /* ✅ center */
     font-weight:600;
     border-radius:10px;
     color:#38bdf8;
