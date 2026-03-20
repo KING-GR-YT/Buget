@@ -8,34 +8,34 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+/* =====================
+   MODERN FINTECH UI
+===================== */
+
 body{
     font-family: 'Inter', sans-serif;
     font-size:16px;
-    line-height:1.5;
-    background: radial-gradient(circle at top left,#0a0f1c,#050811 70%);
-    color:#dff;
-    -webkit-font-smoothing: antialiased;
+    background:#0b1220;
+    color:#e6edf3;
 }
 
 /* HEADER */
 .header{
-    padding:24px;
-    font-size:30px;
-    font-family: 'Orbitron', sans-serif;
-    font-weight:700;
-    letter-spacing:2px;
-    background:rgba(0,255,255,0.05);
-    border-bottom:1px solid rgba(0,255,255,0.3);
-    box-shadow:0 0 25px rgba(0,255,255,0.2);
-    color:#00ffff;
+    padding:20px 25px;
+    font-size:24px;
+    font-weight:600;
+    background:#111827;
+    border-bottom:1px solid #1f2937;
+    color:#22c55e;
 }
 
 /* GRID */
 .dashboard{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:30px;
-    margin-top:70px;
+    gap:25px;
+    margin-top:40px;
+    padding:20px;
 }
 
 @media(max-width:1000px){
@@ -46,94 +46,76 @@ body{
 
 /* CARD */
 .card{
-    background:rgba(10,15,30,0.85);
-    border-radius:18px;
-    padding:25px;
-    border:1px solid #ffc107;
-    box-shadow:
-        0 0 25px rgba(0,255,255,0.15),
-        inset 0 0 30px rgba(0,255,255,0.05);
-    transition:0.3s;
+    background:#111827;
+    border-radius:14px;
+    padding:20px;
+    border:1px solid #1f2937;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
 }
 
-/* SECTION TITLE */
+/* TITLE */
 .title{
     text-align:center;
-    font-family: 'Orbitron', sans-serif;
-    font-size:26px;
+    font-size:20px;
     font-weight:600;
-    letter-spacing:1.5px;
     margin-bottom:20px;
-    color:#00ffff;
-    text-shadow:0 0 8px #00ffff;
+    color:#22c55e;
 }
 
 /* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
-    border:1px solid rgba(0,255,255,0.4);
-    border-radius:8px;
-    overflow:hidden;
 }
 
-th, td{
-    padding:8px;
-    text-align:center;
-    border:1px solid rgba(0,255,255,0.25);
-    transition:0.2s ease;
-    font-family: 'Inter', sans-serif;
-}
-
-/* HEADER CELLS */
+/* HEADER */
 th{
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    font-size:16px;
+    font-size:14px;
     font-weight:600;
-    letter-spacing:1px;
+    color:#9ca3af;
+    padding:10px;
+    border-bottom:1px solid #1f2937;
 }
 
-/* DATA CELLS */
+/* DATA */
 td{
-    font-size:18px;
-    font-weight:500;
+    font-size:16px;
+    padding:10px;
+    border-bottom:1px solid #1f2937;
     font-variant-numeric: tabular-nums;
 }
 
-/* HOVER EFFECT */
-table tr:hover td{
-    background:rgba(0,255,255,0.08);
-    box-shadow:inset 0 0 10px rgba(0,255,255,0.2);
+/* =====================
+   💰 CURRENCY STYLE
+===================== */
+
+/* RIGHT ALIGN MONEY */
+td:last-child,
+td:nth-child(2),
+td:nth-child(3),
+input{
+    text-align:right;
+    padding-right:12px;
 }
 
-/* TOTAL ROW */
-.highlight-blue td{
-    background:rgba(0,255,255,0.18);
-    font-size:18px;
-    font-weight:700;
-    color:#00ffff;
-    box-shadow:inset 0 0 15px rgba(0,255,255,0.3);
+/* ADD ₹ SYMBOL VISUALLY */
+td:last-child::before{
+    content:"₹ ";
+    color:#9ca3af;
+    font-size:14px;
 }
 
-/* SIDE TABLE */
-.side-table td{
-    background:rgba(0,255,255,0.05);
-}
-
-/* INPUT */
+/* INPUT STYLE */
 input{
     width:100%;
     border:none;
     background:transparent;
-    color:#00ffff;
-    font-size:18px;
+    color:#22c55e;
+    font-size:16px;
     font-weight:500;
-    text-align:center;
-    font-family: 'Inter', sans-serif;
 }
 
-/* REMOVE NUMBER ARROWS */
+/* REMOVE ARROWS */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -142,45 +124,62 @@ input[type=number] {
     -moz-appearance: textfield;
 }
 
-/* FOCUS EFFECT */
+/* FOCUS */
 td:focus-within{
-    background:rgba(0,255,255,0.12);
-    box-shadow: inset 0 0 10px rgba(0,255,255,0.2);
-    border-radius:6px;
+    background:#1f2937;
 }
 
-/* NET BALANCE */
+/* HOVER */
+tr:hover td{
+    background:#1a2335;
+}
+
+/* TOTAL ROW */
+.highlight-blue td{
+    font-weight:700;
+    color:#22c55e;
+    background:#0f1f17;
+}
+
+/* SIDE TABLE */
+.side-table td{
+    color:#cbd5f5;
+}
+
+/* =====================
+   SUMMARY BOXES
+===================== */
+
+/* NET */
 .net{
-    font-family: 'Orbitron', sans-serif;
-    font-size:24px;
-    text-align:center;
     margin-top:15px;
     padding:12px;
-    font-weight:700;
-    letter-spacing:1px;
+    font-size:18px;
+    text-align:center;
+    font-weight:600;
     border-radius:10px;
-    background:rgba(255,193,7,0.15);
-    border:1px solid #ffc107;
-    color:#ffc107;
+    background:#0f172a;
+    border:1px solid #1f2937;
+    color:#22c55e;
 }
 
 /* TOTAL BOX */
 .total-box{
     margin-top:15px;
     padding:12px;
-    font-size:18px;
-    background:rgba(0,255,100,0.15);
-    border:1px solid #00ff99;
-    color:#00ff99;
+    font-size:16px;
+    background:#0f172a;
+    border:1px solid #1f2937;
     text-align:center;
-    font-weight:700;
+    font-weight:600;
     border-radius:10px;
+    color:#38bdf8;
 }
 
 /* FLEX */
 .flex{
     display:flex;
-    gap:25px;
+    gap:20px;
 }
 
 @media(max-width:1000px){
@@ -194,87 +193,49 @@ td:focus-within{
 
 /* HOME BUTTON */
 .home-link{
-    padding:5px 10px;
+    padding:6px 10px;
     border-radius:6px;
     text-decoration:none;
-    background:rgba(0,255,255,0.15);
-    color:#00ffff;
-    border:1px solid rgba(0,255,255,0.4);
-    transition:0.3s ease;
-    font-size:14px;
-    font-family: 'Inter', sans-serif;
+    background:#1f2937;
+    color:#22c55e;
+    border:1px solid #374151;
     float:right;
+    font-size:14px;
 }
 
 .home-link:hover{
-    background:#00ffff;
-    color:#001f1f;
-    box-shadow:0 0 10px #00ffff;
+    background:#22c55e;
+    color:#022c22;
 }
 
 /* =====================
-   MOBILE RESPONSIVE
+   MOBILE
 ===================== */
 
-@media (max-width: 600px){
-
-    body{
-        font-size:14px;
-    }
+@media (max-width:600px){
 
     .header{
-        font-size:20px;
-        padding:15px;
-        line-height:1.4;
-    }
-
-    .home-link{
-        float:none;
-        display:inline-block;
-        margin-top:10px;
-    }
-
-    .dashboard{
-        padding:15px;
-        gap:20px;
-    }
-
-    .card{
-        padding:15px;
-    }
-
-    .title{
         font-size:18px;
     }
 
-    table{
-        font-size:14px;
-    }
-
-    th{
-        font-size:13px;
-    }
-
-    td{
-        font-size:14px;
-    }
-
-    input{
-        font-size:14px;
-        padding:6px 0;
-    }
-
-    .net{
+    .title{
         font-size:16px;
     }
 
-    .total-box{
-        font-size:14px;
-        padding:10px;
+    td, th{
+        font-size:13px;
+        padding:8px;
     }
 
-    .left,
-    .right{
+    input{
+        font-size:13px;
+    }
+
+    .net, .total-box{
+        font-size:14px;
+    }
+
+    .left, .right{
         overflow-x:auto;
     }
 }
