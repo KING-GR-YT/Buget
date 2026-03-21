@@ -7,7 +7,6 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-<!-- ✅ FIXED FIREBASE VERSION -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -151,7 +150,7 @@ th, td{
 <option value="avalanche">Avalanche</option>
 </select>
 <input id="extra" type="number" placeholder="Extra Payment">
-<button onclick="calculate()">Calculate</button>
+<button id="calcBtn">Calculate</button>
 </div>
 
 <div class="card highlight" id="suggestion"></div>
@@ -170,7 +169,7 @@ th, td{
 </div>
 
 <script>
-// 🔥 FIREBASE CONFIG (PUT YOURS)
+// 🔥 FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
@@ -183,9 +182,23 @@ const firebaseConfig = {
 
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const firestore = firebase.firestore();
+
+/* 🔐 PAGE PROTECTION */
+
+document.body.style.display = "none";
+
+auth.onAuthStateChanged(function(user){
+  if(!user || user.uid !== ADMIN_UID){
+    window.location.href = "index.html";
+  } else {
+    document.body.style.display = "block";
+  }
+});
 
 let debts = [];
 
@@ -194,9 +207,8 @@ function inr(x){
  return "₹"+Math.round(x).toLocaleString("en-IN");
 }
 
-// ADD BUTTON FIX
-document.getElementById("addBtn").addEventListener("click", function(){
-
+// ADD
+document.getElementById("addBtn").addEventListener("click", ()=>{
  let name = document.getElementById("name").value;
  let amount = +document.getElementById("amount").value;
  let rate = +document.getElementById("rate").value;
@@ -208,10 +220,12 @@ document.getElementById("addBtn").addEventListener("click", function(){
  }
 
  debts.push({name, amount, rate, emi});
-
  render();
- saveData(); // ✅ AUTO SAVE
+ saveData();
 });
+
+// CALCULATE BUTTON FIX
+document.getElementById("calcBtn").addEventListener("click", calculate);
 
 // RENDER
 function render(){
@@ -249,7 +263,6 @@ function simulate(data, extra){
     interest+=i;
     d.amount += i;
     d.amount -= d.emi;
-
     if(d.amount < 0) d.amount = 0;
    }
   });
@@ -304,7 +317,6 @@ function timelineData(debts, extra, strat){
   if(t) t.amount -= extra;
 
   arr.push({m,total});
-
   if(total<=0) break;
  }
 
@@ -314,8 +326,9 @@ function timelineData(debts, extra, strat){
 // CALCULATE
 function calculate(){
 
- let strat=strategy.value;
- let extra=+extra.value||0;
+ let strat = document.getElementById("strategy").value;
+ let extraInput = document.getElementById("extra");
+ let extra = parseFloat(extraInput.value) || 0;
 
  let base=simulate(debts,0);
 
@@ -325,19 +338,20 @@ function calculate(){
 
  let improved=simulate(sorted,extra);
 
- months.innerText=improved.months;
+ document.getElementById("months").innerText=improved.months;
 
  let saved=Math.max(0,base.interest-improved.interest);
- savedEl.innerText=inr(saved);
+ document.getElementById("saved").innerText=inr(saved);
 
  let score=calculateScore(debts,improved.months,extra);
- scoreEl.innerText=score;
+ document.getElementById("score").innerText=score;
 
- bar.style.width=score+"%";
+ document.getElementById("bar").style.width=score+"%";
 
- suggestion.innerText = score>80 ? "🟢 Excellent" :
-                         score>60 ? "🟡 Good" :
-                         "🔴 Risk";
+ document.getElementById("suggestion").innerText =
+  score>80 ? "🟢 Excellent" :
+  score>60 ? "🟡 Good" :
+  "🔴 Risk";
 
  let alertMsg="";
  if(improved.months<base.months){
@@ -347,33 +361,35 @@ function calculate(){
  let high=debts.find(d=>d.rate>15);
  if(high) alertMsg += `⚠️ High interest: ${high.name}`;
 
- alertBox.innerText=alertMsg;
+ document.getElementById("alertBox").innerText=alertMsg;
 
- // timeline
  let tdata=timelineData(debts,extra,strat);
  let html="";
  tdata.forEach(t=>{
   html+=`<tr><td>${t.m}</td><td>${inr(t.total)}</td></tr>`;
  });
 
- timeline.innerHTML=html;
+ document.getElementById("timeline").innerHTML=html;
 }
 
-// SAVE AUTO
+// SAVE
 function saveData(){
- db.ref("debts").set(debts);
+ try{
+  db.ref("debts").set(debts);
+ }catch(e){
+  console.log("Firebase not connected");
+ }
 }
 
 // AUTO LOAD
-db.ref("debts").on("value",snap=>{
- debts=snap.val()||[];
- render();
-});
-
-// FIX ELEMENTS
-const savedEl = document.getElementById("saved");
-const scoreEl = document.getElementById("score");
-
+try{
+ db.ref("debts").on("value",snap=>{
+  debts=snap.val()||[];
+  render();
+ });
+}catch(e){
+ console.log("Offline mode");
+}
 </script>
 
 </body>
