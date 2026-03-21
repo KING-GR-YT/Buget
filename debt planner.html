@@ -9,44 +9,47 @@
 
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+1
 <style>
 :root{
 --blue:#00f7ff;
---green:#00ff9d;
+--green:#00ffa6;
 --red:#ff3b3b;
 }
 
 body{
 margin:0;
-background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+background:#050b14;
 font-family:Inter;
 color:white;
 }
 
-.container{max-width:900px;margin:auto;padding:20px;}
+.container{
+max-width:850px;
+margin:auto;
+padding:20px;
+}
 
 .header{
 font-family:Orbitron;
 font-size:26px;
 color:var(--blue);
-text-shadow:0 0 15px var(--blue);
 margin-bottom:20px;
 }
 
 .glass{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(0,247,255,.3);
-border-radius:14px;
-padding:20px;
-margin-bottom:20px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(0,247,255,.2);
+border-radius:12px;
+padding:15px;
+margin-bottom:15px;
 }
 
 input,select,button{
 width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:8px;
+padding:10px;
+margin:5px 0;
+border-radius:6px;
 border:1px solid var(--blue);
 background:#081321;
 color:white;
@@ -61,48 +64,93 @@ cursor:pointer;
 
 .summary{
 display:flex;
-flex-wrap:wrap;
 gap:10px;
+flex-wrap:wrap;
 }
 
-.stat{flex:1;text-align:center;}
+.stat{
+flex:1;
+text-align:center;
+}
 
 .circle{
-width:80px;height:80px;border-radius:50%;
+width:70px;height:70px;
+border-radius:50%;
 border:3px solid var(--blue);
-display:flex;align-items:center;justify-content:center;
-margin:auto;font-family:Orbitron;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
+font-family:Orbitron;
 }
 
-table{width:100%;border-collapse:collapse;}
-th,td{padding:10px;text-align:center;border-bottom:1px solid #333;}
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:8px;
+border-bottom:1px solid #222;
+text-align:center;
+}
 
 .delete{
-background:red;color:white;border:none;padding:6px 10px;
-border-radius:6px;cursor:pointer;
+background:var(--red);
+color:white;
+border:none;
+padding:5px 10px;
+border-radius:5px;
+cursor:pointer;
 }
 
 .ai{
-background:#002f2f;padding:12px;border-radius:10px;color:#00ffcc;
+background:#002f2f;
+padding:10px;
+border-radius:8px;
+color:#00ffcc;
 }
 
-.progress{height:10px;background:#111;border-radius:10px;overflow:hidden;}
-.bar{height:100%;background:linear-gradient(90deg,#00f0ff,#00ffa6);}
+.progress{
+height:8px;
+background:#111;
+border-radius:10px;
+overflow:hidden;
+}
+.bar{
+height:100%;
+background:linear-gradient(90deg,#00f0ff,#00ffa6);
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
 <div class="header">💰 Debt Planner Pro+</div>
 
+<!-- SUMMARY -->
 <div class="glass summary">
-<div class="stat"><div>Score</div><div class="circle" id="score">0</div></div>
-<div class="stat"><div>Total</div><div id="totalDebt">₹0</div></div>
-<div class="stat"><div>Months</div><div id="months">0</div></div>
-<div class="stat"><div>Saved</div><div id="saved">₹0</div></div>
+<div class="stat">
+<div>Score</div>
+<div class="circle" id="score">0</div>
+</div>
+<div class="stat">
+<div>Total</div>
+<div id="totalDebt">₹0</div>
+</div>
+<div class="stat">
+<div>Months</div>
+<div id="months">0</div>
+</div>
+<div class="stat">
+<div>Saved</div>
+<div id="saved">₹0</div>
+</div>
 </div>
 
+<!-- ADD -->
 <div class="glass">
 <input id="name" placeholder="Debt Name">
 <input id="amount" type="number" placeholder="Amount">
@@ -111,29 +159,37 @@ background:#002f2f;padding:12px;border-radius:10px;color:#00ffcc;
 <button onclick="addDebt()">Add Debt</button>
 </div>
 
+<!-- TABLE -->
 <div class="glass">
 <table>
 <thead>
 <tr>
-<th>Name</th><th>Amount</th><th>Rate</th><th>EMI</th><th>Delete</th>
+<th>Name</th>
+<th>Amount</th>
+<th>Rate</th>
+<th>EMI</th>
+<th>Delete</th>
 </tr>
 </thead>
 <tbody id="table"></tbody>
 </table>
 </div>
 
+<!-- CALCULATE -->
 <div class="glass">
 <select id="strategy">
-<option value="snowball">Snowball</option>
-<option value="avalanche">Avalanche</option>
+<option value="snowball">Snowball (Low → High)</option>
+<option value="avalanche">Avalanche (High Interest)</option>
 </select>
 
 <input id="extra" type="number" placeholder="Extra Payment">
 <button onclick="calculate()">Calculate</button>
 </div>
 
+<!-- AI -->
 <div class="glass ai" id="aiBox">AI Suggestion will appear here</div>
 
+<!-- PROGRESS -->
 <div class="glass">
 <div class="progress"><div class="bar" id="bar"></div></div>
 </div>
@@ -155,32 +211,33 @@ const db = firebase.database();
 /* STATE */
 let debts=[];
 
+/* ELEMENTS */
+const nameEl=document.getElementById("name");
+const amountEl=document.getElementById("amount");
+const rateEl=document.getElementById("rate");
+const emiEl=document.getElementById("emi");
+const table=document.getElementById("table");
+
 /* FORMAT */
-const INR = n => "₹"+Math.round(n||0).toLocaleString("en-IN");
+const INR=n=>"₹"+Math.round(n||0).toLocaleString("en-IN");
 
 /* ADD */
 function addDebt(){
+let name=nameEl.value.trim();
+let amount=parseFloat(amountEl.value);
+let rate=parseFloat(rateEl.value);
+let emi=parseFloat(emiEl.value);
 
-let name = document.getElementById("name").value.trim();
-let amount = parseFloat(document.getElementById("amount").value);
-let rate = parseFloat(document.getElementById("rate").value);
-let emi = parseFloat(document.getElementById("emi").value);
-
-if(!name || isNaN(amount) || isNaN(rate) || isNaN(emi)){
+if(!name || isNaN(amount)||isNaN(rate)||isNaN(emi)){
 alert("Fill all fields correctly");
 return;
 }
 
 debts.push({name,amount,rate,emi});
-
 save();
 render();
 
-/* CLEAR */
-document.getElementById("name").value="";
-document.getElementById("amount").value="";
-document.getElementById("rate").value="";
-document.getElementById("emi").value="";
+nameEl.value=amountEl.value=rateEl.value=emiEl.value="";
 }
 
 /* DELETE */
@@ -193,8 +250,6 @@ render();
 /* RENDER */
 function render(){
 let total=0;
-const table=document.getElementById("table");
-
 table.innerHTML="";
 
 debts.forEach((d,i)=>{
@@ -213,25 +268,27 @@ table.innerHTML+=`
 document.getElementById("totalDebt").innerText=INR(total);
 }
 
-/* SIMULATION */
+/* SIMULATION (FIXED LOGIC) */
 function simulate(data,extra){
 let copy=JSON.parse(JSON.stringify(data));
-let interest=0,months=0;
+let months=0,interest=0;
 
 while(copy.some(d=>d.amount>0)&&months<600){
 months++;
 
-copy.forEach(d=>{
-if(d.amount>0){
-let i=d.amount*(d.rate/12/100);
-interest+=i;
-d.amount+=i-d.emi;
+for(let i=0;i<copy.length;i++){
+let d=copy[i];
+if(d.amount<=0) continue;
+
+let iVal=d.amount*(d.rate/12/100);
+interest+=iVal;
+d.amount+=iVal;
+d.amount-=d.emi;
+
+if(i===0) d.amount-=extra; // extra to priority debt
+
 if(d.amount<0)d.amount=0;
 }
-});
-
-let t=copy.find(d=>d.amount>0);
-if(t)t.amount-=extra;
 }
 
 return {months,interest};
@@ -249,27 +306,33 @@ let extra=parseFloat(document.getElementById("extra").value)||0;
 let strat=document.getElementById("strategy").value;
 
 let sorted=[...debts];
-if(strat==="snowball") sorted.sort((a,b)=>a.amount-b.amount);
-else sorted.sort((a,b)=>b.rate-a.rate);
+
+if(strat==="snowball")
+sorted.sort((a,b)=>a.amount-b.amount);
+else
+sorted.sort((a,b)=>b.rate-a.rate);
 
 let base=simulate(debts,0);
 let improved=simulate(sorted,extra);
 
+/* UI */
 document.getElementById("months").innerText=improved.months;
 
 let saved=Math.max(0,base.interest-improved.interest);
 document.getElementById("saved").innerText=INR(saved);
 
-let scoreVal=Math.max(0,Math.min(100,100-improved.months/2+(extra>0?10:0)));
-document.getElementById("score").innerText=Math.round(scoreVal);
-document.getElementById("bar").style.width=scoreVal+"%";
+/* SCORE */
+let score=Math.max(0,Math.min(100,100-improved.months/2+(extra>0?10:0)));
+document.getElementById("score").innerText=Math.round(score);
+document.getElementById("bar").style.width=score+"%";
 
 /* AI */
 let target=sorted.find(d=>d.amount>0);
-document.getElementById("aiBox").innerText = target
-? `💡 Focus on "${target.name}" (${target.rate}%)`
-: "All debts cleared 🎉";
 
+document.getElementById("aiBox").innerText =
+target
+? `💡 Focus on "${target.name}" (${target.rate}%). Use ${strat} strategy to close faster.`
+: "🎉 All debts cleared!";
 }
 
 /* SAVE */
