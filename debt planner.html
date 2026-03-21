@@ -160,10 +160,11 @@ const INR = n => "₹"+Math.round(n||0).toLocaleString("en-IN");
 
 /* ADD */
 function addDebt(){
-let name=nameEl.value.trim();
-let amount=parseFloat(amountEl.value);
-let rate=parseFloat(rateEl.value);
-let emi=parseFloat(emiEl.value);
+
+let name = document.getElementById("name").value.trim();
+let amount = parseFloat(document.getElementById("amount").value);
+let rate = parseFloat(document.getElementById("rate").value);
+let emi = parseFloat(document.getElementById("emi").value);
 
 if(!name || isNaN(amount) || isNaN(rate) || isNaN(emi)){
 alert("Fill all fields correctly");
@@ -171,10 +172,15 @@ return;
 }
 
 debts.push({name,amount,rate,emi});
+
 save();
 render();
 
-nameEl.value=amountEl.value=rateEl.value=emiEl.value="";
+/* CLEAR */
+document.getElementById("name").value="";
+document.getElementById("amount").value="";
+document.getElementById("rate").value="";
+document.getElementById("emi").value="";
 }
 
 /* DELETE */
@@ -187,6 +193,8 @@ render();
 /* RENDER */
 function render(){
 let total=0;
+const table=document.getElementById("table");
+
 table.innerHTML="";
 
 debts.forEach((d,i)=>{
@@ -202,7 +210,7 @@ table.innerHTML+=`
 </tr>`;
 });
 
-totalDebt.innerText=INR(total);
+document.getElementById("totalDebt").innerText=INR(total);
 }
 
 /* SIMULATION */
@@ -237,8 +245,8 @@ alert("Add at least one debt");
 return;
 }
 
-let extra=parseFloat(extraEl.value)||0;
-let strat=strategy.value;
+let extra=parseFloat(document.getElementById("extra").value)||0;
+let strat=document.getElementById("strategy").value;
 
 let sorted=[...debts];
 if(strat==="snowball") sorted.sort((a,b)=>a.amount-b.amount);
@@ -247,18 +255,18 @@ else sorted.sort((a,b)=>b.rate-a.rate);
 let base=simulate(debts,0);
 let improved=simulate(sorted,extra);
 
-months.innerText=improved.months;
+document.getElementById("months").innerText=improved.months;
 
 let saved=Math.max(0,base.interest-improved.interest);
-savedEl.innerText=INR(saved);
+document.getElementById("saved").innerText=INR(saved);
 
 let scoreVal=Math.max(0,Math.min(100,100-improved.months/2+(extra>0?10:0)));
-score.innerText=Math.round(scoreVal);
-bar.style.width=scoreVal+"%";
+document.getElementById("score").innerText=Math.round(scoreVal);
+document.getElementById("bar").style.width=scoreVal+"%";
 
 /* AI */
 let target=sorted.find(d=>d.amount>0);
-aiBox.innerText = target
+document.getElementById("aiBox").innerText = target
 ? `💡 Focus on "${target.name}" (${target.rate}%)`
 : "All debts cleared 🎉";
 
@@ -269,28 +277,16 @@ function save(){
 db.ref("debts").set(debts);
 }
 
-/* LOAD FIX */
+/* LOAD */
 db.ref("debts").on("value",snap=>{
 let data=snap.val();
 
-/* 🔥 IMPORTANT FIX */
-if(Array.isArray(data)){
-debts=data;
-}else if(data){
-debts=Object.values(data);
-}else{
-debts=[];
-}
+if(Array.isArray(data)) debts=data;
+else if(data) debts=Object.values(data);
+else debts=[];
 
 render();
 });
-
-/* SHORTCUT ELEMENTS */
-const nameEl=name;
-const amountEl=amount;
-const rateEl=rate;
-const emiEl=emi;
-const extraEl=extra;
 
 </script>
 
