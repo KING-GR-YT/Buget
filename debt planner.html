@@ -5,103 +5,179 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Debt Planner Pro+</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<!-- ✅ Firebase (FIXED) -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <style>
+:root{
+--blue:#00f7ff;
+--green:#00ff9d;
+--red:#ff2e63;
+--gold:#ffc857;
+}
+
 body{
-    font-family:'Poppins',sans-serif;
-    background:linear-gradient(135deg,#020617,#001f2f);
-    color:#00f0ff;
-    padding:20px;
+margin:0;
+background:radial-gradient(circle at top left,#0f2027,#070b14 60%);
+font-family:Inter;
+color:white;
 }
-.card{
-    background:rgba(0,0,0,0.6);
-    border:1px solid #00f0ff33;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:15px;
+
+.container{
+max-width:1400px;
+margin:auto;
+padding:15px;
 }
-.grid{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:15px;
+
+.header{
+font-family:Orbitron;
+font-size:26px;
+color:var(--blue);
+text-shadow:0 0 15px var(--blue);
+margin-bottom:20px;
 }
-@media(min-width:768px){
-    .grid{grid-template-columns:1fr 1fr;}
+
+.glass{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(0,247,255,.3);
+backdrop-filter:blur(10px);
+border-radius:16px;
+padding:20px;
+margin-bottom:20px;
 }
-input, select{
-    width:100%;
-    padding:12px;
-    margin:6px 0;
-    border-radius:8px;
-    border:1px solid #00f0ff55;
-    background:#020617;
-    color:#00f0ff;
+
+.top{
+display:flex;
+flex-wrap:wrap;
+gap:15px;
+justify-content:space-between;
 }
+
+.stat1{
+flex:1 1 160px;
+text-align:center;
+}
+
+.mini-progress{
+width:120px;
+height:120px;
+border-radius:50%;
+border:4px solid #333;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
+}
+
+.percent{
+font-family:Orbitron;
+font-size:20px;
+}
+
+input,select,button{
+width:100%;
+padding:10px;
+margin:5px 0;
+border-radius:8px;
+border:1px solid var(--blue);
+background:#081321;
+color:white;
+}
+
 button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:10px;
-    background:linear-gradient(90deg,#00f0ff,#00ffa6);
-    color:#000;
-    font-weight:bold;
+background:linear-gradient(90deg,#00f0ff,#00ffa6);
+color:black;
+font-weight:bold;
+cursor:pointer;
 }
-.summary{
-    display:flex;
-    gap:10px;
-}
-.summary div{
-    flex:1;
-    background:#020617;
-    padding:12px;
-    border-radius:10px;
-    text-align:center;
-}
+
 table{
-    width:100%;
-    border-collapse:collapse;
+width:100%;
+border-collapse:collapse;
 }
-th, td{
-    border:1px solid #00f0ff33;
-    padding:10px;
-    text-align:center;
+
+th,td{
+padding:10px;
+border-bottom:1px solid rgba(255,255,255,.1);
+text-align:center;
 }
-.alert{
-    background:#3f0000;
-    padding:10px;
-    border-radius:10px;
-    color:#ff6b6b;
-}
+
 .highlight{
-    background:#003f2f;
-    padding:10px;
-    border-radius:10px;
+background:#003f2f;
+padding:10px;
+border-radius:10px;
+white-space:pre-line;
 }
+
+.alert{
+background:#3f0000;
+padding:10px;
+border-radius:10px;
+color:#ff6b6b;
+}
+
 .progress{
-    height:10px;
-    background:#001f2f;
-    border-radius:10px;
+height:10px;
+background:#001f2f;
+border-radius:10px;
 }
 .progress-bar{
-    height:100%;
-    background:linear-gradient(90deg,#00f0ff,#00ffa6);
+height:100%;
+background:linear-gradient(90deg,#00f0ff,#00ffa6);
 }
+
+/* SCORE COLORS */
+.score-risk{border-color:#ff2e2e;box-shadow:0 0 15px #ff2e2e;}
+.score-stable{border-color:#ffe600;box-shadow:0 0 15px #ffe600;}
+.score-strong{border-color:#00b3ff;box-shadow:0 0 15px #00b3ff;}
+.score-elite{border-color:#00ff9d;box-shadow:0 0 20px #00ff9d;}
 </style>
 </head>
 
 <body>
 
-<h2>💰 Debt Planner Pro+</h2>
+<div class="container">
 
-<div class="grid">
+<div class="header">💰 Debt Planner Pro+</div>
 
-<div class="card">
+<!-- SUMMARY -->
+<div class="glass top">
+
+<div class="stat1">
+<span>Score</span>
+<div class="mini-progress" id="scoreBox">
+<div class="percent" id="score">0</div>
+</div>
+</div>
+
+<div class="stat1">
+<span>Total Debt</span>
+<div class="mini-progress"><div class="percent" id="totalDebt">₹0</div></div>
+</div>
+
+<div class="stat1">
+<span>EMI</span>
+<div class="mini-progress"><div class="percent" id="totalEMI">₹0</div></div>
+</div>
+
+<div class="stat1">
+<span>Months</span>
+<div class="mini-progress"><div class="percent" id="months">0</div></div>
+</div>
+
+<div class="stat1">
+<span>Saved</span>
+<div class="mini-progress"><div class="percent" id="saved">₹0</div></div>
+</div>
+
+</div>
+
+<!-- INPUT -->
+<div class="glass">
 <input id="name" placeholder="Debt Name">
 <input id="amount" type="number" placeholder="Amount">
 <input id="rate" type="number" placeholder="Interest %">
@@ -109,17 +185,8 @@ th, td{
 <button id="addBtn">Add Debt</button>
 </div>
 
-<div class="card summary">
-<div>Total<br><b id="totalDebt">₹0</b></div>
-<div>EMI<br><b id="totalEMI">₹0</b></div>
-<div>Months<br><b id="months">0</b></div>
-<div>Saved<br><b id="saved">₹0</b></div>
-<div>Score<br><b id="score">0</b></div>
-</div>
-
-</div>
-
-<div class="card">
+<!-- TABLE -->
+<div class="glass">
 <table>
 <thead>
 <tr><th>Name</th><th>Balance</th><th>Rate</th><th>EMI</th></tr>
@@ -128,7 +195,8 @@ th, td{
 </table>
 </div>
 
-<div class="card">
+<!-- CALCULATE -->
+<div class="glass">
 <select id="strategy">
 <option value="snowball">Snowball</option>
 <option value="avalanche">Avalanche</option>
@@ -137,27 +205,21 @@ th, td{
 <button id="calcBtn">Calculate</button>
 </div>
 
-<div class="card highlight" id="suggestion"></div>
-<div class="card alert" id="alertBox"></div>
+<div class="glass highlight" id="suggestion"></div>
+<div class="glass alert" id="alertBox"></div>
 
-<div class="card">
+<div class="glass">
 <div class="progress"><div class="progress-bar" id="bar"></div></div>
 </div>
 
-<div class="card">
-<h3>📅 Monthly Timeline</h3>
-<table>
-<thead><tr><th>Month</th><th>Balance</th></tr></thead>
-<tbody id="timeline"></tbody>
-</table>
 </div>
 
 <script>
-// 🔥 FIREBASE CONFIG
+// FIREBASE
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe"
+ apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+ authDomain:"personal-budget-1cbbe.firebaseapp.com",
+ projectId:"personal-budget-1cbbe"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -165,97 +227,80 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+const ADMIN_UID="7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-let debts = [];
+let debts=[];
 
-/* 🔐 AUTH */
-document.body.style.display = "none";
+// AUTH
+document.body.style.display="none";
 
 auth.onAuthStateChanged(user=>{
- if(!user || user.uid !== ADMIN_UID){
+ if(!user || user.uid!==ADMIN_UID){
   window.location.href="index.html";
- } else {
+ } else{
   document.body.style.display="block";
-  loadData();
+  load();
  }
 });
 
-/* FORMAT */
-function inr(x){
- return "₹"+Math.round(x).toLocaleString("en-IN");
-}
+// FORMAT
+function inr(x){return "₹"+Math.round(x).toLocaleString("en-IN");}
 
-/* LOAD */
-function loadData(){
+// LOAD
+function load(){
  db.collection("debtPlanner").doc("main")
  .onSnapshot(doc=>{
-   let d = doc.data() || {};
-   debts = d.rows || [];
-   render();
+  let d=doc.data()||{};
+  debts=d.rows||[];
+  render();
  });
 }
 
-/* SAVE */
-function saveData(){
- db.collection("debtPlanner").doc("main").set({
-   rows: debts
- },{merge:true});
+// SAVE
+function save(){
+ db.collection("debtPlanner").doc("main").set({rows:debts},{merge:true});
 }
 
-/* ADD */
-addBtn.onclick = ()=>{
- let name=nameInput.value;
- let amount=+amountInput.value;
- let rate=+rateInput.value;
- let emi=+emiInput.value;
-
- if(!name || !amount || !rate || !emi){
-  alert("Fill all fields");
-  return;
+// ADD
+addBtn.onclick=()=>{
+ if(!name.value||!amount.value||!rate.value||!emi.value){
+  alert("Fill all fields"); return;
  }
-
- debts.push({name,amount,rate,emi});
-
- nameInput.value="";
- amountInput.value="";
- rateInput.value="";
- emiInput.value="";
-
- render();
- saveData();
+ debts.push({
+  name:name.value,
+  amount:+amount.value,
+  rate:+rate.value,
+  emi:+emi.value
+ });
+ name.value=amount.value=rate.value=emi.value="";
+ render(); save();
 };
 
-/* RENDER */
+// RENDER
 function render(){
  let t=0,e=0;
  table.innerHTML="";
-
  debts.forEach(d=>{
   t+=d.amount; e+=d.emi;
-
-  table.innerHTML+=`
-  <tr>
-   <td>${d.name}</td>
-   <td>${inr(d.amount)}</td>
-   <td>${d.rate}%</td>
-   <td>${inr(d.emi)}</td>
+  table.innerHTML+=`<tr>
+  <td>${d.name}</td>
+  <td>${inr(d.amount)}</td>
+  <td>${d.rate}%</td>
+  <td>${inr(d.emi)}</td>
   </tr>`;
  });
-
  totalDebt.innerText=inr(t);
  totalEMI.innerText=inr(e);
 }
 
-/* SIMULATE */
+// SIMULATE
 function simulate(data,extra){
- let copy=JSON.parse(JSON.stringify(data));
+ let c=JSON.parse(JSON.stringify(data));
  let interest=0,months=0;
 
- while(copy.some(d=>d.amount>0)&&months<600){
+ while(c.some(d=>d.amount>0)&&months<600){
   months++;
-
-  copy.forEach(d=>{
+  c.forEach(d=>{
    if(d.amount>0){
     let i=d.amount*(d.rate/12/100);
     interest+=i;
@@ -263,23 +308,40 @@ function simulate(data,extra){
     if(d.amount<0)d.amount=0;
    }
   });
-
-  let t=copy.find(d=>d.amount>0);
+  let t=c.find(d=>d.amount>0);
   if(t)t.amount-=extra;
  }
-
  return{months,interest};
 }
 
-/* CALCULATE */
-calcBtn.onclick=function(){
+// AI
+function aiAdvisor(months,saved){
+ if(debts.length===0){
+  suggestion.innerText="Add debts to get insights"; return;
+ }
 
+ let high=debts.reduce((a,b)=>a.rate>b.rate?a:b);
+ let small=debts.reduce((a,b)=>a.amount<b.amount?a:b);
+
+ let msg=`🔥 Pay ${high.name} first (${high.rate}%)\n`;
+ msg+=`⚡ Close ${small.name} quickly\n`;
+
+ if(months>60) msg+="🐢 Slow → increase EMI\n";
+ if(saved>50000) msg+=`💰 Save ${inr(saved)} interest\n`;
+
+ msg+="💡 Avalanche saves money, Snowball motivates";
+
+ suggestion.innerText=msg;
+}
+
+// CALCULATE
+calcBtn.onclick=()=>{
  let strat=strategy.value;
- let extra=+extraInput.value||0;
+ let extra=+extra.value||0;
 
  let base=simulate(debts,0);
-
  let sorted=[...debts];
+
  strat==="snowball"?sorted.sort((a,b)=>a.amount-b.amount)
                   :sorted.sort((a,b)=>b.rate-a.rate);
 
@@ -288,27 +350,26 @@ calcBtn.onclick=function(){
  months.innerText=improved.months;
 
  let saved=Math.max(0,base.interest-improved.interest);
- savedBox.innerText=inr(saved);
+ document.getElementById("saved").innerText=inr(saved);
 
  let score=100-(improved.months>60?20:improved.months>36?10:0);
- scoreEl.innerText=score;
+ document.getElementById("score").innerText=score;
+
+ let box=document.getElementById("scoreBox");
+ box.className="mini-progress";
+
+ if(score>=85) box.classList.add("score-elite");
+ else if(score>=70) box.classList.add("score-strong");
+ else if(score>=50) box.classList.add("score-stable");
+ else box.classList.add("score-risk");
+
  bar.style.width=score+"%";
 
- suggestion.innerText=score>80?"🟢 Excellent":score>60?"🟡 Good":"🔴 Risk";
+ aiAdvisor(improved.months,saved);
 
  alertBox.innerText=improved.months<base.months
  ?`🎉 Close ${base.months-improved.months} months early!`:"";
-
 };
-
-/* FIX ID REFERENCES */
-const nameInput=name;
-const amountInput=amount;
-const rateInput=rate;
-const emiInput=emi;
-const savedBox=saved;
-const scoreEl=score;
-
 </script>
 
 </body>
