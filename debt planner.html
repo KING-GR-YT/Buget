@@ -7,17 +7,16 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <style>
 :root{
 --blue:#00f7ff;
 --green:#00ff9d;
---red:#ff2e63;
---gold:#ffc857;
+--red:#ff3b3b;
+--bg:#070b14;
 }
 
 body{
@@ -28,11 +27,12 @@ color:white;
 }
 
 .container{
-max-width:1400px;
+max-width:1100px;
 margin:auto;
-padding:15px;
+padding:20px;
 }
 
+/* HEADER */
 .header{
 font-family:Orbitron;
 font-size:26px;
@@ -41,47 +41,21 @@ text-shadow:0 0 15px var(--blue);
 margin-bottom:20px;
 }
 
+/* CARD */
 .glass{
 background:rgba(255,255,255,.05);
 border:1px solid rgba(0,247,255,.3);
-backdrop-filter:blur(10px);
-border-radius:16px;
+border-radius:14px;
 padding:20px;
 margin-bottom:20px;
+box-shadow:0 0 20px rgba(0,247,255,.15);
 }
 
-.top{
-display:flex;
-flex-wrap:wrap;
-gap:15px;
-justify-content:space-between;
-}
-
-.stat1{
-flex:1 1 160px;
-text-align:center;
-}
-
-.mini-progress{
-width:120px;
-height:120px;
-border-radius:50%;
-border:4px solid #333;
-display:flex;
-align-items:center;
-justify-content:center;
-margin:auto;
-}
-
-.percent{
-font-family:Orbitron;
-font-size:20px;
-}
-
+/* INPUT */
 input,select,button{
 width:100%;
-padding:10px;
-margin:5px 0;
+padding:12px;
+margin:6px 0;
 border-radius:8px;
 border:1px solid var(--blue);
 background:#081321;
@@ -95,6 +69,33 @@ font-weight:bold;
 cursor:pointer;
 }
 
+/* SUMMARY */
+.summary{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.stat{
+flex:1;
+text-align:center;
+}
+
+/* CIRCLE */
+.circle{
+width:90px;
+height:90px;
+border-radius:50%;
+border:4px solid var(--blue);
+display:flex;
+align-items:center;
+justify-content:center;
+margin:auto;
+font-family:Orbitron;
+}
+
+/* TABLE */
 table{
 width:100%;
 border-collapse:collapse;
@@ -106,35 +107,34 @@ border-bottom:1px solid rgba(255,255,255,.1);
 text-align:center;
 }
 
-.highlight{
-background:#003f2f;
-padding:10px;
-border-radius:10px;
-white-space:pre-line;
+.delete{
+background:red;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
 }
 
-.alert{
-background:#3f0000;
-padding:10px;
+/* AI BOX */
+.ai{
+background:#002f2f;
+padding:12px;
 border-radius:10px;
-color:#ff6b6b;
+color:#00ffcc;
 }
 
+/* PROGRESS */
 .progress{
 height:10px;
-background:#001f2f;
+background:#111;
 border-radius:10px;
+overflow:hidden;
 }
-.progress-bar{
+.bar{
 height:100%;
 background:linear-gradient(90deg,#00f0ff,#00ffa6);
 }
-
-/* SCORE COLORS */
-.score-risk{border-color:#ff2e2e;box-shadow:0 0 15px #ff2e2e;}
-.score-stable{border-color:#ffe600;box-shadow:0 0 15px #ffe600;}
-.score-strong{border-color:#00b3ff;box-shadow:0 0 15px #00b3ff;}
-.score-elite{border-color:#00ff9d;box-shadow:0 0 20px #00ff9d;}
 </style>
 </head>
 
@@ -145,51 +145,48 @@ background:linear-gradient(90deg,#00f0ff,#00ffa6);
 <div class="header">💰 Debt Planner Pro+</div>
 
 <!-- SUMMARY -->
-<div class="glass top">
+<div class="glass summary">
+<div class="stat">
+<div>Score</div>
+<div class="circle" id="score">0</div>
+</div>
 
-<div class="stat1">
-<span>Score</span>
-<div class="mini-progress" id="scoreBox">
-<div class="percent" id="score">0</div>
+<div class="stat">
+<div>Total</div>
+<div id="totalDebt">₹0</div>
+</div>
+
+<div class="stat">
+<div>Months</div>
+<div id="months">0</div>
+</div>
+
+<div class="stat">
+<div>Saved</div>
+<div id="saved">₹0</div>
 </div>
 </div>
 
-<div class="stat1">
-<span>Total Debt</span>
-<div class="mini-progress"><div class="percent" id="totalDebt">₹0</div></div>
-</div>
-
-<div class="stat1">
-<span>EMI</span>
-<div class="mini-progress"><div class="percent" id="totalEMI">₹0</div></div>
-</div>
-
-<div class="stat1">
-<span>Months</span>
-<div class="mini-progress"><div class="percent" id="months">0</div></div>
-</div>
-
-<div class="stat1">
-<span>Saved</span>
-<div class="mini-progress"><div class="percent" id="saved">₹0</div></div>
-</div>
-
-</div>
-
-<!-- INPUT -->
+<!-- ADD -->
 <div class="glass">
 <input id="name" placeholder="Debt Name">
 <input id="amount" type="number" placeholder="Amount">
 <input id="rate" type="number" placeholder="Interest %">
 <input id="emi" type="number" placeholder="EMI">
-<button id="addBtn">Add Debt</button>
+<button onclick="addDebt()">Add Debt</button>
 </div>
 
 <!-- TABLE -->
 <div class="glass">
 <table>
 <thead>
-<tr><th>Name</th><th>Balance</th><th>Rate</th><th>EMI</th></tr>
+<tr>
+<th>Name</th>
+<th>Amount</th>
+<th>Rate</th>
+<th>EMI</th>
+<th>Delete</th>
+</tr>
 </thead>
 <tbody id="table"></tbody>
 </table>
@@ -201,175 +198,158 @@ background:linear-gradient(90deg,#00f0ff,#00ffa6);
 <option value="snowball">Snowball</option>
 <option value="avalanche">Avalanche</option>
 </select>
+
 <input id="extra" type="number" placeholder="Extra Payment">
-<button id="calcBtn">Calculate</button>
+
+<button onclick="calculate()">Calculate</button>
 </div>
 
-<div class="glass highlight" id="suggestion"></div>
-<div class="glass alert" id="alertBox"></div>
+<!-- AI -->
+<div class="glass ai" id="aiBox">AI Suggestion will appear here</div>
 
+<!-- PROGRESS -->
 <div class="glass">
-<div class="progress"><div class="progress-bar" id="bar"></div></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
 </div>
 
 </div>
 
 <script>
-// FIREBASE
+
+/* FIREBASE */
 const firebaseConfig = {
- apiKey:"AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
- authDomain:"personal-budget-1cbbe.firebaseapp.com",
- projectId:"personal-budget-1cbbe"
+apiKey:"AIzaSy...",
+authDomain:"personal-budget-1cbbe.firebaseapp.com",
+databaseURL:"https://personal-budget-1cbbe-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
 firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-const ADMIN_UID="7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
+/* STATE */
 let debts=[];
 
-// AUTH
-document.body.style.display="none";
+/* FORMAT */
+const INR = n => "₹"+Math.round(n||0).toLocaleString("en-IN");
 
-auth.onAuthStateChanged(user=>{
- if(!user || user.uid!==ADMIN_UID){
-  window.location.href="index.html";
- } else{
-  document.body.style.display="block";
-  load();
- }
+/* ADD */
+function addDebt(){
+
+let name=document.getElementById("name").value.trim();
+let amount=parseFloat(document.getElementById("amount").value);
+let rate=parseFloat(document.getElementById("rate").value);
+let emi=parseFloat(document.getElementById("emi").value);
+
+if(!name || isNaN(amount) || isNaN(rate) || isNaN(emi)){
+alert("Fill all fields correctly");
+return;
+}
+
+debts.push({name,amount,rate,emi});
+save();
+render();
+
+document.getElementById("name").value="";
+document.getElementById("amount").value="";
+document.getElementById("rate").value="";
+document.getElementById("emi").value="";
+}
+
+/* DELETE */
+function deleteDebt(i){
+debts.splice(i,1);
+save();
+render();
+}
+
+/* RENDER */
+function render(){
+let total=0;
+
+table.innerHTML="";
+
+debts.forEach((d,i)=>{
+total+=d.amount;
+
+table.innerHTML+=`
+<tr>
+<td>${d.name}</td>
+<td>${INR(d.amount)}</td>
+<td>${d.rate}%</td>
+<td>${INR(d.emi)}</td>
+<td><button class="delete" onclick="deleteDebt(${i})">X</button></td>
+</tr>`;
 });
 
-// FORMAT
-function inr(x){return "₹"+Math.round(x).toLocaleString("en-IN");}
-
-// LOAD
-function load(){
- db.collection("debtPlanner").doc("main")
- .onSnapshot(doc=>{
-  let d=doc.data()||{};
-  debts=d.rows||[];
-  render();
- });
+totalDebt.innerText=INR(total);
 }
 
-// SAVE
-function save(){
- db.collection("debtPlanner").doc("main").set({rows:debts},{merge:true});
-}
-
-// ADD
-addBtn.onclick=()=>{
- if(!name.value||!amount.value||!rate.value||!emi.value){
-  alert("Fill all fields"); return;
- }
- debts.push({
-  name:name.value,
-  amount:+amount.value,
-  rate:+rate.value,
-  emi:+emi.value
- });
- name.value=amount.value=rate.value=emi.value="";
- render(); save();
-};
-
-// RENDER
-function render(){
- let t=0,e=0;
- table.innerHTML="";
- debts.forEach(d=>{
-  t+=d.amount; e+=d.emi;
-  table.innerHTML+=`<tr>
-  <td>${d.name}</td>
-  <td>${inr(d.amount)}</td>
-  <td>${d.rate}%</td>
-  <td>${inr(d.emi)}</td>
-  </tr>`;
- });
- totalDebt.innerText=inr(t);
- totalEMI.innerText=inr(e);
-}
-
-// SIMULATE
+/* SIMULATION */
 function simulate(data,extra){
- let c=JSON.parse(JSON.stringify(data));
- let interest=0,months=0;
+let copy=JSON.parse(JSON.stringify(data));
+let interest=0,months=0;
 
- while(c.some(d=>d.amount>0)&&months<600){
-  months++;
-  c.forEach(d=>{
-   if(d.amount>0){
-    let i=d.amount*(d.rate/12/100);
-    interest+=i;
-    d.amount+=i-d.emi;
-    if(d.amount<0)d.amount=0;
-   }
-  });
-  let t=c.find(d=>d.amount>0);
-  if(t)t.amount-=extra;
- }
- return{months,interest};
+while(copy.some(d=>d.amount>0)&&months<600){
+months++;
+
+copy.forEach(d=>{
+if(d.amount>0){
+let r=d.rate/12/100;
+let i=d.amount*r;
+interest+=i;
+d.amount+=i;
+d.amount-=d.emi;
+if(d.amount<0)d.amount=0;
+}
+});
+
+let t=copy.find(d=>d.amount>0);
+if(t)t.amount-=extra;
 }
 
-// AI
-function aiAdvisor(months,saved){
- if(debts.length===0){
-  suggestion.innerText="Add debts to get insights"; return;
- }
-
- let high=debts.reduce((a,b)=>a.rate>b.rate?a:b);
- let small=debts.reduce((a,b)=>a.amount<b.amount?a:b);
-
- let msg=`🔥 Pay ${high.name} first (${high.rate}%)\n`;
- msg+=`⚡ Close ${small.name} quickly\n`;
-
- if(months>60) msg+="🐢 Slow → increase EMI\n";
- if(saved>50000) msg+=`💰 Save ${inr(saved)} interest\n`;
-
- msg+="💡 Avalanche saves money, Snowball motivates";
-
- suggestion.innerText=msg;
+return {months,interest};
 }
 
-// CALCULATE
-calcBtn.onclick=()=>{
- let strat=strategy.value;
- let extra=+extra.value||0;
+/* CALCULATE */
+function calculate(){
 
- let base=simulate(debts,0);
- let sorted=[...debts];
+let extra=parseFloat(extra.value)||0;
+let strat=strategy.value;
 
- strat==="snowball"?sorted.sort((a,b)=>a.amount-b.amount)
-                  :sorted.sort((a,b)=>b.rate-a.rate);
+let sorted=[...debts];
+if(strat==="snowball")sorted.sort((a,b)=>a.amount-b.amount);
+else sorted.sort((a,b)=>b.rate-a.rate);
 
- let improved=simulate(sorted,extra);
+let base=simulate(debts,0);
+let improved=simulate(sorted,extra);
 
- months.innerText=improved.months;
+months.innerText=improved.months;
+saved.innerText=INR(base.interest-improved.interest);
 
- let saved=Math.max(0,base.interest-improved.interest);
- document.getElementById("saved").innerText=inr(saved);
+let score=100-improved.months/2+(extra>0?10:0);
+score=Math.max(0,Math.min(100,Math.round(score)));
 
- let score=100-(improved.months>60?20:improved.months>36?10:0);
- document.getElementById("score").innerText=score;
+document.getElementById("score").innerText=score;
+document.getElementById("bar").style.width=score+"%";
 
- let box=document.getElementById("scoreBox");
- box.className="mini-progress";
+/* AI */
+let target=sorted[0];
+aiBox.innerText = target
+? `💡 Pay "${target.name}" first (Rate: ${target.rate}%)`
+: "Add debts to get AI advice";
+}
 
- if(score>=85) box.classList.add("score-elite");
- else if(score>=70) box.classList.add("score-strong");
- else if(score>=50) box.classList.add("score-stable");
- else box.classList.add("score-risk");
+/* SAVE */
+function save(){
+db.ref("debts").set(debts);
+}
 
- bar.style.width=score+"%";
+/* LOAD */
+db.ref("debts").on("value",snap=>{
+debts=snap.val()||[];
+render();
+});
 
- aiAdvisor(improved.months,saved);
-
- alertBox.innerText=improved.months<base.months
- ?`🎉 Close ${base.months-improved.months} months early!`:"";
-};
 </script>
 
 </body>
