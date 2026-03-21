@@ -246,9 +246,11 @@ return;
 }
 
 debts.push({name,amount,rate,emi});
+
 save();
 render();
 
+/* CLEAR INPUT */
 document.getElementById("name").value="";
 document.getElementById("amount").value="";
 document.getElementById("rate").value="";
@@ -265,6 +267,7 @@ render();
 /* RENDER */
 function render(){
 let total=0;
+const table=document.getElementById("table");
 
 table.innerHTML="";
 
@@ -281,7 +284,7 @@ table.innerHTML+=`
 </tr>`;
 });
 
-totalDebt.innerText=INR(total);
+document.getElementById("totalDebt").innerText=INR(total);
 }
 
 /* SIMULATION */
@@ -313,30 +316,43 @@ return {months,interest};
 /* CALCULATE */
 function calculate(){
 
-let extra=parseFloat(extra.value)||0;
-let strat=strategy.value;
+if(debts.length===0){
+alert("Add at least one debt");
+return;
+}
 
+let extraVal=parseFloat(document.getElementById("extra").value)||0;
+let strat=document.getElementById("strategy").value;
+
+/* SORT */
 let sorted=[...debts];
-if(strat==="snowball")sorted.sort((a,b)=>a.amount-b.amount);
+if(strat==="snowball") sorted.sort((a,b)=>a.amount-b.amount);
 else sorted.sort((a,b)=>b.rate-a.rate);
 
+/* SIMULATION */
 let base=simulate(debts,0);
-let improved=simulate(sorted,extra);
+let improved=simulate(sorted,extraVal);
 
-months.innerText=improved.months;
-saved.innerText=INR(base.interest-improved.interest);
+/* UI UPDATE */
+document.getElementById("months").innerText=improved.months;
 
-let score=100-improved.months/2+(extra>0?10:0);
+let savedVal=Math.max(0,base.interest-improved.interest);
+document.getElementById("saved").innerText=INR(savedVal);
+
+/* SCORE */
+let score=100 - improved.months/2 + (extraVal>0?10:0);
 score=Math.max(0,Math.min(100,Math.round(score)));
 
 document.getElementById("score").innerText=score;
 document.getElementById("bar").style.width=score+"%";
 
-/* AI */
-let target=sorted[0];
-aiBox.innerText = target
-? `💡 Pay "${target.name}" first (Rate: ${target.rate}%)`
-: "Add debts to get AI advice";
+/* AI SUGGESTION */
+let target=sorted.find(d=>d.amount>0);
+
+document.getElementById("aiBox").innerText = target
+? `💡 Focus on "${target.name}" (${target.rate}% interest) to close faster`
+: "All debts cleared 🎉";
+
 }
 
 /* SAVE */
