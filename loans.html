@@ -331,17 +331,18 @@ function renderLoans() {
   <div class="summary-item"><small>Principal Paid</small><b>₹${closed.principal.toLocaleString()}</b></div>
   <div class="summary-item"><small>Interest Paid</small><b>₹${closed.interest.toLocaleString()}</b></div>
   <div class="summary-item"><small>Total Paid</small><b>₹${closed.total.toLocaleString()}</b></div>`;
+  updateLoanSync(active.balance);
 }
 
-/* SAVE TOTAL LOAN BALANCE FOR DASHBOARD */
-
-setDoc(
-  doc(db,"financeSummary","main"),
-  {
-    loan: active.balance
-  },
-  { merge:true }
-);
+function updateLoanSync(balance){
+  setDoc(
+    doc(db,"financeSummary","main"),
+    {
+      loan: balance
+    },
+    { merge:true }
+  );
+}
 
 </script>
 </body>
