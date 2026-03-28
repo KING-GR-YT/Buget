@@ -89,7 +89,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* AUTH */
+/* AUTH PROTECTION */
 document.body.style.display = "none";
 onAuthStateChanged(auth, (user) => {
   if (!user || user.uid !== ADMIN_UID) {
@@ -109,14 +109,14 @@ const loanDataView = document.getElementById("loanDataView");
 const activeGrid = document.getElementById("activeGrid");
 const closedGrid = document.getElementById("closedGrid");
 
-/* EMI */
+/* EMI CALCULATION */
 function calculateEMI(p, r, months) {
   const m = r / 12 / 100;
   return (p * m * Math.pow(1 + m, months)) /
          (Math.pow(1 + m, months) - 1);
 }
 
-/* LOAD */
+/* REALTIME LOAD */
 onSnapshot(loanQuery, (snapshot) => {
   loans = [];
   snapshot.forEach((docSnap) => {
@@ -127,8 +127,9 @@ onSnapshot(loanQuery, (snapshot) => {
   renderLoans();
 });
 
-/* SAVE */
+/* SAVE LOAN */
 document.getElementById("saveBtn").addEventListener("click", async () => {
+
   const name = loanName.value.trim();
   const amount = parseFloat(loanAmount.value);
   const interest = parseFloat(loanInterest.value);
@@ -143,14 +144,23 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   const emi = calculateEMI(amount, interest, tenure);
 
   await addDoc(loanCollection, {
-    name, amount, interest, tenure, startDate, emi,
+    name,
+    amount,
+    interest,
+    tenure,
+    startDate,
+    emi,
     principalPaid: 0,
     interestPaid: 0,
     closedOn: null,
     createdAt: new Date()
   });
 
-  loanName.value = loanAmount.value = loanInterest.value = loanTenure.value = loanStart.value = "";
+  loanName.value =
+  loanAmount.value =
+  loanInterest.value =
+  loanTenure.value =
+  loanStart.value = "";
 });
 
 /* DELETE */
@@ -160,45 +170,82 @@ window.deleteLoan = async (id) => {
   }
 };
 
-/* RENDER */
+/* MAIN RENDER */
 function renderLoans() {
 
   loanDataView.innerHTML = "";
 
-  let active={count:0,loan:0,emi:0,balance:0,principal:0,interest:0,total:0};
-  let closed={count:0,loan:0,principal:0,interest:0,total:0};
+  let activeBalance = 0;
+  let activeCount = 0;
+  let closedTotal = 0;
+  let closedCount = 0;
 
   loans.forEach((d)=>{
 
-    d.amount=Number(d.amount)||0;
-    d.principalPaid=Number(d.principalPaid)||0;
-    d.interestPaid=Number(d.interestPaid)||0;
+    d.amount = Number(d.amount) || 0;
+    d.principalPaid = Number(d.principalPaid) || 0;
 
-    const totalPaid=d.principalPaid+d.interestPaid;
     const balance = Math.max(0, d.amount - d.principalPaid);
-    const isClosed = d.closedOn || balance===0;
+    const isClosed = d.closedOn || balance === 0;
+
+    /* AUTO CLOSE */
+    if(balance === 0 && !d.closedOn){
+      updateDoc(doc(db,"loans",d.id), {
+        closedOn: new Date().toISOString()
+      });
+    }
 
     if(isClosed){
-      closed.count++; closed.loan+=d.amount;
-    }else{
-      active.count++; active.loan+=d.amount;
-      active.balance+=balance;
+      closedCount++;
+      closedTotal += d.amount;
+    } else {
+      activeCount++;
+      activeBalance += balance;
     }
 
   });
 
-  /* SUMMARY */
-  activeGrid.innerHTML=`<div class="summary-item"><small>Total Balance</small><b>₹${active.balance.toLocaleString()}</b></div>`;
-  closedGrid.innerHTML=`<div class="summary-item"><small>Closed Loan</small><b>₹${closed.loan.toLocaleString()}</b></div>`;
+  /* UI UPDATE */
+  activeGrid.innerHTML = `
+    <div class="summary-item">
+      <small>Active Loans</small>
+      <b>${activeCount}</b>
+    </div>
+    <div class="summary-item">
+      <small>Total Pending Loan</small>
+      <b>₹${activeBalance.toLocaleString()}</b>
+    </div>
+  `;
 
-  /* 🔥 AUTO SYNC */
-  setDoc(
-    doc(db, "financeSummary", "main"),
-    {
-      loan: active.balance
-    },
-    { merge: true }
-  );
+  closedGrid.innerHTML = `
+    <div class="summary-item">
+      <small>Closed Loans</small>
+      <b>${closedCount}</b>
+    </div>
+    <div class="summary-item">
+      <small>Total Closed Loan</small>
+      <b>₹${closedTotal.toLocaleString()}</b>
+    </div>
+  `;
+
+  /* 🔥 FIX: ALWAYS SYNC AFTER CALCULATION */
+  updateFinanceSummary(activeBalance);
+}
+
+/* 🔥 SEPARATE SYNC FUNCTION (IMPORTANT FIX) */
+async function updateFinanceSummary(balance){
+  try{
+    await setDoc(
+      doc(db, "financeSummary", "main"),
+      {
+        loan: balance
+      },
+      { merge: true }
+    );
+    console.log("✅ Loan synced:", balance);
+  }catch(err){
+    console.error("❌ Sync error:", err);
+  }
 }
 
 </script>
