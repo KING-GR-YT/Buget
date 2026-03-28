@@ -89,7 +89,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-/* AUTH PROTECTION */
+/* AUTH */
 document.body.style.display = "none";
 onAuthStateChanged(auth, (user) => {
   if (!user || user.uid !== ADMIN_UID) {
@@ -109,7 +109,7 @@ const loanDataView = document.getElementById("loanDataView");
 const activeGrid = document.getElementById("activeGrid");
 const closedGrid = document.getElementById("closedGrid");
 
-/* EMI CALCULATION */
+/* EMI */
 function calculateEMI(p, r, months) {
   const m = r / 12 / 100;
   return (p * m * Math.pow(1 + m, months)) /
@@ -127,7 +127,7 @@ onSnapshot(loanQuery, (snapshot) => {
   renderLoans();
 });
 
-/* SAVE LOAN */
+/* SAVE */
 document.getElementById("saveBtn").addEventListener("click", async () => {
 
   const name = loanName.value.trim();
@@ -180,11 +180,17 @@ function renderLoans() {
   let closedTotal = 0;
   let closedCount = 0;
 
+  let activeHTML = "";
+  let closedHTML = "";
+
   loans.forEach((d)=>{
 
     d.amount = Number(d.amount) || 0;
     d.principalPaid = Number(d.principalPaid) || 0;
+    d.interestPaid = Number(d.interestPaid) || 0;
+    d.emi = Number(d.emi) || 0;
 
+    const totalPaid = d.principalPaid + d.interestPaid;
     const balance = Math.max(0, d.amount - d.principalPaid);
     const isClosed = d.closedOn || balance === 0;
 
@@ -203,9 +209,43 @@ function renderLoans() {
       activeBalance += balance;
     }
 
+    /* LOAN CARD */
+    const loanHTML = `
+    <div class="loan-data-item">
+      <h3>${d.name}</h3>
+
+      <div class="loan-field"><span>Loan</span><b>₹${d.amount.toLocaleString()}</b></div>
+      <div class="loan-field"><span>EMI</span><b>₹${d.emi.toFixed(0)}</b></div>
+      <div class="loan-field"><span>Principal Paid</span><b>₹${d.principalPaid.toLocaleString()}</b></div>
+      <div class="loan-field"><span>Interest Paid</span><b>₹${d.interestPaid.toLocaleString()}</b></div>
+      <div class="loan-field"><span>Total Paid</span><b>₹${totalPaid.toLocaleString()}</b></div>
+      <div class="loan-field"><span>Balance</span><b>₹${balance.toLocaleString()}</b></div>
+
+      <div class="loan-field">
+        <span>Status</span>
+        <b class="status ${isClosed ? "CLOSED" : "ACTIVE"}">
+          ${isClosed ? "CLOSED" : "ACTIVE"}
+        </b>
+      </div>
+
+      <div class="action-icons">
+        <div class="icon-btn" onclick="deleteLoan('${d.id}')">🗑</div>
+      </div>
+    </div>
+    `;
+
+    if(isClosed){
+      closedHTML += loanHTML;
+    } else {
+      activeHTML += loanHTML;
+    }
+
   });
 
-  /* UI UPDATE */
+  /* SHOW LOANS */
+  loanDataView.innerHTML = activeHTML + closedHTML;
+
+  /* SUMMARY */
   activeGrid.innerHTML = `
     <div class="summary-item">
       <small>Active Loans</small>
@@ -228,18 +268,16 @@ function renderLoans() {
     </div>
   `;
 
-  /* 🔥 FIX: ALWAYS SYNC AFTER CALCULATION */
+  /* SYNC TO DASHBOARD */
   updateFinanceSummary(activeBalance);
 }
 
-/* 🔥 SEPARATE SYNC FUNCTION (IMPORTANT FIX) */
+/* SYNC FUNCTION */
 async function updateFinanceSummary(balance){
   try{
     await setDoc(
       doc(db, "financeSummary", "main"),
-      {
-        loan: balance
-      },
+      { loan: balance },
       { merge: true }
     );
     console.log("✅ Loan synced:", balance);
