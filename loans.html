@@ -318,12 +318,12 @@ function renderLoans() {
   /* SUMMARY */
   activeGrid.innerHTML=`
   <div class="summary-item"><small>Total Paid</small><b>₹${active.total.toLocaleString()}</b></div>
+  <div class="summary-item"><small>Total Balance</small><b>₹${active.balance.toLocaleString()}</b></div>
   <div class="summary-item"><small>Loans</small><b>${active.count}</b></div>
   <div class="summary-item"><small>Total EMI</small><b>₹${active.emi.toFixed(0)}</b></div>
   <div class="summary-item"><small>Total Loan</small><b>₹${active.loan.toLocaleString()}</b></div>
   <div class="summary-item"><small>Principal Paid</small><b>₹${active.principal.toLocaleString()}</b></div>
-  <div class="summary-item"><small>Interest Paid</small><b>₹${active.interest.toLocaleString()}</b></div>
-  <div class="summary-item"><small>Total Balance</small><b>₹${active.balance.toLocaleString()}</b></div>`;
+  <div class="summary-item"><small>Interest Paid</small><b>₹${active.interest.toLocaleString()}</b></div>`;
 
   closedGrid.innerHTML=`
   <div class="summary-item"><small>Total Paid</small><b>₹${closed.total.toLocaleString()}</b></div>
