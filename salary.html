@@ -462,9 +462,9 @@ let salaryEmi=((emiVal+emiCalcVal)/salaryVal)*100;
 
 salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
 
-readyLoan.innerHTML=salaryEmi<50?"YES":"NO";
+readyLoan.innerHTML=salaryEmi<40?"YES":"NO";
 
-emiBalance.innerHTML="₹ "+((salaryVal*0.5)-(emiVal+emiCalcVal)).toFixed(2);
+emiBalance.innerHTML="₹ "+((salaryVal*0.4)-(emiVal+emiCalcVal)).toFixed(2);
 
 decision.innerHTML=salaryEmi<50?"GOOD":"BAD";
 
