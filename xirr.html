@@ -253,7 +253,7 @@ function getToday(){
 window.createInvestment = async function(){
     const name = document.getElementById("invName").value.trim();
     if(!name) return alert("Enter investment name");
-    await addDoc(collection(db,"investments"),{ name });
+    await addDoc(collection(db,"xirrs"),{ name });
     document.getElementById("invName").value="";
 };
 
@@ -261,15 +261,15 @@ window.deleteInvestment = async function(id){
     const confirmDelete = confirm("Delete entire investment?");
     if(!confirmDelete) return;
 
-    const flows = await getDocs(collection(db,"investments",id,"cashflows"));
+    const flows = await getDocs(collection(db,"xirrs",id,"cashflows"));
     flows.forEach(async(flow)=> await deleteDoc(flow.ref));
 
-    await deleteDoc(doc(db,"investments",id));
+    await deleteDoc(doc(db,"xirrs",id));
 };
 
 const listDiv = document.getElementById("investmentList");
 
-onSnapshot(collection(db,"investments"),(snapshot)=>{
+onSnapshot(collection(db,"xirrs"),(snapshot)=>{
     listDiv.innerHTML="";
     snapshot.forEach(docSnap=>{
         renderInvestment(docSnap.id, docSnap.data().name);
@@ -322,19 +322,19 @@ window.addCashflow = async function(id){
     if(!rawAmount || !date) return alert("Fill fields");
 
     let amount = type === "invest" ? -Math.abs(rawAmount) : Math.abs(rawAmount);
-    await addDoc(collection(db,"investments",id,"cashflows"),{ amount, date, type });
+    await addDoc(collection(db,"xirrs",id,"cashflows"),{ amount, date, type });
     document.getElementById(`amt-${id}`).value="";
 };
 
 window.deleteCashflow = async function(investmentId, cashflowId){
-    await deleteDoc(doc(db,"investments",investmentId,"cashflows",cashflowId));
+    await deleteDoc(doc(db,"xirrs",investmentId,"cashflows",cashflowId));
 };
 
 function loadCashflows(id){
     const flowDiv=document.getElementById(`flows-${id}`);
     const totalEl=document.getElementById(`total-${id}`);
 
-    onSnapshot(collection(db,"investments",id,"cashflows"),(snapshot)=>{
+    onSnapshot(collection(db,"xirrs",id,"cashflows"),(snapshot)=>{
         let cashflows=[];
         flowDiv.innerHTML="";
 
