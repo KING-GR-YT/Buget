@@ -518,8 +518,8 @@ let totalP=0,totalS=0,expTotal=0;
 
 for(let i=0;i<P.length;i++){
 
-let p=Number(P[i].value)||0;
-let s=Number(S[i].value)||0;
+let p = Math.round((Number(P[i].value) || 0) * 100) / 100;
+let s = Math.round((Number(S[i].value) || 0) * 100) / 100;
 
 rows[i].innerText=formatCurrency(p+s);
 
@@ -656,22 +656,32 @@ let banks=["YES BANK","HDFC","ONE CARD","ICICI"];
 
 banks.forEach((bank,index)=>{
 
-let pTotal=0;
-let sTotal=0;
+let pTotal = 0;
+let sTotal = 0;
 
 data.forEach(item=>{
 
 if(item.month===month && item.bank===bank){
 
-if(item.person==="PARDEEP") pTotal+=Number(item.amount);
-if(item.person==="SANDEEP") sTotal+=Number(item.amount);
+let amt = Number(item.amount) || 0;
+
+// ✅ STRONG FIX (not toFixed)
+amt = Math.round(amt * 100) / 100;
+
+if(item.person==="PARDEEP") pTotal += amt;
+if(item.person==="SANDEEP") sTotal += amt;
 
 }
 
 });
 
-document.querySelectorAll(`.${prefix}P`)[index].value=pTotal || "";
-document.querySelectorAll(`.${prefix}S`)[index].value=sTotal || "";
+// ✅ FINAL ROUND AGAIN
+pTotal = Math.round(pTotal * 100) / 100;
+sTotal = Math.round(sTotal * 100) / 100;
+
+// ✅ FORCE CLEAN STRING
+document.querySelectorAll(`.${prefix}P`)[index].value = pTotal ? pTotal.toFixed(2) : "";
+document.querySelectorAll(`.${prefix}S`)[index].value = sTotal ? sTotal.toFixed(2) : "";
 
 });
 
