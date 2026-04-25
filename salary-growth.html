@@ -202,7 +202,31 @@ function updateChart(){
     type:'line',
     data:{
       labels:data.map(d=>d.year),
-      datasets:[{label:'Salary',data:data.map(d=>d.salary),borderColor:'#00f7ff'}]
+      datasets:[{
+        label:'Salary',
+        data:data.map(d=>d.salary),
+        borderColor:'#00f7ff',
+        backgroundColor:'rgba(0,247,255,0.1)',
+        fill:true,
+        tension:0.4,
+        pointRadius:4,
+        pointBackgroundColor:'#00f7ff'
+      }]
+    },
+    options:{
+      plugins:{
+        legend:{ labels:{ color:'#00f7ff', font:{size:12} } }
+      },
+      scales:{
+        x:{
+          ticks:{ color:'#00f7ff' },
+          grid:{ color:'rgba(0,255,255,0.1)' }
+        },
+        y:{
+          ticks:{ color:'#00f7ff' },
+          grid:{ color:'rgba(0,255,255,0.1)' }
+        }
+      }
     }
   });
 }
