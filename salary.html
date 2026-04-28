@@ -254,7 +254,7 @@ font-size:16px;
 <tr class="greenbox">
 <td>Total EXP</td>
 <td id="totalExp"></td>
-<td>-</td>
+<td id="totalPlan"></td>
 <td id="totalPercent"></td>
 <td id="totalStatus"></td>
 </tr>
@@ -262,7 +262,7 @@ font-size:16px;
 <tr class="redbox">
 <td>Balance</td>
 <td id="balance"></td>
-<td>-</td>
+<td id="balancePlan"></td>
 <td id="balancePercent"></td>
 <td id="balanceStatus"></td>
 </tr>
@@ -393,7 +393,15 @@ emiPlan.innerHTML=plans.emi+"%";
 rentPlan.innerHTML=plans.rent+"%";
 petrolPlan.innerHTML=plans.petrol+"%";
 otherPlan.innerHTML=plans.other+"%";
+  
+// Planned Total %
+let totalPlanVal = plans.emi + plans.rent + plans.petrol + plans.other;
+totalPlan.innerHTML = totalPlanVal + "%";
 
+// Planned Balance %
+let balancePlanVal = 100 - totalPlanVal;
+balancePlan.innerHTML = balancePlanVal + "%";
+  
 /* Actual */
 let emiP=(emiVal/salaryVal)*100;
 let rentP=(rentVal/salaryVal)*100;
