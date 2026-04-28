@@ -7,7 +7,11 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 
 <style>
+
+/* ===== CSS ===== */
+
 *{box-sizing:border-box;}
+
 body{
 margin:0;
 font-family:Orbitron;
@@ -15,12 +19,14 @@ background:linear-gradient(135deg,#0a0f1c,#050811);
 color:#e6ffff;
 padding:25px;
 }
+
 h1{
 font-size:24px;
 margin-bottom:35px;
 color:#00ffff;
 text-shadow:0 0 20px rgba(0,255,255,0.8);
 }
+
 .home-link{
 float:right;
 padding:4px;
@@ -30,7 +36,12 @@ background:rgba(0,255,255,0.12);
 border:1px solid rgba(0,255,255,0.4);
 color:#00ffff;
 }
-.container{display:grid;gap:30px;}
+
+.container{
+display:grid;
+gap:30px;
+}
+
 .section{
 background:rgba(15,25,45,0.9);
 padding:24px;
@@ -38,20 +49,56 @@ border-radius:22px;
 box-shadow:0 0 30px rgba(0,255,255,0.15);
 border:1px solid rgba(0,255,255,0.25);
 }
-.section h2{text-align:center;color:#00ffff;}
-table{width:100%;border-collapse:collapse;font-size:22px;}
-th,td{padding:12px;text-align:center;}
-th{background:rgba(0,255,255,0.12);color:#00ffff;}
-tr{border-bottom:1px solid rgba(0,255,255,0.12);}
-input{
-background:transparent;border:none;outline:none;
-width:90px;color:#00ffff;text-align:center;
-font-weight:600;font-size:20px;
+
+.section h2{
+text-align:center;
+color:#00ffff;
 }
+
+table{
+width:100%;
+border-collapse:collapse;
+font-size:22px;
+}
+
+th,td{
+padding:12px;
+text-align:center;
+}
+
+th{
+background:rgba(0,255,255,0.12);
+color:#00ffff;
+}
+
+tr{
+border-bottom:1px solid rgba(0,255,255,0.12);
+}
+
+input{
+background:transparent;
+border:none;
+outline:none;
+width:90px;
+color:#00ffff;
+text-align:center;
+font-weight:600;
+font-size:20px;
+}
+
 .good{color:#00ff9d;font-weight:600;}
 .bad{color:#ff5c5c;font-weight:600;}
-.greenbox{background:rgba(0,255,120,0.08);color:#00ff9d;}
-.redbox{background:rgba(255,60,60,0.08);color:#ff5c5c;}
+
+.greenbox{
+background:rgba(0,255,120,0.08);
+color:#00ff9d;
+}
+
+.redbox{
+background:rgba(255,60,60,0.08);
+color:#ff5c5c;
+}
+
 </style>
 </head>
 
@@ -62,6 +109,8 @@ font-weight:600;font-size:20px;
 </h1>
 
 <div class="container">
+
+<!-- LEFT -->
 
 <div class="section">
 <h2>Salary Overview</h2>
@@ -135,11 +184,100 @@ font-weight:600;font-size:20px;
 </table>
 </div>
 
+
+<!-- RIGHT  -->
+
+<div class="section">
+
+<h2>EMI Calculator</h2>
+
+<table>
+
+<tr>
+<th colspan="2">Loan Details</th>
+</tr>
+
+<tr class="redbox">
+<td>Ready for Loan</td>
+<td id="readyLoan"></td>
+</tr>
+
+<tr class="redbox">
+<td>EMI Balance</td>
+<td id="emiBalance"></td>
+</tr>
+
+<tr>
+<td>Total Amount</td>
+<td>₹ <input type="number" id="totalAmount"></td>
+</tr>
+
+<tr>
+<td>Down Payment</td>
+<td>₹ <input type="number" id="downPayment"></td>
+</tr>
+
+<tr>
+<td>Loan Amount</td>
+<td id="loanAmount"></td>
+</tr>
+
+<tr>
+<td>Interest Rate %</td>
+<td><input type="number" id="interest"></td>
+</tr>
+
+<tr>
+<td>Tenure Months</td>
+<td><input type="number" id="tenure"></td>
+</tr>
+
+<tr class="greenbox">
+<td>Monthly EMI</td>
+<td id="emiCalc"></td>
+</tr>
+
+<tr class="redbox">
+<td>Salary EMI %</td>
+<td id="salaryEmiPercent"></td>
+</tr>
+
+<tr class="redbox">
+<td>Decision</td>
+<td id="decision"></td>
+</tr>
+
+</table>
+
 </div>
 
-<script>
+</div>
 
-/* 🔧 FIXED PLANNED VALUES (CHANGE HERE ONLY) */
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig={ /* SAME */ };
+
+const ADMIN_UID="7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+document.body.style.display="none";
+
+onAuthStateChanged(auth,(user)=>{
+if(!user||user.uid!==ADMIN_UID){
+window.location.href="index.html";
+}else{
+document.body.style.display="block";
+}
+});
+
+/* 🔧 FIXED PLAN VALUES */
 const plans = {
 emi:30,
 rent:30,
@@ -163,7 +301,7 @@ rentPlan.innerHTML=plans.rent+"%";
 petrolPlan.innerHTML=plans.petrol+"%";
 otherPlan.innerHTML=plans.other+"%";
 
-/* Actual % */
+/* Actual */
 let emiP=(emiVal/salaryVal)*100;
 let rentP=(rentVal/salaryVal)*100;
 let petrolP=(petrolVal/salaryVal)*100;
@@ -182,12 +320,13 @@ rentStatus.innerHTML=rentP>plans.rent?"Bad":"Good";
 rentStatus.className=rentP>plans.rent?"bad":"good";
 
 petrolStatus.innerHTML=petrolP>plans.petrol?"Bad":"Good";
-petrolStatus.className=petrolP>plans.petrol?"Bad":"good";
+petrolStatus.className=petrolP>plans.petrol?"bad":"good";
 
 otherStatus.innerHTML=otherP>plans.other?"Bad":"Good";
 otherStatus.className=otherP>plans.other?"bad":"good";
 
-/* Total */
+
+
 let total=emiVal+rentVal+petrolVal+otherVal;
 totalExp.innerHTML="₹ "+total.toFixed(2);
 
@@ -196,7 +335,6 @@ totalPercent.innerHTML=totalP.toFixed(2)+"%";
 totalStatus.innerHTML=totalP>80?"Bad":"Good";
 totalStatus.className=totalP>80?"bad":"good";
 
-/* Balance */
 let balanceVal=salaryVal-total;
 let balanceP=(balanceVal/salaryVal)*100;
 
@@ -205,11 +343,96 @@ balancePercent.innerHTML=balanceP.toFixed(2)+"%";
 balanceStatus.innerHTML=balanceP>20?"Good":"Bad";
 balanceStatus.className=balanceP>20?"good":"bad";
 
+/* EMI PART  */
+
+let loan=parseFloat(totalAmount.value)||0;
+let down=parseFloat(downPayment.value)||0;
+let interestVal=parseFloat(interest.value)||0;
+let tenureVal=parseFloat(tenure.value)||0;
+
+let loanAmountVal=loan-down;
+loanAmount.innerHTML="₹ "+loanAmountVal.toFixed(2);
+
+let emiCalcVal=0;
+
+if(loanAmountVal>0 && tenureVal>0){
+if(interestVal===0){
+emiCalcVal=loanAmountVal/tenureVal;
+}else{
+let r=interestVal/12/100;
+emiCalcVal=(loanAmountVal*r*Math.pow(1+r,tenureVal))/(Math.pow(1+r,tenureVal)-1);
+}
+}
+
+emiCalc.innerHTML="₹ "+emiCalcVal.toFixed(2);
+
+let salaryEmi=((emiVal+emiCalcVal)/salaryVal)*100;
+salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
+
+readyLoan.innerHTML=salaryEmi<20?"YES":"NO";
+emiBalance.innerHTML="₹ "+((salaryVal*0.4)-(emiVal+emiCalcVal)).toFixed(2);
+decision.innerHTML=salaryEmi<40?"GOOD":"BAD";
+
+}
+
+/* ===== FIREBASE  ===== */
+
+async function saveData(){
+
+let data={
+salary:salary.value,
+emi:emi.value,
+rent:rent.value,
+petrol:petrol.value,
+other:other.value,
+totalAmount:totalAmount.value,
+downPayment:downPayment.value,
+interest:interest.value,
+tenure:tenure.value,
+updatedAt:new Date()
+};
+
+await setDoc(doc(db,"dashboardData","main"),data);
+
+}
+
+let timer;
+
+function autoSave(){
+clearTimeout(timer);
+timer=setTimeout(()=>{saveData();},1200);
+}
+
+async function loadData(){
+
+const snap=await getDoc(doc(db,"dashboardData","main"));
+
+if(snap.exists()){
+let d=snap.data();
+
+salary.value=d.salary||0;
+emi.value=d.emi||0;
+rent.value=d.rent||0;
+petrol.value=d.petrol||0;
+other.value=d.other||0;
+
+totalAmount.value=d.totalAmount||0;
+downPayment.value=d.downPayment||0;
+interest.value=d.interest||0;
+tenure.value=d.tenure||0;
+}
+
+calculate();
 }
 
 document.querySelectorAll("input").forEach(i=>{
-i.addEventListener("input",calculate);
+i.addEventListener("input",()=>{
+calculate();
+autoSave();
 });
+});
+
+loadData();
 
 </script>
 
