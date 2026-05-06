@@ -8,7 +8,7 @@
 <style>
 body { font-family: Arial; margin:0; padding:10px; }
 h2 { text-align:center; }
-.tabs { display:flex; overflow-x:auto; }
+.tabs { display:flex; }
 .tabs button { flex:1; padding:10px; border:none; background:#eee; }
 .tab { display:none; }
 .active { display:block; }
@@ -43,10 +43,9 @@ button { background:#007bff; color:#fff; border:none; }
 
 <div id="dashboard" class="tab active">
   <div class="card">
-    <h3>Dashboard</h3>
     <p>Total Material: ₹<b id="d_mat">0</b></p>
-    <p>Total Paid: ₹<b id="d_paid">0</b></p>
-    <p>Total Received: ₹<b id="d_recv">0</b></p>
+    <p>Paid: ₹<b id="d_paid">0</b></p>
+    <p>Received: ₹<b id="d_recv">0</b></p>
     <h3>Balance: ₹<span id="d_bal">0</span></h3>
   </div>
 </div>
@@ -88,12 +87,9 @@ import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+  projectId: "personal-budget-1cbbe"
 };
 
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
@@ -102,18 +98,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-onAuthStateChanged(auth,(user)=>{
-  if(!user || user.uid !== ADMIN_UID){
-    window.location.href="index.html";
+// ✅ HIDE PAGE UNTIL AUTH
+document.body.style.display = "none";
+
+// ✅ AUTH CHECK
+onAuthStateChanged(auth, (user) => {
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "index.html";
   } else {
-    init();
+    document.body.style.display = "block";
+    startApp();
   }
 });
 
-function init(){
+// INIT
+function startApp(){
   const today = new Date().toISOString().split('T')[0];
-  document.getElementById('m_date').value = today;
-  document.getElementById('a_date').value = today;
+  m_date.value = today;
+  a_date.value = today;
 
   loadMaterial();
   loadAccount();
@@ -121,15 +123,17 @@ function init(){
   loadDashboard();
 }
 
-function format(num){
-  return Number(num||0).toLocaleString('en-IN');
-}
-
+// UI
 window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+};
+
+function format(n){
+  return Number(n||0).toLocaleString('en-IN');
 }
 
+// MATERIAL
 window.addMaterial = async function(){
   let qty=+m_qty.value||0, rate=+m_rate.value||0, gst=+m_gst.value||0;
   let amount = qty*rate + (qty*rate*gst/100);
@@ -139,22 +143,18 @@ window.addMaterial = async function(){
   });
 
   loadMaterial(); loadDashboard();
-}
+};
 
 async function loadMaterial(){
-  const q = query(collection(db,'materials'), orderBy('date','desc'));
-  const snap = await getDocs(q);
+  const snap = await getDocs(query(collection(db,'materials'),orderBy('date','desc')));
   m_list.innerHTML='';
-
-  snap.forEach(docSnap=>{
-    let d=docSnap.data();
-    m_list.innerHTML+=`<div class='card'>
-      <b>${d.name}</b> (${d.date})<br>
-      ₹${format(d.amount)}
-    </div>`;
+  snap.forEach(d=>{
+    let x=d.data();
+    m_list.innerHTML+=`<div class='card'>${x.name} - ₹${format(x.amount)}</div>`;
   });
 }
 
+// ACCOUNT
 window.addAccount = async function(){
   await addDoc(collection(db,'accounts'),{
     date:a_date.value,party:a_party.value,
@@ -162,42 +162,36 @@ window.addAccount = async function(){
   });
 
   loadAccount(); loadSummary(); loadDashboard();
-}
+};
 
 async function loadAccount(){
-  const q = query(collection(db,'accounts'), orderBy('date','desc'));
-  const snap = await getDocs(q);
+  const snap = await getDocs(query(collection(db,'accounts'),orderBy('date','desc')));
   a_list.innerHTML='';
-
-  snap.forEach(docSnap=>{
-    let d=docSnap.data();
-    a_list.innerHTML+=`<div class='card'>
-      <b>${d.party}</b> (${d.type})<br>
-      ₹${format(d.amount)}
-    </div>`;
+  snap.forEach(d=>{
+    let x=d.data();
+    a_list.innerHTML+=`<div class='card'>${x.party} - ₹${format(x.amount)}</div>`;
   });
 }
 
+// SUMMARY
 async function loadSummary(){
   const snap = await getDocs(collection(db,'accounts'));
   let sum={};
 
-  snap.forEach(docSnap=>{
-    let d=docSnap.data();
-    if(!sum[d.party]) sum[d.party]={p:0,r:0};
-    d.type==='paid'? sum[d.party].p+=d.amount : sum[d.party].r+=d.amount;
+  snap.forEach(d=>{
+    let x=d.data();
+    if(!sum[x.party]) sum[x.party]={p:0,r:0};
+    x.type==='paid'? sum[x.party].p+=x.amount : sum[x.party].r+=x.amount;
   });
 
   s_list.innerHTML='';
   for(let k in sum){
     let bal=sum[k].r-sum[k].p;
-    s_list.innerHTML+=`<div class='card'>
-      <b>${k}</b><br>
-      Balance: ₹${format(bal)}
-    </div>`;
+    s_list.innerHTML+=`<div class='card'>${k} Balance: ₹${format(bal)}</div>`;
   }
 }
 
+// DASHBOARD
 async function loadDashboard(){
   let mat=0, paid=0, recv=0;
 
