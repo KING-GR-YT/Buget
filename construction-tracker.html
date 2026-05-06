@@ -112,6 +112,7 @@ th { background:#eee; }
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
@@ -121,6 +122,21 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+// hide page
+document.body.style.display = "none";
+
+// wait for login
+onAuthStateChanged(auth, (user) => {
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "index.html";
+  } else {
+    document.body.style.display = "block";
+    startApp();
+  }
+});
 
 // INIT
 const today = new Date().toISOString().split('T')[0];
@@ -243,9 +259,15 @@ async function loadSummary(){
 }
 
 // LOAD
-loadMaterial();
-loadAccount();
-loadSummary();
+function startApp(){
+  const today = new Date().toISOString().split('T')[0];
+  m_date.value = today;
+  a_date.value = today;
+
+  loadMaterial();
+  loadAccount();
+  loadSummary();
+}
 
 </script>
 
