@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construction Tracker Mobile</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<style>
+body { font-family: Arial; margin:0; padding:10px; }
+h2 { text-align:center; }
+.tabs { display:flex; overflow-x:auto; }
+.tabs button { flex:1; padding:10px; border:none; background:#eee; }
+.tabs button:active { background:#ccc; }
+.tab { display:none; }
+.active { display:block; }
+
+input, select, button {
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  font-size:16px;
+}
+
+button { background:#007bff; color:#fff; border:none; }
+.danger { background:red; }
+
+.card {
+  background:#f9f9f9;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.small { font-size:14px; color:#555; }
+</style>
+</head>
+<body>
+
+<h2>🏗 Tracker</h2>
+
+<div class="tabs">
+  <button onclick="showTab('dashboard')">📊</button>
+  <button onclick="showTab('material')">🧱</button>
+  <button onclick="showTab('account')">💰</button>
+  <button onclick="showTab('summary')">📒</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="tab active">
+  <div class="card">
+    <h3>Dashboard</h3>
+    <p>Total Material: ₹<b id="d_mat"></b></p>
+    <p>Paid: ₹<b id="d_paid"></b></p>
+    <p>Received: ₹<b id="d_recv"></b></p>
+    <h3>Balance: ₹<span id="d_bal"></span></h3>
+  </div>
+</div>
+
+<!-- MATERIAL -->
+<div id="material" class="tab">
+  <div class="card">
+    <h3>Add Material</h3>
+    <input type="date" id="m_date">
+    <input type="text" id="m_name" placeholder="Material">
+    <input type="number" id="m_qty" placeholder="Qty">
+    <input type="number" id="m_rate" placeholder="Rate">
+    <input type="number" id="m_gst" placeholder="GST">
+    <button onclick="addMaterial()">Add</button>
+  </div>
+
+  <div id="m_list"></div>
+</div>
+
+<!-- ACCOUNT -->
+<div id="account" class="tab">
+  <div class="card">
+    <h3>Add Entry</h3>
+    <input type="date" id="a_date">
+    <input type="text" id="a_party" placeholder="Party">
+    <select id="a_type">
+      <option value="paid">Paid</option>
+      <option value="received">Received</option>
+    </select>
+    <input type="number" id="a_amount" placeholder="Amount">
+    <button onclick="addAccount()">Add</button>
+  </div>
+
+  <div id="a_list"></div>
+</div>
+
+<!-- SUMMARY -->
+<div id="summary" class="tab">
+  <div id="s_list"></div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const today = new Date().toISOString().split('T')[0];
+m_date.value = today;
+a_date.value = today;
+
+// FORMAT FUNCTION
+function format(num){
+  return Number(num || 0).toLocaleString('en-IN');
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// MATERIAL
+async function addMaterial(){
+  let qty=+m_qty.value, rate=+m_rate.value, gst=+m_gst.value;
+  let amount = qty*rate + (qty*rate*gst/100);
+
+  await db.collection('materials').add({date:m_date.value,name:m_name.value,qty,rate,gst,amount});
+  loadMaterial(); loadDashboard();
+}
+
+async function loadMaterial(){
+  const snap = await db.collection('materials').orderBy('date','desc').get();
+  m_list.innerHTML='';
+
+  snap.forEach(doc=>{
+    let d=doc.data();
+    m_list.innerHTML+=`<div class='card'>
+      <b>${d.name}</b> (${d.date})<br>
+      Qty: ${format(d.qty)} | ₹${format(d.amount)}<br>
+      <button class='danger' onclick="deleteMaterial('${doc.id}')">Delete</button>
+    </div>`;
+  });
+}
+
+async function deleteMaterial(id){
+  await db.collection('materials').doc(id).delete();
+  loadMaterial(); loadDashboard();
+}
+
+// ACCOUNT
+async function addAccount(){
+  await db.collection('accounts').add({date:a_date.value,party:a_party.value,type:a_type.value,amount:+a_amount.value});
+  loadAccount(); loadSummary(); loadDashboard();
+}
+
+async function loadAccount(){
+  const snap = await db.collection('accounts').orderBy('date','desc').get();
+  a_list.innerHTML='';
+
+  snap.forEach(doc=>{
+    let d=doc.data();
+    a_list.innerHTML+=`<div class='card'>
+      <b>${d.party}</b> (${d.type})<br>
+      ₹${format(d.amount)} | ${d.date}<br>
+      <button class='danger' onclick="deleteAccount('${doc.id}')">Delete</button>
+    </div>`;
+  });
+}
+
+async function deleteAccount(id){
+  await db.collection('accounts').doc(id).delete();
+  loadAccount(); loadSummary(); loadDashboard();
+}
+
+// SUMMARY
+async function loadSummary(){
+  const snap = await db.collection('accounts').get();
+  let sum={};
+
+  snap.forEach(doc=>{
+    let d=doc.data();
+    if(!sum[d.party]) sum[d.party]={p:0,r:0};
+    d.type==='paid'? sum[d.party].p+=d.amount : sum[d.party].r+=d.amount;
+  });
+
+  s_list.innerHTML='';
+
+  for(let k in sum){
+    let bal=sum[k].r-sum[k].p;
+    s_list.innerHTML+=`<div class='card'>
+      <b>${k}</b><br>
+      Paid: ₹${format(sum[k].p)}<br>
+      Received: ₹${format(sum[k].r)}<br>
+      Balance: ₹${format(bal)}
+    </div>`;
+  }
+}
+
+// DASHBOARD
+async function loadDashboard(){
+  let mat=0, paid=0, recv=0;
+
+  const mSnap = await db.collection('materials').get();
+  mSnap.forEach(d=> mat+=d.data().amount);
+
+  const aSnap = await db.collection('accounts').get();
+  aSnap.forEach(d=>{
+    let x=d.data();
+    x.type==='paid'? paid+=x.amount : recv+=x.amount;
+  });
+
+  d_mat.innerText=format(mat);
+  d_paid.innerText=format(paid);
+  d_recv.innerText=format(recv);
+  d_bal.innerText=format(recv-paid);
+}
+
+loadMaterial();
+loadAccount();
+loadSummary();
+loadDashboard();
+</script>
+
+</body>
+</html>
