@@ -6,38 +6,173 @@
 <title>Construction Pro System</title>
 
 <style>
-body { font-family: Arial; padding:10px; }
-h2 { text-align:center; }
-
-.tabs { display:flex; }
-.tabs button { flex:1; padding:10px; border:none; background:#eee; }
-
-.tab { display:none; }
-.active { display:block; }
-
-input, select, button {
-  width:100%;
-  padding:10px;
-  margin:5px 0;
+/* GLOBAL */
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 10px;
+  margin: 0;
+  background: radial-gradient(circle at top, #0b2a35, #06121a 70%);
+  color: #00f7ff;
 }
 
-button { background:#007bff; color:#fff; border:none; cursor:pointer; }
-.delete { background:red; }
+/* TITLE */
+h2 {
+  text-align: center;
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: #00f7ff;
+  text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff55;
+  margin-bottom: 15px;
+}
 
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #00f7ff33;
+  background: #0b1f2a;
+  color: #00f7ff;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.tabs button:hover {
+  background: #00f7ff22;
+  box-shadow: 0 0 8px #00f7ff55;
+}
+
+/* TAB PANEL */
+.tab {
+  display: none;
+  background: rgba(11, 31, 42, 0.9);
+  padding: 15px;
+  border-radius: 14px;
+  box-shadow: 0 0 20px #00f7ff22;
+  border: 1px solid #00f7ff33;
+  backdrop-filter: blur(10px);
+}
+
+.active {
+  display: block;
+}
+
+/* FORM GRID (auto responsive without HTML change) */
+.tab input,
+.tab select,
+.tab button {
+  width: 100%;
+}
+
+/* INPUTS */
+input, select {
+  padding: 10px;
+  margin: 6px 0;
+  background: #06121a;
+  border: 1px solid #00f7ff55;
+  color: #00f7ff;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #00ffa6;
+  box-shadow: 0 0 8px #00ffa655;
+}
+
+input::placeholder {
+  color: #00f7ff88;
+}
+
+/* BUTTONS */
+button {
+  padding: 10px;
+  margin-top: 8px;
+  background: linear-gradient(45deg, #00f7ff, #00ffa6);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px #00f7ff, 0 0 20px #00ffa6;
+}
+
+.delete {
+  background: linear-gradient(45deg, #ff3b3b, #ff0000);
+  color: #fff;
+}
+
+/* TABLE */
 table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  background: #06121a;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #00f7ff22;
 }
 
 th, td {
-  border:1px solid #ccc;
-  padding:8px;
-  text-align:center;
+  border: 1px solid #00f7ff22;
+  padding: 10px;
+  text-align: center;
+  font-size: 14px;
 }
 
-th { background:#eee; }
-.total { background:#dff0d8; font-weight:bold; }
+th {
+  background: #0b1f2a;
+  color: #00ffa6;
+  text-shadow: 0 0 5px #00ffa6;
+}
+
+/* ROW EFFECT */
+tr:hover {
+  background: #00f7ff11;
+}
+
+/* TOTAL ROW */
+.total {
+  background: #003b3b;
+  color: #00ffa6;
+  font-weight: bold;
+  text-shadow: 0 0 5px #00ffa6;
+}
+
+/* MOBILE OPTIMIZATION */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 20px;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  table, thead, tbody, th, td, tr {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 6px;
+  }
+
+  button {
+    font-size: 14px;
+  }
+}
 </style>
 </head>
 
