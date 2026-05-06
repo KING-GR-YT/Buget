@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Construction Tracker</title>
+<title>Construction Pro System</title>
 
 <style>
-body { font-family: Arial; margin:0; padding:10px; }
+body { font-family: Arial; padding:10px; }
 h2 { text-align:center; }
+
 .tabs { display:flex; }
 .tabs button { flex:1; padding:10px; border:none; background:#eee; }
+
 .tab { display:none; }
 .active { display:block; }
 
@@ -19,63 +21,89 @@ input, select, button {
   margin:5px 0;
 }
 
-button { background:#007bff; color:#fff; border:none; }
+button { background:#007bff; color:#fff; border:none; cursor:pointer; }
+.delete { background:red; }
 
-.card {
-  background:#f9f9f9;
-  padding:10px;
+table {
+  width:100%;
+  border-collapse:collapse;
   margin-top:10px;
-  border-radius:10px;
 }
+
+th, td {
+  border:1px solid #ccc;
+  padding:8px;
+  text-align:center;
+}
+
+th { background:#eee; }
+.total { background:#dff0d8; font-weight:bold; }
 </style>
 </head>
 
 <body>
 
-<h2>🏗 Construction Tracker</h2>
+<h2>🏗 Construction Pro System</h2>
 
 <div class="tabs">
-  <button onclick="showTab('dashboard')">📊</button>
-  <button onclick="showTab('material')">🧱</button>
-  <button onclick="showTab('account')">💰</button>
-  <button onclick="showTab('summary')">📒</button>
+  <button onclick="showTab('material')">🧱 Material</button>
+  <button onclick="showTab('account')">💰 Account</button>
+  <button onclick="showTab('summary')">📒 Summary</button>
 </div>
 
-<div id="dashboard" class="tab active">
-  <div class="card">
-    <p>Total Material: ₹<b id="d_mat">0</b></p>
-    <p>Paid: ₹<b id="d_paid">0</b></p>
-    <p>Received: ₹<b id="d_recv">0</b></p>
-    <h3>Balance: ₹<span id="d_bal">0</span></h3>
-  </div>
+<!-- MATERIAL -->
+<div id="material" class="tab active">
+  <input type="date" id="m_date">
+  <input type="text" id="m_name" placeholder="Material">
+  <input type="number" id="m_qty" placeholder="Qty">
+  <input type="number" id="m_rate" placeholder="Rate">
+  <input type="number" id="m_gst" placeholder="GST %">
+
+  <input type="text" id="m_filter" placeholder="Filter Material">
+
+  <button onclick="addMaterial()">Add</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Name</th><th>Qty</th>
+        <th>Rate</th><th>GST</th><th>Amount</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="m_list"></tbody>
+    <tfoot>
+      <tr class="total">
+        <td colspan="5">TOTAL</td>
+        <td id="m_total">0</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
 
-<div id="material" class="tab">
-  <div class="card">
-    <input type="date" id="m_date">
-    <input type="text" id="m_name" placeholder="Material">
-    <input type="number" id="m_qty" placeholder="Qty">
-    <input type="number" id="m_rate" placeholder="Rate">
-    <input type="number" id="m_gst" placeholder="GST">
-    <button onclick="addMaterial()">Add</button>
-  </div>
-  <div id="m_list"></div>
-</div>
-
+<!-- ACCOUNT -->
 <div id="account" class="tab">
-  <div class="card">
-    <input type="date" id="a_date">
-    <input type="text" id="a_party" placeholder="Party">
-    <select id="a_type">
-      <option value="paid">Paid</option>
-      <option value="received">Received</option>
-    </select>
-    <input type="number" id="a_amount" placeholder="Amount">
-    <button onclick="addAccount()">Add</button>
-  </div>
-  <div id="a_list"></div>
+  <input type="date" id="a_date">
+  <input type="text" id="a_party" placeholder="Party">
+  <select id="a_type">
+    <option value="paid">Paid</option>
+    <option value="received">Received</option>
+  </select>
+  <input type="number" id="a_amount" placeholder="Amount">
+
+  <button onclick="addAccount()">Add</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th><th>Party</th><th>Type</th><th>Amount</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="a_list"></tbody>
+  </table>
 </div>
 
+<!-- SUMMARY -->
 <div id="summary" class="tab">
   <div id="s_list"></div>
 </div>
@@ -83,8 +111,7 @@ button { background:#007bff; color:#fff; border:none; }
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
@@ -92,45 +119,19 @@ const firebaseConfig = {
   projectId: "personal-budget-1cbbe"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
-
-// ✅ HIDE PAGE UNTIL AUTH
-document.body.style.display = "none";
-
-// ✅ AUTH CHECK
-onAuthStateChanged(auth, (user) => {
-  if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "index.html";
-  } else {
-    document.body.style.display = "block";
-    startApp();
-  }
-});
 
 // INIT
-function startApp(){
-  const today = new Date().toISOString().split('T')[0];
-  m_date.value = today;
-  a_date.value = today;
+const today = new Date().toISOString().split('T')[0];
+m_date.value = today;
+a_date.value = today;
 
-  loadMaterial();
-  loadAccount();
-  loadSummary();
-  loadDashboard();
-}
+function format(n){ return Number(n||0).toLocaleString('en-IN'); }
 
-// UI
 window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-};
-
-function format(n){
-  return Number(n||0).toLocaleString('en-IN');
 }
 
 // MATERIAL
@@ -142,34 +143,77 @@ window.addMaterial = async function(){
     date:m_date.value,name:m_name.value,qty,rate,gst,amount
   });
 
-  loadMaterial(); loadDashboard();
-};
+  loadMaterial();
+}
+
+window.deleteMaterial = async function(id){
+  await deleteDoc(doc(db,'materials',id));
+  loadMaterial();
+}
 
 async function loadMaterial(){
-  const snap = await getDocs(query(collection(db,'materials'),orderBy('date','desc')));
+  const snap = await getDocs(collection(db,'materials'));
+  let total=0;
   m_list.innerHTML='';
+
+  const filter = m_filter.value.toLowerCase();
+
   snap.forEach(d=>{
     let x=d.data();
-    m_list.innerHTML+=`<div class='card'>${x.name} - ₹${format(x.amount)}</div>`;
+
+    if(filter && !x.name.toLowerCase().includes(filter)) return;
+
+    total += x.amount;
+
+    m_list.innerHTML += `
+    <tr>
+      <td>${x.date}</td>
+      <td>${x.name}</td>
+      <td>${format(x.qty)}</td>
+      <td>${format(x.rate)}</td>
+      <td>${x.gst}%</td>
+      <td>₹${format(x.amount)}</td>
+      <td><button class="delete" onclick="deleteMaterial('${d.id}')">X</button></td>
+    </tr>`;
   });
+
+  m_total.innerText = "₹"+format(total);
 }
+
+m_filter.addEventListener('input',loadMaterial);
 
 // ACCOUNT
 window.addAccount = async function(){
   await addDoc(collection(db,'accounts'),{
-    date:a_date.value,party:a_party.value,
-    type:a_type.value,amount:+a_amount.value||0
+    date:a_date.value,
+    party:a_party.value,
+    type:a_type.value,
+    amount:+a_amount.value||0
   });
 
-  loadAccount(); loadSummary(); loadDashboard();
-};
+  loadAccount(); loadSummary();
+}
+
+window.deleteAccount = async function(id){
+  await deleteDoc(doc(db,'accounts',id));
+  loadAccount(); loadSummary();
+}
 
 async function loadAccount(){
-  const snap = await getDocs(query(collection(db,'accounts'),orderBy('date','desc')));
+  const snap = await getDocs(collection(db,'accounts'));
   a_list.innerHTML='';
+
   snap.forEach(d=>{
     let x=d.data();
-    a_list.innerHTML+=`<div class='card'>${x.party} - ₹${format(x.amount)}</div>`;
+
+    a_list.innerHTML += `
+    <tr>
+      <td>${x.date}</td>
+      <td>${x.party}</td>
+      <td>${x.type}</td>
+      <td>₹${format(x.amount)}</td>
+      <td><button class="delete" onclick="deleteAccount('${d.id}')">X</button></td>
+    </tr>`;
   });
 }
 
@@ -187,28 +231,21 @@ async function loadSummary(){
   s_list.innerHTML='';
   for(let k in sum){
     let bal=sum[k].r-sum[k].p;
-    s_list.innerHTML+=`<div class='card'>${k} Balance: ₹${format(bal)}</div>`;
+
+    s_list.innerHTML += `
+    <div style="border:1px solid #ccc; padding:10px; margin-top:10px;">
+      <b>${k}</b><br>
+      Paid: ₹${format(sum[k].p)}<br>
+      Received: ₹${format(sum[k].r)}<br>
+      Balance: ₹${format(bal)}
+    </div>`;
   }
 }
 
-// DASHBOARD
-async function loadDashboard(){
-  let mat=0, paid=0, recv=0;
-
-  const mSnap = await getDocs(collection(db,'materials'));
-  mSnap.forEach(d=> mat+=d.data().amount);
-
-  const aSnap = await getDocs(collection(db,'accounts'));
-  aSnap.forEach(d=>{
-    let x=d.data();
-    x.type==='paid'? paid+=x.amount : recv+=x.amount;
-  });
-
-  d_mat.innerText=format(mat);
-  d_paid.innerText=format(paid);
-  d_recv.innerText=format(recv);
-  d_bal.innerText=format(recv-paid);
-}
+// LOAD
+loadMaterial();
+loadAccount();
+loadSummary();
 
 </script>
 
