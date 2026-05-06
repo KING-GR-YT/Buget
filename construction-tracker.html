@@ -3,10 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Construction Tracker Mobile</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<title>Construction Tracker</title>
 
 <style>
 body { font-family: Arial; margin:0; padding:10px; }
@@ -20,11 +17,9 @@ input, select, button {
   width:100%;
   padding:10px;
   margin:5px 0;
-  font-size:16px;
 }
 
 button { background:#007bff; color:#fff; border:none; }
-.danger { background:red; }
 
 .card {
   background:#f9f9f9;
@@ -58,28 +53,26 @@ button { background:#007bff; color:#fff; border:none; }
 
 <div id="material" class="tab">
   <div class="card">
-    <h3>Add Material</h3>
     <input type="date" id="m_date">
     <input type="text" id="m_name" placeholder="Material">
     <input type="number" id="m_qty" placeholder="Qty">
     <input type="number" id="m_rate" placeholder="Rate">
-    <input type="number" id="m_gst" placeholder="GST %">
-    <button onclick="addMaterial()">Add Material</button>
+    <input type="number" id="m_gst" placeholder="GST">
+    <button onclick="addMaterial()">Add</button>
   </div>
   <div id="m_list"></div>
 </div>
 
 <div id="account" class="tab">
   <div class="card">
-    <h3>Add Entry</h3>
     <input type="date" id="a_date">
-    <input type="text" id="a_party" placeholder="Party Name">
+    <input type="text" id="a_party" placeholder="Party">
     <select id="a_type">
       <option value="paid">Paid</option>
       <option value="received">Received</option>
     </select>
     <input type="number" id="a_amount" placeholder="Amount">
-    <button onclick="addAccount()">Add Entry</button>
+    <button onclick="addAccount()">Add</button>
   </div>
   <div id="a_list"></div>
 </div>
@@ -88,83 +81,109 @@ button { background:#007bff; color:#fff; border:none; }
   <div id="s_list"></div>
 </div>
 
-<script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {
-apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+   apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
   projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.appspot.com",
+  storageBucket: "personal-budget-1cbbe.firebasestorage.app",
   messagingSenderId: "133591748262",
   appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
 
 const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('m_date').value = today;
-document.getElementById('a_date').value = today;
+onAuthStateChanged(auth,(user)=>{
+  if(!user || user.uid !== ADMIN_UID){
+    window.location.href="index.html";
+  } else {
+    init();
+  }
+});
 
-function format(num){
-  return Number(num || 0).toLocaleString('en-IN');
+function init(){
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('m_date').value = today;
+  document.getElementById('a_date').value = today;
+
+  loadMaterial();
+  loadAccount();
+  loadSummary();
+  loadDashboard();
 }
 
-function showTab(id){
+function format(num){
+  return Number(num||0).toLocaleString('en-IN');
+}
+
+window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-async function addMaterial(){
+window.addMaterial = async function(){
   let qty=+m_qty.value||0, rate=+m_rate.value||0, gst=+m_gst.value||0;
   let amount = qty*rate + (qty*rate*gst/100);
 
-  await db.collection('materials').add({
-    date:m_date.value, name:m_name.value, qty, rate, gst, amount
+  await addDoc(collection(db,'materials'),{
+    date:m_date.value,name:m_name.value,qty,rate,gst,amount
   });
 
   loadMaterial(); loadDashboard();
 }
 
 async function loadMaterial(){
-  const snap = await db.collection('materials').orderBy('date','desc').get();
+  const q = query(collection(db,'materials'), orderBy('date','desc'));
+  const snap = await getDocs(q);
   m_list.innerHTML='';
-  snap.forEach(doc=>{
-    let d=doc.data();
+
+  snap.forEach(docSnap=>{
+    let d=docSnap.data();
     m_list.innerHTML+=`<div class='card'>
       <b>${d.name}</b> (${d.date})<br>
-      Qty: ${format(d.qty)} | ₹${format(d.amount)}
+      ₹${format(d.amount)}
     </div>`;
   });
 }
 
-async function addAccount(){
-  await db.collection('accounts').add({
-    date:a_date.value, party:a_party.value,
-    type:a_type.value, amount:+a_amount.value||0
+window.addAccount = async function(){
+  await addDoc(collection(db,'accounts'),{
+    date:a_date.value,party:a_party.value,
+    type:a_type.value,amount:+a_amount.value||0
   });
 
   loadAccount(); loadSummary(); loadDashboard();
 }
 
 async function loadAccount(){
-  const snap = await db.collection('accounts').orderBy('date','desc').get();
+  const q = query(collection(db,'accounts'), orderBy('date','desc'));
+  const snap = await getDocs(q);
   a_list.innerHTML='';
-  snap.forEach(doc=>{
-    let d=doc.data();
+
+  snap.forEach(docSnap=>{
+    let d=docSnap.data();
     a_list.innerHTML+=`<div class='card'>
       <b>${d.party}</b> (${d.type})<br>
-      ₹${format(d.amount)} | ${d.date}
+      ₹${format(d.amount)}
     </div>`;
   });
 }
 
 async function loadSummary(){
-  const snap = await db.collection('accounts').get();
+  const snap = await getDocs(collection(db,'accounts'));
   let sum={};
-  snap.forEach(doc=>{
-    let d=doc.data();
+
+  snap.forEach(docSnap=>{
+    let d=docSnap.data();
     if(!sum[d.party]) sum[d.party]={p:0,r:0};
     d.type==='paid'? sum[d.party].p+=d.amount : sum[d.party].r+=d.amount;
   });
@@ -182,10 +201,10 @@ async function loadSummary(){
 async function loadDashboard(){
   let mat=0, paid=0, recv=0;
 
-  const mSnap = await db.collection('materials').get();
+  const mSnap = await getDocs(collection(db,'materials'));
   mSnap.forEach(d=> mat+=d.data().amount);
 
-  const aSnap = await db.collection('accounts').get();
+  const aSnap = await getDocs(collection(db,'accounts'));
   aSnap.forEach(d=>{
     let x=d.data();
     x.type==='paid'? paid+=x.amount : recv+=x.amount;
@@ -197,10 +216,6 @@ async function loadDashboard(){
   d_bal.innerText=format(recv-paid);
 }
 
-loadMaterial();
-loadAccount();
-loadSummary();
-loadDashboard();
 </script>
 
 </body>
