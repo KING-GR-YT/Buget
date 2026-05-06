@@ -4,14 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Construction Tracker Mobile</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <style>
 body { font-family: Arial; margin:0; padding:10px; }
 h2 { text-align:center; }
 .tabs { display:flex; overflow-x:auto; }
 .tabs button { flex:1; padding:10px; border:none; background:#eee; }
-.tabs button:active { background:#ccc; }
 .tab { display:none; }
 .active { display:block; }
 
@@ -30,15 +31,13 @@ button { background:#007bff; color:#fff; border:none; }
   padding:10px;
   margin-top:10px;
   border-radius:10px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
-
-.small { font-size:14px; color:#555; }
 </style>
 </head>
+
 <body>
 
-<h2>🏗 Tracker</h2>
+<h2>🏗 Construction Tracker</h2>
 
 <div class="tabs">
   <button onclick="showTab('dashboard')">📊</button>
@@ -47,18 +46,16 @@ button { background:#007bff; color:#fff; border:none; }
   <button onclick="showTab('summary')">📒</button>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="tab active">
   <div class="card">
     <h3>Dashboard</h3>
-    <p>Total Material: ₹<b id="d_mat"></b></p>
-    <p>Paid: ₹<b id="d_paid"></b></p>
-    <p>Received: ₹<b id="d_recv"></b></p>
-    <h3>Balance: ₹<span id="d_bal"></span></h3>
+    <p>Total Material: ₹<b id="d_mat">0</b></p>
+    <p>Total Paid: ₹<b id="d_paid">0</b></p>
+    <p>Total Received: ₹<b id="d_recv">0</b></p>
+    <h3>Balance: ₹<span id="d_bal">0</span></h3>
   </div>
 </div>
 
-<!-- MATERIAL -->
 <div id="material" class="tab">
   <div class="card">
     <h3>Add Material</h3>
@@ -66,56 +63,45 @@ button { background:#007bff; color:#fff; border:none; }
     <input type="text" id="m_name" placeholder="Material">
     <input type="number" id="m_qty" placeholder="Qty">
     <input type="number" id="m_rate" placeholder="Rate">
-    <input type="number" id="m_gst" placeholder="GST">
-    <button onclick="addMaterial()">Add</button>
+    <input type="number" id="m_gst" placeholder="GST %">
+    <button onclick="addMaterial()">Add Material</button>
   </div>
-
   <div id="m_list"></div>
 </div>
 
-<!-- ACCOUNT -->
 <div id="account" class="tab">
   <div class="card">
     <h3>Add Entry</h3>
     <input type="date" id="a_date">
-    <input type="text" id="a_party" placeholder="Party">
+    <input type="text" id="a_party" placeholder="Party Name">
     <select id="a_type">
       <option value="paid">Paid</option>
       <option value="received">Received</option>
     </select>
     <input type="number" id="a_amount" placeholder="Amount">
-    <button onclick="addAccount()">Add</button>
+    <button onclick="addAccount()">Add Entry</button>
   </div>
-
   <div id="a_list"></div>
 </div>
 
-<!-- SUMMARY -->
 <div id="summary" class="tab">
   <div id="s_list"></div>
 </div>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe",
-  storageBucket: "personal-budget-1cbbe.appspot.com",
-  messagingSenderId: "133591748262",
-  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 const today = new Date().toISOString().split('T')[0];
-m_date.value = today;
-a_date.value = today;
+document.getElementById('m_date').value = today;
+document.getElementById('a_date').value = today;
 
-// FORMAT FUNCTION
 function format(num){
   return Number(num || 0).toLocaleString('en-IN');
 }
@@ -125,64 +111,53 @@ function showTab(id){
   document.getElementById(id).classList.add('active');
 }
 
-// MATERIAL
 async function addMaterial(){
-  let qty=+m_qty.value, rate=+m_rate.value, gst=+m_gst.value;
+  let qty=+m_qty.value||0, rate=+m_rate.value||0, gst=+m_gst.value||0;
   let amount = qty*rate + (qty*rate*gst/100);
 
-  await db.collection('materials').add({date:m_date.value,name:m_name.value,qty,rate,gst,amount});
+  await db.collection('materials').add({
+    date:m_date.value, name:m_name.value, qty, rate, gst, amount
+  });
+
   loadMaterial(); loadDashboard();
 }
 
 async function loadMaterial(){
   const snap = await db.collection('materials').orderBy('date','desc').get();
   m_list.innerHTML='';
-
   snap.forEach(doc=>{
     let d=doc.data();
     m_list.innerHTML+=`<div class='card'>
       <b>${d.name}</b> (${d.date})<br>
-      Qty: ${format(d.qty)} | ₹${format(d.amount)}<br>
-      <button class='danger' onclick="deleteMaterial('${doc.id}')">Delete</button>
+      Qty: ${format(d.qty)} | ₹${format(d.amount)}
     </div>`;
   });
 }
 
-async function deleteMaterial(id){
-  await db.collection('materials').doc(id).delete();
-  loadMaterial(); loadDashboard();
-}
-
-// ACCOUNT
 async function addAccount(){
-  await db.collection('accounts').add({date:a_date.value,party:a_party.value,type:a_type.value,amount:+a_amount.value});
+  await db.collection('accounts').add({
+    date:a_date.value, party:a_party.value,
+    type:a_type.value, amount:+a_amount.value||0
+  });
+
   loadAccount(); loadSummary(); loadDashboard();
 }
 
 async function loadAccount(){
   const snap = await db.collection('accounts').orderBy('date','desc').get();
   a_list.innerHTML='';
-
   snap.forEach(doc=>{
     let d=doc.data();
     a_list.innerHTML+=`<div class='card'>
       <b>${d.party}</b> (${d.type})<br>
-      ₹${format(d.amount)} | ${d.date}<br>
-      <button class='danger' onclick="deleteAccount('${doc.id}')">Delete</button>
+      ₹${format(d.amount)} | ${d.date}
     </div>`;
   });
 }
 
-async function deleteAccount(id){
-  await db.collection('accounts').doc(id).delete();
-  loadAccount(); loadSummary(); loadDashboard();
-}
-
-// SUMMARY
 async function loadSummary(){
   const snap = await db.collection('accounts').get();
   let sum={};
-
   snap.forEach(doc=>{
     let d=doc.data();
     if(!sum[d.party]) sum[d.party]={p:0,r:0};
@@ -190,19 +165,15 @@ async function loadSummary(){
   });
 
   s_list.innerHTML='';
-
   for(let k in sum){
     let bal=sum[k].r-sum[k].p;
     s_list.innerHTML+=`<div class='card'>
       <b>${k}</b><br>
-      Paid: ₹${format(sum[k].p)}<br>
-      Received: ₹${format(sum[k].r)}<br>
       Balance: ₹${format(bal)}
     </div>`;
   }
 }
 
-// DASHBOARD
 async function loadDashboard(){
   let mat=0, paid=0, recv=0;
 
