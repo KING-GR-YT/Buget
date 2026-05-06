@@ -97,12 +97,19 @@ button { background:#007bff; color:#fff; border:none; }
 
 <script>
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe",
+  storageBucket: "personal-budget-1cbbe.appspot.com",
+  messagingSenderId: "133591748262",
+  appId: "1:133591748262:web:2c0846f03f5f56aeb1ee67"
 };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 const today = new Date().toISOString().split('T')[0];
 m_date.value = today;
