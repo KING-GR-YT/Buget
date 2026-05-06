@@ -3,284 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Construction Pro System</title>
-
-<style>
-/* GLOBAL */
-body {
-  font-family: 'Segoe UI', Arial, sans-serif;
-  padding: 10px;
-  margin: 0;
-  background: radial-gradient(circle at top, #0b2a35, #06121a 70%);
-  color: #00f7ff;
-}
-
-/* TITLE */
-h2 {
-  text-align: center;
-  font-size: 26px;
-  letter-spacing: 1px;
-  color: #00f7ff;
-  text-shadow: 0 0 10px #00f7ff, 0 0 20px #00f7ff55;
-  margin-bottom: 15px;
-}
-
-/* TABS */
-.tabs {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 12px;
-}
-
-.tabs button {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #00f7ff33;
-  background: #0b1f2a;
-  color: #00f7ff;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: 0.3s;
-}
-
-.tabs button:hover {
-  background: #00f7ff22;
-  box-shadow: 0 0 8px #00f7ff55;
-}
-
-/* TAB PANEL */
-.tab {
-  display: none;
-  background: rgba(11, 31, 42, 0.9);
-  padding: 15px;
-  border-radius: 14px;
-  box-shadow: 0 0 20px #00f7ff22;
-  border: 1px solid #00f7ff33;
-  backdrop-filter: blur(10px);
-}
-
-.active {
-  display: block;
-}
-
-/* FORM GRID (auto responsive without HTML change) */
-.tab input,
-.tab select,
-.tab button {
-  width: 100%;
-}
-
-/* INPUTS */
-input, select {
-  padding: 10px;
-  margin: 6px 0;
-  background: #06121a;
-  border: 1px solid #00f7ff55;
-  color: #00f7ff;
-  border-radius: 8px;
-  outline: none;
-  transition: 0.3s;
-}
-
-input:focus, select:focus {
-  border-color: #00ffa6;
-  box-shadow: 0 0 8px #00ffa655;
-}
-
-input::placeholder {
-  color: #00f7ff88;
-}
-
-/* BUTTONS */
-button {
-  padding: 10px;
-  margin-top: 8px;
-  background: linear-gradient(45deg, #00f7ff, #00ffa6);
-  color: #000;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 10px #00f7ff, 0 0 20px #00ffa6;
-}
-
-.delete {
-  background: linear-gradient(45deg, #ff3b3b, #ff0000);
-  color: #fff;
-}
-
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-  background: #06121a;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 0 15px #00f7ff22;
-}
-
-th, td {
-  border: 1px solid #00f7ff22;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-}
-
-th {
-  background: #0b1f2a;
-  color: #00ffa6;
-  text-shadow: 0 0 5px #00ffa6;
-}
-
-/* ROW EFFECT */
-tr:hover {
-  background: #00f7ff11;
-}
-
-/* TOTAL ROW */
-.total {
-  background: #003b3b;
-  color: #00ffa6;
-  font-weight: bold;
-  text-shadow: 0 0 5px #00ffa6;
-}
-
-/* MOBILE OPTIMIZATION */
-@media (max-width: 768px) {
-  h2 {
-    font-size: 20px;
-  }
-
-  .tabs {
-    flex-direction: column;
-  }
-
-  table, thead, tbody, th, td, tr {
-    font-size: 12px;
-  }
-
-  th, td {
-    padding: 6px;
-  }
-
-  button {
-    font-size: 14px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<h2>🏗 Construction Pro System</h2>
-
-<div class="tabs">
-  <button onclick="showTab('material')">🧱 Material</button>
-  <button onclick="showTab('account')">💰 Account</button>
-  <button onclick="showTab('summary')">📒 Summary</button>
-</div>
-
-<!-- MATERIAL -->
-<div id="material" class="tab active">
-  <input type="date" id="m_date">
-  <input type="text" id="m_name" placeholder="Material">
-  <input type="number" id="m_qty" placeholder="Qty">
-  <input type="number" id="m_rate" placeholder="Rate">
-  <input type="number" id="m_gst" placeholder="GST %">
-
-  <input type="text" id="m_filter" placeholder="Filter Material">
-
-  <button onclick="addMaterial()">Add</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th><th>Name</th><th>Qty</th>
-        <th>Rate</th><th>GST</th><th>Amount</th><th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="m_list"></tbody>
-    <tfoot>
-      <tr class="total">
-        <td colspan="5">TOTAL</td>
-        <td id="m_total">0</td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
-</div>
-
-<!-- ACCOUNT -->
-<div id="account" class="tab">
-  <input type="date" id="a_date">
-  <input type="text" id="a_party" placeholder="Party">
-  <select id="a_type">
-    <option value="paid">Paid</option>
-    <option value="received">Received</option>
-  </select>
-  <input type="number" id="a_amount" placeholder="Amount">
-
-  <button onclick="addAccount()">Add</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th><th>Party</th><th>Type</th><th>Amount</th><th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="a_list"></tbody>
-  </table>
-</div>
-
-<!-- SUMMARY -->
-<div id="summary" class="tab">
-  <table>
-    <thead>
-      <tr>
-        <th>Party Name</th>
-        <th>Total Paid</th>
-        <th>Total Received</th>
-        <th>Balance</th>
-      </tr>
-    </thead>
-    <tbody id="s_list"></tbody>
-  </table>
-</div>
+<title>Construction Final System</title>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  apiKey: "YOUR_API_KEY",
   authDomain: "personal-budget-1cbbe.firebaseapp.com",
   projectId: "personal-budget-1cbbe"
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
-document.body.style.display = "none";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "index.html";
-  } else {
-    document.body.style.display = "block";
-    startApp();
-  }
-});
+const today = new Date().toISOString().split('T')[0];
 
 function format(n){ return Number(n||0).toLocaleString('en-IN'); }
 
@@ -289,99 +27,100 @@ window.showTab = function(id){
   document.getElementById(id).classList.add('active');
 }
 
-function startApp(){
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('m_date').value = today;
-  document.getElementById('a_date').value = today;
-
-  document.getElementById('m_filter').addEventListener('input',loadMaterial);
-
-  loadMaterial();
-  loadAccount();
-  loadSummary();
-}
-
+// MATERIAL
 window.addMaterial = async function(){
-  let qty=+m_qty.value||0, rate=+m_rate.value||0, gst=+m_gst.value||0;
-  let amount = qty*rate + (qty*rate*gst/100);
+  let data = {
+    date: m_date.value,
+    party: m_party.value,
+    name: m_name.value,
+    bill: m_bill.value,
+    qty:+m_qty.value||0,
+    rate:+m_rate.value||0,
+    gst:+m_gst.value||0
+  };
 
-  await addDoc(collection(db,'materials'),{
-    date:m_date.value,name:m_name.value,qty,rate,gst,amount
-  });
+  data.amount = data.qty * data.rate + (data.qty * data.rate * data.gst / 100);
 
+  await addDoc(collection(db,"materials"),data);
   loadMaterial();
+  loadDashboard();
 }
 
 window.deleteMaterial = async function(id){
-  await deleteDoc(doc(db,'materials',id));
+  await deleteDoc(doc(db,"materials",id));
   loadMaterial();
 }
 
 async function loadMaterial(){
-  const snap = await getDocs(collection(db,'materials'));
-  let total=0;
+  const snap = await getDocs(collection(db,"materials"));
   m_list.innerHTML='';
+  let total=0;
 
-  const filter = m_filter.value.toLowerCase();
+  let filter = m_filter.value.toLowerCase();
 
   snap.forEach(d=>{
     let x=d.data();
-
     if(filter && !x.name.toLowerCase().includes(filter)) return;
 
-    total += x.amount;
+    total+=x.amount;
 
-    m_list.innerHTML += `
+    m_list.innerHTML+=`
     <tr>
       <td>${x.date}</td>
+      <td>${x.party}</td>
       <td>${x.name}</td>
+      <td>${x.bill}</td>
       <td>${format(x.qty)}</td>
       <td>${format(x.rate)}</td>
       <td>${x.gst}%</td>
       <td>₹${format(x.amount)}</td>
-      <td><button class="delete" onclick="deleteMaterial('${d.id}')">X</button></td>
+      <td><button onclick="deleteMaterial('${d.id}')">X</button></td>
     </tr>`;
   });
 
-  m_total.innerText = "₹"+format(total);
+  m_total.innerText="₹"+format(total);
 }
 
+// ACCOUNT
 window.addAccount = async function(){
-  await addDoc(collection(db,'accounts'),{
+  await addDoc(collection(db,"accounts"),{
     date:a_date.value,
     party:a_party.value,
     type:a_type.value,
     amount:+a_amount.value||0
   });
 
-  loadAccount(); loadSummary();
+  loadAccount();
+  loadSummary();
+  loadDashboard();
 }
 
 window.deleteAccount = async function(id){
-  await deleteDoc(doc(db,'accounts',id));
-  loadAccount(); loadSummary();
+  await deleteDoc(doc(db,"accounts",id));
+  loadAccount();
 }
 
 async function loadAccount(){
-  const snap = await getDocs(collection(db,'accounts'));
+  const snap = await getDocs(collection(db,"accounts"));
   a_list.innerHTML='';
 
   snap.forEach(d=>{
     let x=d.data();
 
-    a_list.innerHTML += `
+    a_list.innerHTML+=`
     <tr>
       <td>${x.date}</td>
       <td>${x.party}</td>
       <td>${x.type}</td>
       <td>₹${format(x.amount)}</td>
-      <td><button class="delete" onclick="deleteAccount('${d.id}')">X</button></td>
+      <td><button onclick="deleteAccount('${d.id}')">X</button></td>
     </tr>`;
   });
 }
 
+// SUMMARY
 async function loadSummary(){
-  const snap = await getDocs(collection(db,'accounts'));
+  const snap = await getDocs(collection(db,"accounts"));
   let sum={};
 
   snap.forEach(d=>{
@@ -393,20 +132,131 @@ async function loadSummary(){
   s_list.innerHTML='';
 
   for(let k in sum){
-    let bal = sum[k].r - sum[k].p;
+    let bal=sum[k].r - sum[k].p;
 
     s_list.innerHTML += `
-      <tr>
-        <td>${k}</td>
-        <td>₹${format(sum[k].p)}</td>
-        <td>₹${format(sum[k].r)}</td>
-        <td>₹${format(bal)}</td>
-      </tr>
-    `;
+    <div style="border:1px solid #ccc;padding:10px;margin-top:10px;">
+      <b>${k}</b><br>
+      Paid: ₹${format(sum[k].p)}<br>
+      Received: ₹${format(sum[k].r)}<br>
+      Balance: ₹${format(bal)}
+    </div>`;
   }
 }
 
+// DASHBOARD
+async function loadDashboard(){
+  let mat=0, paid=0, recv=0;
+
+  const mSnap = await getDocs(collection(db,"materials"));
+  mSnap.forEach(d=> mat+=d.data().amount);
+
+  const aSnap = await getDocs(collection(db,"accounts"));
+  aSnap.forEach(d=>{
+    let x=d.data();
+    x.type==='paid'? paid+=x.amount : recv+=x.amount;
+  });
+
+  d_mat.innerText=format(mat);
+  d_paid.innerText=format(paid);
+  d_recv.innerText=format(recv);
+  d_bal.innerText=format(recv-paid);
+}
+
+window.onload=()=>{
+  m_date.value=today;
+  a_date.value=today;
+  loadMaterial();
+  loadAccount();
+  loadSummary();
+  loadDashboard();
+}
 </script>
+
+<style>
+body {font-family:Arial;padding:10px;}
+.tabs{display:flex;}
+.tabs button{flex:1;padding:10px;}
+.tab{display:none;}
+.active{display:block;}
+
+input,select,button{width:100%;padding:8px;margin:5px 0;}
+table{width:100%;border-collapse:collapse;}
+th,td{border:1px solid #ccc;padding:6px;text-align:center;}
+.total{background:#dff0d8;}
+</style>
+</head>
+
+<body>
+
+<h2>🏗 Construction Final System</h2>
+
+<div class="tabs">
+<button onclick="showTab('dashboard')">Dashboard</button>
+<button onclick="showTab('material')">Material</button>
+<button onclick="showTab('account')">Account</button>
+<button onclick="showTab('summary')">Summary</button>
+</div>
+
+<div id="dashboard" class="tab active">
+<h3>Total Material: ₹<span id="d_mat">0</span></h3>
+<h3>Paid: ₹<span id="d_paid">0</span></h3>
+<h3>Received: ₹<span id="d_recv">0</span></h3>
+<h2>Balance: ₹<span id="d_bal">0</span></h2>
+</div>
+
+<div id="material" class="tab">
+<input type="date" id="m_date">
+<input type="text" id="m_party" placeholder="Party">
+<input type="text" id="m_name" placeholder="Material">
+<input type="text" id="m_bill" placeholder="Bill No">
+<input type="number" id="m_qty" placeholder="Qty">
+<input type="number" id="m_rate" placeholder="Rate">
+<input type="number" id="m_gst" placeholder="GST">
+<input type="text" id="m_filter" placeholder="Filter" oninput="loadMaterial()">
+<button onclick="addMaterial()">Add</button>
+
+<table>
+<thead>
+<tr>
+<th>Date</th><th>Party</th><th>Material</th><th>Bill</th>
+<th>Qty</th><th>Rate</th><th>GST</th><th>Amount</th><th>X</th>
+</tr>
+</thead>
+<tbody id="m_list"></tbody>
+<tfoot>
+<tr class="total">
+<td colspan="7">TOTAL</td>
+<td id="m_total">0</td>
+<td></td>
+</tr>
+</tfoot>
+</table>
+</div>
+
+<div id="account" class="tab">
+<input type="date" id="a_date">
+<input type="text" id="a_party" placeholder="Party">
+<select id="a_type">
+<option value="paid">Paid</option>
+<option value="received">Received</option>
+</select>
+<input type="number" id="a_amount" placeholder="Amount">
+<button onclick="addAccount()">Add</button>
+
+<table>
+<thead>
+<tr>
+<th>Date</th><th>Party</th><th>Type</th><th>Amount</th><th>X</th>
+</tr>
+</thead>
+<tbody id="a_list"></tbody>
+</table>
+</div>
+
+<div id="summary" class="tab">
+<div id="s_list"></div>
+</div>
 
 </body>
 </html>
