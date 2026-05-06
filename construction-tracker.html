@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Construction Final System</title>
+<title>Construction System</title>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -42,7 +43,7 @@ window.showTab = function(id){
   document.getElementById(id).classList.add('active');
 }
 
-// MATERIAL
+// ================= MATERIAL =================
 window.addMaterial = async function(){
   let data = {
     date: m_date.value,
@@ -58,7 +59,6 @@ window.addMaterial = async function(){
 
   await addDoc(collection(db,"materials"),data);
   loadMaterial();
-  loadDashboard();
 }
 
 window.deleteMaterial = async function(id){
@@ -96,7 +96,7 @@ async function loadMaterial(){
   m_total.innerText="₹"+format(total);
 }
 
-// ACCOUNT
+// ================= ACCOUNT =================
 window.addAccount = async function(){
   await addDoc(collection(db,"accounts"),{
     date:a_date.value,
@@ -107,12 +107,12 @@ window.addAccount = async function(){
 
   loadAccount();
   loadSummary();
-  loadDashboard();
 }
 
 window.deleteAccount = async function(id){
   await deleteDoc(doc(db,"accounts",id));
   loadAccount();
+  loadSummary();
 }
 
 async function loadAccount(){
@@ -133,58 +133,67 @@ async function loadAccount(){
   });
 }
 
-// SUMMARY
+// ================= PARTY LEDGER =================
 async function loadSummary(){
   const snap = await getDocs(collection(db,"accounts"));
-  let sum={};
+  let data = [];
+
+  snap.forEach(d=>{
+    data.push({...d.data()});
+  });
+
+  data.sort((a,b)=> new Date(a.date) - new Date(b.date));
+
+  let balanceMap = {};
+  s_list.innerHTML='';
+
+  data.forEach(x=>{
+    if(!balanceMap[x.party]) balanceMap[x.party]=0;
+
+    if(x.type === 'received'){
+      balanceMap[x.party]+=x.amount;
+    } else {
+      balanceMap[x.party]-=x.amount;
+    }
+
+    s_list.innerHTML += `
+    <div style="border:1px solid #ccc;margin:5px;padding:8px;">
+      <b>${x.party}</b> | ${x.date}<br>
+      ${x.type.toUpperCase()} : ₹${format(x.amount)}<br>
+      <b>Balance: ₹${format(balanceMap[x.party])}</b>
+    </div>`;
+  });
+}
+
+// ================= EXPORT EXCEL =================
+window.exportExcel = async function(){
+  const snap = await getDocs(collection(db,"materials"));
+  let rows = [];
+
+  rows.push(["Date","Party","Material","Bill","Qty","Rate","GST","Amount"]);
 
   snap.forEach(d=>{
     let x=d.data();
-    if(!sum[x.party]) sum[x.party]={p:0,r:0};
-    x.type==='paid'? sum[x.party].p+=x.amount : sum[x.party].r+=x.amount;
+    rows.push([x.date,x.party,x.name,x.bill,x.qty,x.rate,x.gst,x.amount]);
   });
 
-  s_list.innerHTML='';
+  let csv = "data:text/csv;charset=utf-8,";
+  rows.forEach(r=>{ csv += r.join(",") + "\n"; });
 
-  for(let k in sum){
-    let bal=sum[k].r - sum[k].p;
-
-    s_list.innerHTML += `
-    <div style="border:1px solid #ccc;padding:10px;margin-top:10px;">
-      <b>${k}</b><br>
-      Paid: ₹${format(sum[k].p)}<br>
-      Received: ₹${format(sum[k].r)}<br>
-      Balance: ₹${format(bal)}
-    </div>`;
-  }
+  const link = document.createElement("a");
+  link.href = encodeURI(csv);
+  link.download = "material_data.csv";
+  document.body.appendChild(link);
+  link.click();
 }
 
-// DASHBOARD
-async function loadDashboard(){
-  let mat=0, paid=0, recv=0;
-
-  const mSnap = await getDocs(collection(db,"materials"));
-  mSnap.forEach(d=> mat+=d.data().amount);
-
-  const aSnap = await getDocs(collection(db,"accounts"));
-  aSnap.forEach(d=>{
-    let x=d.data();
-    x.type==='paid'? paid+=x.amount : recv+=x.amount;
-  });
-
-  d_mat.innerText=format(mat);
-  d_paid.innerText=format(paid);
-  d_recv.innerText=format(recv);
-  d_bal.innerText=format(recv-paid);
-}
-
+// INIT
 window.onload=()=>{
   m_date.value=today;
   a_date.value=today;
   loadMaterial();
   loadAccount();
   loadSummary();
-  loadDashboard();
 }
 </script>
 
@@ -204,23 +213,16 @@ th,td{border:1px solid #ccc;padding:6px;text-align:center;}
 
 <body>
 
-<h2>🏗 Construction Final System</h2>
+<h2>🏗 Construction System</h2>
 
 <div class="tabs">
-<button onclick="showTab('dashboard')">Dashboard</button>
-<button onclick="showTab('material')">Material</button>
-<button onclick="showTab('account')">Account</button>
-<button onclick="showTab('summary')">Summary</button>
+<button onclick="showTab('material')">🧱 Material</button>
+<button onclick="showTab('account')">💰 Account</button>
+<button onclick="showTab('summary')">📒 Ledger</button>
 </div>
 
-<div id="dashboard" class="tab active">
-<h3>Total Material: ₹<span id="d_mat">0</span></h3>
-<h3>Paid: ₹<span id="d_paid">0</span></h3>
-<h3>Received: ₹<span id="d_recv">0</span></h3>
-<h2>Balance: ₹<span id="d_bal">0</span></h2>
-</div>
-
-<div id="material" class="tab">
+<!-- MATERIAL -->
+<div id="material" class="tab active">
 <input type="date" id="m_date">
 <input type="text" id="m_party" placeholder="Party">
 <input type="text" id="m_name" placeholder="Material">
@@ -229,7 +231,9 @@ th,td{border:1px solid #ccc;padding:6px;text-align:center;}
 <input type="number" id="m_rate" placeholder="Rate">
 <input type="number" id="m_gst" placeholder="GST">
 <input type="text" id="m_filter" placeholder="Filter" oninput="loadMaterial()">
+
 <button onclick="addMaterial()">Add</button>
+<button onclick="exportExcel()">⬇ Export Excel</button>
 
 <table>
 <thead>
@@ -249,6 +253,7 @@ th,td{border:1px solid #ccc;padding:6px;text-align:center;}
 </table>
 </div>
 
+<!-- ACCOUNT -->
 <div id="account" class="tab">
 <input type="date" id="a_date">
 <input type="text" id="a_party" placeholder="Party">
@@ -257,6 +262,7 @@ th,td{border:1px solid #ccc;padding:6px;text-align:center;}
 <option value="received">Received</option>
 </select>
 <input type="number" id="a_amount" placeholder="Amount">
+
 <button onclick="addAccount()">Add</button>
 
 <table>
@@ -269,6 +275,7 @@ th,td{border:1px solid #ccc;padding:6px;text-align:center;}
 </table>
 </div>
 
+<!-- LEDGER -->
 <div id="summary" class="tab">
 <div id="s_list"></div>
 </div>
