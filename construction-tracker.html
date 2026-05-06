@@ -86,8 +86,8 @@ th { background:#eee; }
   <input type="date" id="a_date">
   <input type="text" id="a_party" placeholder="Party">
   <select id="a_type">
-    <option value="Paid">Paid</option>
-    <option value="Received">Received</option>
+    <option value="paid">Paid</option>
+    <option value="received">Received</option>
   </select>
   <input type="number" id="a_amount" placeholder="Amount">
 
@@ -105,7 +105,17 @@ th { background:#eee; }
 
 <!-- SUMMARY -->
 <div id="summary" class="tab">
-  <div id="s_list"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Party Name</th>
+        <th>Total Paid</th>
+        <th>Total Received</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    <tbody id="s_list"></tbody>
+  </table>
 </div>
 
 <script type="module">
@@ -126,10 +136,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// hide UI until auth ready
 document.body.style.display = "none";
 
-// AUTH CHECK
 onAuthStateChanged(auth, (user) => {
   if (!user || user.uid !== ADMIN_UID) {
     window.location.href = "index.html";
@@ -139,16 +147,13 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// FORMAT
 function format(n){ return Number(n||0).toLocaleString('en-IN'); }
 
-// TAB
 window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-// START APP (IMPORTANT)
 function startApp(){
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('m_date').value = today;
@@ -161,7 +166,6 @@ function startApp(){
   loadSummary();
 }
 
-// MATERIAL
 window.addMaterial = async function(){
   let qty=+m_qty.value||0, rate=+m_rate.value||0, gst=+m_gst.value||0;
   let amount = qty*rate + (qty*rate*gst/100);
@@ -207,7 +211,6 @@ async function loadMaterial(){
   m_total.innerText = "₹"+format(total);
 }
 
-// ACCOUNT
 window.addAccount = async function(){
   await addDoc(collection(db,'accounts'),{
     date:a_date.value,
@@ -242,7 +245,6 @@ async function loadAccount(){
   });
 }
 
-// SUMMARY
 async function loadSummary(){
   const snap = await getDocs(collection(db,'accounts'));
   let sum={};
@@ -254,16 +256,18 @@ async function loadSummary(){
   });
 
   s_list.innerHTML='';
+
   for(let k in sum){
-    let bal=sum[k].r-sum[k].p;
+    let bal = sum[k].r - sum[k].p;
 
     s_list.innerHTML += `
-    <div style="border:1px solid #ccc; padding:10px; margin-top:10px;">
-      <b>${k}</b><br>
-      Paid: ₹${format(sum[k].p)}<br>
-      Received: ₹${format(sum[k].r)}<br>
-      Balance: ₹${format(bal)}
-    </div>`;
+      <tr>
+        <td>${k}</td>
+        <td>₹${format(sum[k].p)}</td>
+        <td>₹${format(sum[k].r)}</td>
+        <td>₹${format(bal)}</td>
+      </tr>
+    `;
   }
 }
 
