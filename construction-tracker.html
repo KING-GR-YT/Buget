@@ -120,15 +120,16 @@ const firebaseConfig = {
   projectId: "personal-budget-1cbbe"
 };
 
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
-// hide page
+// hide UI until auth ready
 document.body.style.display = "none";
 
-// wait for login
+// AUTH CHECK
 onAuthStateChanged(auth, (user) => {
   if (!user || user.uid !== ADMIN_UID) {
     window.location.href = "index.html";
@@ -138,16 +139,26 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// INIT
-const today = new Date().toISOString().split('T')[0];
-m_date.value = today;
-a_date.value = today;
-
+// FORMAT
 function format(n){ return Number(n||0).toLocaleString('en-IN'); }
 
+// TAB
 window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+// START APP (IMPORTANT)
+function startApp(){
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('m_date').value = today;
+  document.getElementById('a_date').value = today;
+
+  document.getElementById('m_filter').addEventListener('input',loadMaterial);
+
+  loadMaterial();
+  loadAccount();
+  loadSummary();
 }
 
 // MATERIAL
@@ -195,8 +206,6 @@ async function loadMaterial(){
 
   m_total.innerText = "₹"+format(total);
 }
-
-m_filter.addEventListener('input',loadMaterial);
 
 // ACCOUNT
 window.addAccount = async function(){
@@ -256,17 +265,6 @@ async function loadSummary(){
       Balance: ₹${format(bal)}
     </div>`;
   }
-}
-
-// LOAD
-function startApp(){
-  const today = new Date().toISOString().split('T')[0];
-  m_date.value = today;
-  a_date.value = today;
-
-  loadMaterial();
-  loadAccount();
-  loadSummary();
 }
 
 </script>
