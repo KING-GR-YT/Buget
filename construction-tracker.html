@@ -133,6 +133,73 @@ th{
     background:#22c55e;
     color:#022c22;
 }
+
+/* ================= MOBILE UI ================= */
+
+@media(max-width:768px){
+
+body{
+    padding:10px;
+}
+
+h2{
+    font-size:24px;
+    line-height:1.4;
+}
+
+.tabs{
+    flex-direction:column;
+    gap:8px;
+}
+
+.tabs button{
+    width:100%;
+    font-size:16px;
+}
+
+.horizontal-form{
+    grid-template-columns:1fr;
+}
+
+input{
+    font-size:16px;
+    padding:14px;
+}
+
+button{
+    font-size:16px;
+    padding:14px;
+}
+
+.card{
+    padding:12px;
+    border-radius:12px;
+}
+
+.table-container{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+table{
+    min-width:700px;
+    font-size:13px;
+}
+
+th,td{
+    padding:8px;
+}
+
+.home-link{
+    display:block;
+    float:none;
+    margin-top:10px;
+    text-align:center;
+    font-size:16px;
+}
+
+}
+    
 </style>
 
 </head>
