@@ -616,7 +616,7 @@ async function loadSummary(){
 
     let paid = ledger[party].paid;
     let received = ledger[party].received;
-    let balance = received - paid;
+    let balance = paid - received;
 
     let balanceClass = "zero-balance";
 
