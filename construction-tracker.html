@@ -9,48 +9,82 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
 
-body{
+/* ================= GLOBAL ================= */
+
+*{
     margin:0;
-    padding:15px;
-    font-family:'Segoe UI',sans-serif;
-    background:linear-gradient(135deg,#00152b,#000814);
-    color:#fff;
+    padding:0;
+    box-sizing:border-box;
 }
 
-h2{
-    text-align:center;
-    font-size:40px;
-    margin-bottom:20px;
+body{
+    padding:15px;
+    font-family:'Poppins','Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#00152b,#000814);
+    color:#fff;
+    min-height:100vh;
 }
+
+/* ================= HEADER ================= */
+
+h2{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    flex-wrap:wrap;
+    font-size:38px;
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+/* ================= TAB BUTTONS ================= */
 
 .tabs{
     display:flex;
     gap:10px;
     margin-bottom:20px;
+    flex-wrap:wrap;
 }
 
 .tabs button{
     flex:1;
+    min-width:150px;
 }
 
 .tab{
     display:none;
 }
 
-.active{
+.tab.active{
     display:block;
 }
 
+/* ================= INPUTS ================= */
+
 input{
     width:100%;
-    padding:12px;
+    padding:12px 14px;
     margin:5px 0;
     border:none;
+    outline:none;
     border-radius:10px;
     background:#10263f;
     color:#fff;
-    box-sizing:border-box;
+    font-size:15px;
+    transition:0.3s;
 }
+
+input::placeholder{
+    color:#b8c7d9;
+}
+
+input:focus{
+    background:#143250;
+    box-shadow:0 0 0 2px #00e5ff55;
+}
+
+/* ================= BUTTON ================= */
 
 button{
     width:100%;
@@ -61,47 +95,85 @@ button{
     background:#00e5ff;
     color:#00152b;
     font-weight:700;
+    font-size:15px;
     cursor:pointer;
+    transition:0.3s;
 }
 
+button:hover{
+    background:#00c4da;
+    transform:translateY(-1px);
+}
+
+button:active{
+    transform:scale(0.98);
+}
+
+/* ================= TABLE ================= */
+
 .table-container{
+    width:100%;
     overflow-x:auto;
+    border-radius:15px;
 }
 
 table{
     width:100%;
-    border-collapse:collapse;
     min-width:900px;
+    border-collapse:collapse;
     background:#071a2f;
+    overflow:hidden;
+    border-radius:15px;
 }
 
 th,td{
     padding:12px;
-    border:1px solid rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.08);
     text-align:center;
 }
 
 th{
     background:#0c315d;
+    font-weight:600;
+    position:sticky;
+    top:0;
 }
+
+tr:nth-child(even){
+    background:rgba(255,255,255,0.02);
+}
+
+tr:hover{
+    background:rgba(255,255,255,0.04);
+}
+
+/* ================= CARD ================= */
 
 .card{
     background:#071a2f;
-    padding:15px;
-    border-radius:15px;
+    padding:18px;
+    border-radius:18px;
     margin-bottom:20px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.25);
 }
+
+/* ================= FORM GRID ================= */
 
 .horizontal-form{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
     gap:10px;
+    margin-bottom:10px;
 }
+
+/* ================= TOTAL ROW ================= */
 
 .total{
     background:#0c315d;
     font-weight:700;
 }
+
+/* ================= BALANCE COLORS ================= */
 
 .positive-balance{
     color:#4dff88;
@@ -109,7 +181,7 @@ th{
 }
 
 .negative-balance{
-    color:#ff4d4d;
+    color:#ff6b6b;
     font-weight:700;
 }
 
@@ -117,21 +189,30 @@ th{
     color:#00e5ff;
     font-weight:700;
 }
-/* HOME BUTTON */
+
+/* ================= HOME BUTTON ================= */
+
 .home-link{
-    padding:6px 10px;
-    border-radius:6px;
+    padding:10px 16px;
+    border-radius:10px;
     text-decoration:none;
     background:#1f2937;
     color:#22c55e;
     border:1px solid #374151;
-    float:right;
-    font-size: 20px;
+    font-size:16px;
+    transition:0.3s;
+    white-space:nowrap;
 }
 
 .home-link:hover{
     background:#22c55e;
     color:#022c22;
+}
+
+/* ================= SEARCH FILTER ================= */
+
+#material_filter{
+    margin-top:10px;
 }
 
 /* ================= MOBILE UI ================= */
@@ -144,7 +225,8 @@ body{
 
 h2{
     font-size:24px;
-    line-height:1.4;
+    flex-direction:column;
+    align-items:flex-start;
 }
 
 .tabs{
@@ -154,7 +236,8 @@ h2{
 
 .tabs button{
     width:100%;
-    font-size:16px;
+    min-width:100%;
+    font-size:15px;
 }
 
 .horizontal-form{
@@ -172,8 +255,8 @@ button{
 }
 
 .card{
-    padding:12px;
-    border-radius:12px;
+    padding:14px;
+    border-radius:14px;
 }
 
 .table-container{
@@ -187,15 +270,36 @@ table{
 }
 
 th,td{
-    padding:8px;
+    padding:9px;
 }
 
 .home-link{
-    display:block;
-    float:none;
-    margin-top:10px;
+    width:100%;
     text-align:center;
     font-size:16px;
+}
+
+}
+
+/* ================= EXTRA SMALL DEVICES ================= */
+
+@media(max-width:480px){
+
+h2{
+    font-size:21px;
+}
+
+table{
+    min-width:650px;
+}
+
+th,td{
+    font-size:12px;
+    padding:8px;
+}
+
+button{
+    font-size:15px;
 }
 
 }
