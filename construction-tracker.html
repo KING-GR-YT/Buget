@@ -217,8 +217,16 @@ th{
 <div class="tabs">
 <button onclick="addMaterial()">Add Material</button>
 <button onclick="exportExcel()">⬇ Export Excel</button>
+<input 
+type="text" 
+id="material_filter" 
+placeholder="🔍 Filter Material"
+onkeyup="loadMaterial()"
+>
+    
 </div>
 </div>
+    
 <div class="table-container">
 
 <table>
@@ -400,13 +408,24 @@ async function loadMaterial(){
 
     const snap = await getDocs(collection(db,"materials"));
 
-    m_list.innerHTML='';
+    m_list.innerHTML = '';
 
-    let total=0;
+    let total = 0;
+
+    let filter =
+    material_filter.value.toLowerCase();
 
     snap.forEach(d=>{
 
-        let x=d.data();
+        let x = d.data();
+
+        let materialName =
+        (x.name || "").toLowerCase();
+
+        // FILTER
+        if(filter && !materialName.includes(filter)){
+            return;
+        }
 
         total += x.amount;
 
@@ -440,7 +459,8 @@ async function loadMaterial(){
         `;
     });
 
-    m_total.innerText = "₹"+format(total);
+    m_total.innerText =
+    "₹" + format(total);
 }
 
 // ================= PAYMENT =================
