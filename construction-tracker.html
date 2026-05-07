@@ -4,6 +4,343 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Construction System</title>
+<style>
+body{
+    margin:0;
+    padding:15px;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#00152b,#000814);
+    color:#fff;
+}
+
+h2{
+    text-align:center;
+    font-size:42px;
+    margin-bottom:20px;
+    color:#ffffff;
+    font-weight:700;
+}
+
+.tabs{
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.tabs button{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    color:#00e5ff;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    border:1px solid rgba(0,229,255,0.2);
+    transition:0.3s;
+}
+
+.tabs button:hover{
+    background:#00e5ff;
+    color:#00152b;
+    box-shadow:0 0 15px #00e5ff;
+}
+
+.tab{
+    display:none;
+}
+
+.active{
+    display:block;
+}
+
+input,
+select{
+    width:100%;
+    padding:14px;
+    margin:6px 0;
+    border-radius:10px;
+    border:1px solid rgba(0,229,255,0.25);
+    background:rgba(255,255,255,0.04);
+    color:#fff;
+    box-sizing:border-box;
+    outline:none;
+    font-size:15px;
+}
+
+input::placeholder{
+    color:#b5c7d8;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    margin-top:8px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#00bcd4,#00e5ff);
+    color:#00152b;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 18px rgba(0,229,255,0.5);
+}
+
+.delete{
+    background:linear-gradient(90deg,#ff4d4d,#ff0000);
+    color:#fff;
+}
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+    margin-top:15px;
+    border-radius:16px;
+}
+
+table{
+    width:100%;
+    min-width:1000px;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:16px;
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(12px);
+}
+
+th{
+    background:#0b2c57;
+    color:#fff;
+    padding:16px;
+    font-size:15px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+td{
+    padding:14px;
+    text-align:center;
+    border:1px solid rgba(255,255,255,0.05);
+    color:#eaf6ff;
+    font-size:14px;
+}
+
+tr:nth-child(even){
+    background:rgba(255,255,255,0.03);
+}
+
+tr:hover{
+    background:rgba(0,229,255,0.08);
+}
+
+.total{
+    background:#0f3c74 !important;
+    color:#00e5ff;
+    font-weight:700;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(0,229,255,0.12);
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:18px;
+    backdrop-filter:blur(12px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.25);
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+}
+
+.summary-box{
+    background:linear-gradient(145deg,#032041,#00152b);
+    padding:20px;
+    border-radius:18px;
+    border:1px solid rgba(0,229,255,0.12);
+    box-shadow:0 0 18px rgba(0,229,255,0.08);
+}
+
+.summary-box h3{
+    margin:0 0 10px;
+    color:#00e5ff;
+    font-size:16px;
+}
+
+.summary-box p{
+    margin:0;
+    font-size:24px;
+    font-weight:700;
+}
+
+.horizontal-form{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;
+    margin-bottom:15px;
+}
+
+.section-title{
+    font-size:24px;
+    margin:15px 0;
+    color:#00e5ff;
+    font-weight:700;
+}
+
+@media(max-width:768px){
+
+    body{
+        padding:10px;
+    }
+
+    h2{
+        font-size:28px;
+    }
+
+    .tabs{
+        flex-direction:column;
+    }
+
+    .horizontal-form{
+        grid-template-columns:1fr;
+    }
+
+    table{
+        min-width:850px;
+    }
+
+    th,td{
+        font-size:13px;
+        padding:10px;
+    }
+}
+</style>
+</head>
+<body>
+
+<h2>🏗 Construction System</h2>
+
+<div class="tabs">
+<button onclick="showTab('material')">🧱 Material</button>
+<button onclick="showTab('account')">💰 Account</button>
+<button onclick="showTab('summary')">📒 Ledger</button>
+</div>
+
+<!-- MATERIAL -->
+<div id="material" class="tab active">
+
+<div class="card">
+
+<div class="horizontal-form">
+<input type="date" id="m_date">
+<input type="text" id="m_party" placeholder="Party">
+<input type="text" id="m_name" placeholder="Material">
+<input type="text" id="m_bill" placeholder="Bill No">
+<input type="number" id="m_qty" placeholder="Qty">
+<input type="number" id="m_rate" placeholder="Rate">
+<input type="number" id="m_gst" placeholder="GST">
+</div>
+
+<div class="horizontal-form">
+<input type="text" id="m_filter" placeholder="Filter Material" oninput="loadMaterial()">
+<button onclick="addMaterial()">Add Material</button>
+<button onclick="exportExcel()">⬇ Export Excel</button>
+</div>
+
+</div>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Party</th>
+<th>Material</th>
+<th>Bill</th>
+<th>Qty</th>
+<th>Rate</th>
+<th>GST</th>
+<th>Amount</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="m_list"></tbody>
+
+<tfoot>
+<tr class="total">
+<td colspan="7">TOTAL</td>
+<td id="m_total">₹0</td>
+<td></td>
+</tr>
+</tfoot>
+
+</table>
+</div>
+
+</div>
+
+<!-- ACCOUNT -->
+<div id="account" class="tab">
+
+<div class="card">
+
+<div class="horizontal-form">
+<input type="date" id="a_date">
+
+<input type="text" id="a_party" placeholder="Party">
+
+<select id="a_type">
+<option value="paid">Paid</option>
+<option value="received">Received</option>
+</select>
+
+<input type="number" id="a_amount" placeholder="Amount">
+
+<button onclick="addAccount()">Add Entry</button>
+</div>
+
+</div>
+
+<div class="table-container">
+<table>
+
+<thead>
+<tr>
+<th>Date</th>
+<th>Party</th>
+<th>Type</th>
+<th>Amount</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="a_list"></tbody>
+
+</table>
+</div>
+
+</div>
+
+<!-- LEDGER -->
+<div id="summary" class="tab">
+
+<div class="card">
+<h3 class="section-title">Party Ledger</h3>
+<div id="s_list"></div>
+</div>
+
+</div>
+
+</body>
+
 
 <script type="module">
 
@@ -75,7 +412,7 @@ async function loadMaterial(){
 
   snap.forEach(d=>{
     let x=d.data();
-    if(filter && !x.name.toLowerCase().includes(filter)) return;
+    if(filter && !(x.name || '').toLowerCase().includes(filter)) return;
 
     total+=x.amount;
 
@@ -188,97 +525,16 @@ window.exportExcel = async function(){
 }
 
 // INIT
-window.onload=()=>{
+function startApp(){
   m_date.value=today;
   a_date.value=today;
+
   loadMaterial();
   loadAccount();
   loadSummary();
 }
+
 </script>
-
-<style>
-body {font-family:Arial;padding:10px;}
-.tabs{display:flex;}
-.tabs button{flex:1;padding:10px;}
-.tab{display:none;}
-.active{display:block;}
-
-input,select,button{width:100%;padding:8px;margin:5px 0;}
-table{width:100%;border-collapse:collapse;}
-th,td{border:1px solid #ccc;padding:6px;text-align:center;}
-.total{background:#dff0d8;}
-</style>
-</head>
-
-<body>
-
-<h2>🏗 Construction System</h2>
-
-<div class="tabs">
-<button onclick="showTab('material')">🧱 Material</button>
-<button onclick="showTab('account')">💰 Account</button>
-<button onclick="showTab('summary')">📒 Ledger</button>
-</div>
-
-<!-- MATERIAL -->
-<div id="material" class="tab active">
-<input type="date" id="m_date">
-<input type="text" id="m_party" placeholder="Party">
-<input type="text" id="m_name" placeholder="Material">
-<input type="text" id="m_bill" placeholder="Bill No">
-<input type="number" id="m_qty" placeholder="Qty">
-<input type="number" id="m_rate" placeholder="Rate">
-<input type="number" id="m_gst" placeholder="GST">
-<input type="text" id="m_filter" placeholder="Filter" oninput="loadMaterial()">
-
-<button onclick="addMaterial()">Add</button>
-<button onclick="exportExcel()">⬇ Export Excel</button>
-
-<table>
-<thead>
-<tr>
-<th>Date</th><th>Party</th><th>Material</th><th>Bill</th>
-<th>Qty</th><th>Rate</th><th>GST</th><th>Amount</th><th>X</th>
-</tr>
-</thead>
-<tbody id="m_list"></tbody>
-<tfoot>
-<tr class="total">
-<td colspan="7">TOTAL</td>
-<td id="m_total">0</td>
-<td></td>
-</tr>
-</tfoot>
-</table>
-</div>
-
-<!-- ACCOUNT -->
-<div id="account" class="tab">
-<input type="date" id="a_date">
-<input type="text" id="a_party" placeholder="Party">
-<select id="a_type">
-<option value="paid">Paid</option>
-<option value="received">Received</option>
-</select>
-<input type="number" id="a_amount" placeholder="Amount">
-
-<button onclick="addAccount()">Add</button>
-
-<table>
-<thead>
-<tr>
-<th>Date</th><th>Party</th><th>Type</th><th>Amount</th><th>X</th>
-</tr>
-</thead>
-<tbody id="a_list"></tbody>
-</table>
-</div>
-
-<!-- LEDGER -->
-<div id="summary" class="tab">
-<div id="s_list"></div>
-</div>
 
 </body>
 </html>
