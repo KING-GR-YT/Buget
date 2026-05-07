@@ -467,72 +467,104 @@ async function loadAccount(){
 }
 
 // ================= PARTY LEDGER =================
+// ================= PARTY LEDGER =================
 async function loadSummary(){
 
   const snap = await getDocs(collection(db,"accounts"));
 
-  let partyData = {};
+  let ledger = {};
 
   snap.forEach(d=>{
 
     let x = d.data();
 
-    if(!partyData[x.party]){
-      partyData[x.party] = {
+    if(!ledger[x.party]){
+      ledger[x.party] = {
         paid:0,
         received:0
       };
     }
 
     if(x.type === "paid"){
-      partyData[x.party].paid += x.amount;
+      ledger[x.party].paid += x.amount;
     }else{
-      partyData[x.party].received += x.amount;
+      ledger[x.party].received += x.amount;
     }
 
   });
 
   s_list.innerHTML = `
 
-  <div class="table-container">
-  <table>
+  <div class="ledger-table-container">
 
-  <thead>
-  <tr>
-    <th>Party Name</th>
-    <th>Paid</th>
-    <th>Received</th>
-    <th>Balance</th>
-  </tr>
-  </thead>
+    <table class="ledger-table">
 
-  <tbody id="ledgerBody"></tbody>
+      <thead>
+        <tr>
+          <th>👤 Party Name</th>
+          <th style="color:#ff5c5c;">⬇ Paid</th>
+          <th style="color:#4dff88;">⬆ Received</th>
+          <th>⚖ Balance</th>
+        </tr>
+      </thead>
 
-  </table>
+      <tbody id="ledger_body"></tbody>
+
+    </table>
+
+    <div class="ledger-note">
+      <span class="positive-dot"></span>
+      Positive Balance (You will receive)
+
+      <span class="negative-dot"></span>
+      Negative Balance (You need to pay)
+
+      <span class="zero-dot"></span>
+      Zero Balance
+    </div>
+
   </div>
   `;
 
-  let output = "";
+  const body = document.getElementById("ledger_body");
 
-  for(let party in partyData){
+  for(let party in ledger){
 
-    let paid = partyData[party].paid;
-    let received = partyData[party].received;
+    let paid = ledger[party].paid;
+    let received = ledger[party].received;
     let balance = received - paid;
 
-    output += `
-    <tr>
-      <td>${party}</td>
-      <td style="color:#ff6b6b;">₹${format(paid)}</td>
-      <td style="color:#00ff9d;">₹${format(received)}</td>
-      <td style="font-weight:700;color:#00e5ff;">
-        ₹${format(balance)}
-      </td>
-    </tr>
+    let balanceClass = "zero-balance";
+
+    if(balance > 0){
+      balanceClass = "positive-balance";
+    }
+
+    if(balance < 0){
+      balanceClass = "negative-balance";
+    }
+
+    body.innerHTML += `
+      <tr>
+
+        <td>${party}</td>
+
+        <td style="color:#ff5c5c;font-weight:700;">
+          ₹${format(paid)}
+        </td>
+
+        <td style="color:#4dff88;font-weight:700;">
+          ₹${format(received)}
+        </td>
+
+        <td class="${balanceClass}">
+          ₹${format(balance)}
+        </td>
+
+      </tr>
     `;
   }
 
-  document.getElementById("ledgerBody").innerHTML = output;
 }
 
 // ================= EXPORT EXCEL =================
