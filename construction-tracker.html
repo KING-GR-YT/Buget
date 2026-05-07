@@ -454,7 +454,9 @@ onAuthStateChanged(auth, (user) => {
 
 const today = new Date().toISOString().split('T')[0];
 
-function format(n){ return Number(n||0).toLocaleString('en-IN'); }
+function format(n){
+  return Number(n || 0).toLocaleString('en-IN');
+}
 
 window.showTab = function(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -462,20 +464,33 @@ window.showTab = function(id){
 }
 
 // ================= MATERIAL =================
+
 window.addMaterial = async function(){
+
   let data = {
     date: m_date.value,
     party: m_party.value,
     name: m_name.value,
     bill: m_bill.value,
-    qty:+m_qty.value||0,
-    rate:+m_rate.value||0,
-    gst:+m_gst.value||0
+    qty:+m_qty.value || 0,
+    rate:+m_rate.value || 0,
+    gst:+m_gst.value || 0
   };
 
-  data.amount = data.qty * data.rate + (data.qty * data.rate * data.gst / 100);
+  data.amount =
+    data.qty * data.rate +
+    (data.qty * data.rate * data.gst / 100);
 
   await addDoc(collection(db,"materials"),data);
+
+  // CLEAR FIELDS
+  m_party.value = "";
+  m_name.value = "";
+  m_bill.value = "";
+  m_qty.value = "";
+  m_rate.value = "";
+  m_gst.value = "";
+
   loadMaterial();
 }
 
@@ -485,19 +500,20 @@ window.deleteMaterial = async function(id){
 }
 
 async function loadMaterial(){
-  const snap = await getDocs(collection(db,"materials"));
-  m_list.innerHTML='';
-  let total=0;
 
-  let filter = "";
+  const snap = await getDocs(collection(db,"materials"));
+
+  m_list.innerHTML = '';
+
+  let total = 0;
 
   snap.forEach(d=>{
-    let x=d.data();
-    if(filter && !(x.name || '').toLowerCase().includes(filter)) return;
 
-    total+=x.amount;
+    let x = d.data();
 
-    m_list.innerHTML+=`
+    total += x.amount;
+
+    m_list.innerHTML += `
     <tr>
       <td>${x.date}</td>
       <td>${x.party}</td>
@@ -507,51 +523,68 @@ async function loadMaterial(){
       <td>${format(x.rate)}</td>
       <td>${x.gst}%</td>
       <td>₹${format(x.amount)}</td>
-      <td><button onclick="deleteMaterial('${d.id}')">X</button></td>
+      <td>
+        <button onclick="deleteMaterial('${d.id}')">X</button>
+      </td>
     </tr>`;
   });
 
-  m_total.innerText="₹"+format(total);
+  m_total.innerText = "₹" + format(total);
 }
 
 // ================= ACCOUNT =================
+
 window.addAccount = async function(){
+
   await addDoc(collection(db,"accounts"),{
     date:a_date.value,
     party:a_party.value,
     type:a_type.value,
-    amount:+a_amount.value||0
+    amount:+a_amount.value || 0
   });
+
+  // CLEAR FIELDS
+  a_party.value = "";
+  a_amount.value = "";
+  a_type.value = "paid";
 
   loadAccount();
   loadSummary();
 }
 
 window.deleteAccount = async function(id){
+
   await deleteDoc(doc(db,"accounts",id));
+
   loadAccount();
   loadSummary();
 }
 
 async function loadAccount(){
+
   const snap = await getDocs(collection(db,"accounts"));
-  a_list.innerHTML='';
+
+  a_list.innerHTML = '';
 
   snap.forEach(d=>{
-    let x=d.data();
 
-    a_list.innerHTML+=`
+    let x = d.data();
+
+    a_list.innerHTML += `
     <tr>
       <td>${x.date}</td>
       <td>${x.party}</td>
       <td>${x.type}</td>
       <td>₹${format(x.amount)}</td>
-      <td><button onclick="deleteAccount('${d.id}')">X</button></td>
+      <td>
+        <button onclick="deleteAccount('${d.id}')">X</button>
+      </td>
     </tr>`;
   });
 }
 
-// ================= PARTY LEDGER =================
+// ================= LEDGER =================
+
 async function loadSummary(){
 
   const snap = await getDocs(collection(db,"accounts"));
@@ -574,7 +607,6 @@ async function loadSummary(){
     }else{
       ledger[x.party].received += x.amount;
     }
-
   });
 
   s_list.innerHTML = `
@@ -587,7 +619,7 @@ async function loadSummary(){
         <tr>
           <th>👤 Party Name</th>
           <th style="color:#ff5c5c;">⬇ Amount Paid</th>
-          <th style="color:#4dff88;">⬆ Material Received</th>
+          <th style="color:#4dff88;">⬆ Amount Received</th>
           <th>⚖ Balance</th>
         </tr>
       </thead>
@@ -595,17 +627,6 @@ async function loadSummary(){
       <tbody id="ledger_body"></tbody>
 
     </table>
-
-    <div class="ledger-note">
-      <span class="positive-dot"></span>
-      Positive Balance (You will receive)
-
-      <span class="negative-dot"></span>
-      Negative Balance (You need to pay)
-
-      <span class="zero-dot"></span>
-      Zero Balance
-    </div>
 
   </div>
   `;
@@ -616,7 +637,8 @@ async function loadSummary(){
 
     let paid = ledger[party].paid;
     let received = ledger[party].received;
-    let balance = paid - received;
+
+    let balance = received - paid;
 
     let balanceClass = "zero-balance";
 
@@ -648,35 +670,66 @@ async function loadSummary(){
       </tr>
     `;
   }
-
 }
 
-// ================= EXPORT EXCEL =================
+// ================= EXPORT =================
+
 window.exportExcel = async function(){
+
   const snap = await getDocs(collection(db,"materials"));
+
   let rows = [];
 
-  rows.push(["Date","Party","Material","Bill","Qty","Rate","GST","Amount"]);
+  rows.push([
+    "Date",
+    "Party",
+    "Material",
+    "Bill",
+    "Qty",
+    "Rate",
+    "GST",
+    "Amount"
+  ]);
 
   snap.forEach(d=>{
-    let x=d.data();
-    rows.push([x.date,x.party,x.name,x.bill,x.qty,x.rate,x.gst,x.amount]);
+
+    let x = d.data();
+
+    rows.push([
+      x.date,
+      x.party,
+      x.name,
+      x.bill,
+      x.qty,
+      x.rate,
+      x.gst,
+      x.amount
+    ]);
   });
 
   let csv = "data:text/csv;charset=utf-8,";
-  rows.forEach(r=>{ csv += r.join(",") + "\n"; });
+
+  rows.forEach(r=>{
+    csv += r.join(",") + "\n";
+  });
 
   const link = document.createElement("a");
+
   link.href = encodeURI(csv);
+
   link.download = "material_data.csv";
+
   document.body.appendChild(link);
+
   link.click();
 }
 
-// INIT
+// ================= INIT =================
+
 function startApp(){
-  m_date.value=today;
-  a_date.value=today;
+
+  m_date.value = today;
+  a_date.value = today;
 
   loadMaterial();
   loadAccount();
