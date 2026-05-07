@@ -227,7 +227,6 @@ type="text"
 id="material_filter"
 placeholder="🔍 Filter Material"
 style="margin-bottom:10px;"
-oninput="loadMaterial()"
 >
     
 </div>
@@ -352,9 +351,6 @@ onAuthStateChanged(auth, (user) => {
 
 const today = new Date().toISOString().split('T')[0];
 
-m_date.value = today;
-a_date.value = today;
-
 function format(n){
     return Number(n || 0).toLocaleString('en-IN');
 }
@@ -414,12 +410,13 @@ async function loadMaterial(){
     const snap =
     await getDocs(collection(db,"materials"));
 
-    m_list.innerHTML = '';
+    const mList =
+    document.getElementById("m_list");
 
-    let total = 0;
+    const mTotal =
+    document.getElementById("m_total");
 
-    // SAFE FILTER
-    let filterInput =
+    const filterInput =
     document.getElementById("material_filter");
 
     let filter = "";
@@ -429,51 +426,58 @@ async function loadMaterial(){
         filterInput.value.toLowerCase().trim();
     }
 
+    mList.innerHTML = '';
+
+    let total = 0;
+
     snap.forEach(d=>{
 
         let x = d.data();
 
         let materialName =
-        (x.name || "").toLowerCase();
+        String(x.name || "").toLowerCase();
 
-        // FILTER CHECK
-        if(filter && !materialName.includes(filter)){
-            return;
+        // FILTER
+        if(filter !== ""){
+
+            if(!materialName.includes(filter)){
+                return;
+            }
         }
 
         total += Number(x.amount || 0);
 
-        m_list.innerHTML += `
+        mList.innerHTML += `
 
         <tr>
 
-        <td>${x.date}</td>
+            <td>${x.date}</td>
 
-        <td>${x.party}</td>
+            <td>${x.party}</td>
 
-        <td>${x.name}</td>
+            <td>${x.name}</td>
 
-        <td>${x.bill}</td>
+            <td>${x.bill}</td>
 
-        <td>${format(x.qty)}</td>
+            <td>${format(x.qty)}</td>
 
-        <td>${format(x.rate)}</td>
+            <td>${format(x.rate)}</td>
 
-        <td>${x.gst}%</td>
+            <td>${x.gst}%</td>
 
-        <td>₹${format(x.amount)}</td>
+            <td>₹${format(x.amount)}</td>
 
-        <td>
-            <button onclick="deleteMaterial('${d.id}')">
-            X
-            </button>
-        </td>
+            <td>
+                <button onclick="deleteMaterial('${d.id}')">
+                X
+                </button>
+            </td>
 
         </tr>
         `;
     });
 
-    m_total.innerText =
+    mTotal.innerText =
     "₹" + format(total);
 }
 
@@ -723,10 +727,21 @@ window.exportExcel = async function(){
 
 // ================= INIT =================
 
-loadMaterial();
-loadAccount();
-loadSummary();
+function startApp(){
 
+    m_date.value = today;
+    a_date.value = today;
+
+    loadMaterial();
+    loadAccount();
+    loadSummary();
+
+    document
+    .getElementById("material_filter")
+    .addEventListener("input", loadMaterial);
+}
+
+  
 </script>
 
 </body>
