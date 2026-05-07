@@ -358,7 +358,15 @@ style="margin-bottom:10px;"
 
 </div>
 
+<div class="tabs">
+
 <button onclick="addAccount()">Add Payment</button>
+
+<button onclick="exportAccountExcel()">
+⬇ Export Payment Excel
+</button>
+
+</div>
 
 </div>
 
@@ -857,6 +865,66 @@ window.exportExcel = async function(){
   link.click();
 }
 
+// ================= PAYMENT EXPORT =================
+
+window.exportAccountExcel = async function(){
+
+  const snap =
+  await getDocs(collection(db,"accounts"));
+
+  let rows = [];
+
+  rows.push([
+    "Date",
+    "Party",
+    "Amount"
+  ]);
+
+  let total = 0;
+
+  snap.forEach(d=>{
+
+    let x = d.data();
+
+    total += Number(x.amount || 0);
+
+    rows.push([
+      x.date,
+      x.party,
+      x.amount
+    ]);
+  });
+
+  // TOTAL ROW
+
+  rows.push([
+    "",
+    "TOTAL",
+    total
+  ]);
+
+  let csv =
+  "data:text/csv;charset=utf-8,";
+
+  rows.forEach(r=>{
+
+    csv += r.join(",") + "\n";
+
+  });
+
+  const link =
+  document.createElement("a");
+
+  link.href = encodeURI(csv);
+
+  link.download =
+  "payment_data.csv";
+
+  document.body.appendChild(link);
+
+  link.click();
+}
+    
 // ================= INIT =================
 
 function startApp(){
