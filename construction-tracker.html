@@ -583,31 +583,61 @@ async function loadAccount(){
   });
 }
 
-// ================= LEDGER =================
+// ================= AUTO LEDGER =================
 
 async function loadSummary(){
 
-  const snap = await getDocs(collection(db,"accounts"));
+  const materialSnap = await getDocs(collection(db,"materials"));
+  const accountSnap = await getDocs(collection(db,"accounts"));
 
   let ledger = {};
 
-  snap.forEach(d=>{
+  // ================= MATERIAL DATA =================
+
+  materialSnap.forEach(d=>{
 
     let x = d.data();
 
     if(!ledger[x.party]){
+
       ledger[x.party] = {
+        material:0,
+        paid:0,
+        received:0
+      };
+    }
+
+    ledger[x.party].material += Number(x.amount || 0);
+
+  });
+
+  // ================= ACCOUNT DATA =================
+
+  accountSnap.forEach(d=>{
+
+    let x = d.data();
+
+    if(!ledger[x.party]){
+
+      ledger[x.party] = {
+        material:0,
         paid:0,
         received:0
       };
     }
 
     if(x.type === "paid"){
-      ledger[x.party].paid += x.amount;
+
+      ledger[x.party].paid += Number(x.amount || 0);
+
     }else{
-      ledger[x.party].received += x.amount;
+
+      ledger[x.party].received += Number(x.amount || 0);
     }
+
   });
+
+  // ================= UI =================
 
   s_list.innerHTML = `
 
@@ -617,10 +647,11 @@ async function loadSummary(){
 
       <thead>
         <tr>
-          <th>👤 Party Name</th>
-          <th style="color:#ff5c5c;">⬇ Amount Paid</th>
-          <th style="color:#4dff88;">⬆ Material Received</th>
-          <th>⚖ Balance</th>
+          <th>👤 Party</th>
+          <th style="color:#ffd54f;">🧱 Material</th>
+          <th style="color:#ff5c5c;">⬇ Paid</th>
+          <th style="color:#4dff88;">⬆ Received</th>
+          <th>⚖ Final Balance</th>
         </tr>
       </thead>
 
@@ -635,39 +666,46 @@ async function loadSummary(){
 
   for(let party in ledger){
 
+    let material = ledger[party].material;
     let paid = ledger[party].paid;
     let received = ledger[party].received;
 
-    let balance = paid - received;
+    // FINAL AUTO BALANCE
+    let balance = material - paid + received;
 
     let balanceClass = "zero-balance";
 
     if(balance > 0){
-      balanceClass = "positive-balance";
-    }
-
-    if(balance < 0){
       balanceClass = "negative-balance";
     }
 
+    if(balance < 0){
+      balanceClass = "positive-balance";
+    }
+
     body.innerHTML += `
-      <tr>
 
-        <td>${party}</td>
+    <tr>
 
-        <td style="color:#ff5c5c;font-weight:700;">
-          ₹${format(paid)}
-        </td>
+      <td>${party}</td>
 
-        <td style="color:#4dff88;font-weight:700;">
-          ₹${format(received)}
-        </td>
+      <td style="color:#ffd54f;font-weight:700;">
+        ₹${format(material)}
+      </td>
 
-        <td class="${balanceClass}">
-          ₹${format(balance)}
-        </td>
+      <td style="color:#ff5c5c;font-weight:700;">
+        ₹${format(paid)}
+      </td>
 
-      </tr>
+      <td style="color:#4dff88;font-weight:700;">
+        ₹${format(received)}
+      </td>
+
+      <td class="${balanceClass}">
+        ₹${format(balance)}
+      </td>
+
+    </tr>
     `;
   }
 }
