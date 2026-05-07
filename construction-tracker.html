@@ -4,7 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Construction System</title>
+
 <style>
+
 body{
     margin:0;
     padding:15px;
@@ -15,36 +17,18 @@ body{
 
 h2{
     text-align:center;
-    font-size:42px;
+    font-size:40px;
     margin-bottom:20px;
-    color:#ffffff;
-    font-weight:700;
 }
 
 .tabs{
     display:flex;
-    gap:15px;
+    gap:10px;
     margin-bottom:20px;
 }
 
 .tabs button{
     flex:1;
-    padding:14px;
-    border:none;
-    border-radius:12px;
-    background:rgba(255,255,255,0.06);
-    color:#00e5ff;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    border:1px solid rgba(0,229,255,0.2);
-    transition:0.3s;
-}
-
-.tabs button:hover{
-    background:#00e5ff;
-    color:#00152b;
-    box-shadow:0 0 15px #00e5ff;
 }
 
 .tab{
@@ -55,293 +39,129 @@ h2{
     display:block;
 }
 
-input,
-select{
+input{
     width:100%;
-    padding:14px;
-    margin:6px 0;
+    padding:12px;
+    margin:5px 0;
+    border:none;
     border-radius:10px;
-    border:1px solid rgba(0,229,255,0.25);
-    background:rgba(255,255,255,0.04);
+    background:#10263f;
     color:#fff;
     box-sizing:border-box;
-    outline:none;
-    font-size:15px;
-}
-
-input::placeholder{
-    color:#b5c7d8;
 }
 
 button{
     width:100%;
-    padding:14px;
-    margin-top:8px;
+    padding:12px;
+    margin-top:5px;
     border:none;
     border-radius:10px;
-    background:linear-gradient(90deg,#00bcd4,#00e5ff);
+    background:#00e5ff;
     color:#00152b;
-    font-size:16px;
     font-weight:700;
     cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 18px rgba(0,229,255,0.5);
-}
-
-.delete{
-    background:linear-gradient(90deg,#ff4d4d,#ff0000);
-    color:#fff;
 }
 
 .table-container{
-    width:100%;
     overflow-x:auto;
-    margin-top:15px;
-    border-radius:16px;
 }
 
 table{
     width:100%;
-    min-width:1000px;
     border-collapse:collapse;
-    overflow:hidden;
-    border-radius:16px;
-    background:rgba(255,255,255,0.04);
-    backdrop-filter:blur(12px);
+    min-width:900px;
+    background:#071a2f;
+}
+
+th,td{
+    padding:12px;
+    border:1px solid rgba(255,255,255,0.1);
+    text-align:center;
 }
 
 th{
-    background:#0b2c57;
-    color:#fff;
-    padding:16px;
-    font-size:15px;
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-td{
-    padding:14px;
-    text-align:center;
-    border:1px solid rgba(255,255,255,0.05);
-    color:#eaf6ff;
-    font-size:14px;
-}
-
-tr:nth-child(even){
-    background:rgba(255,255,255,0.03);
-}
-
-tr:hover{
-    background:rgba(0,229,255,0.08);
-}
-
-.total{
-    background:#0f3c74 !important;
-    color:#00e5ff;
-    font-weight:700;
+    background:#0c315d;
 }
 
 .card{
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(0,229,255,0.12);
-    border-radius:18px;
-    padding:18px;
-    margin-bottom:18px;
-    backdrop-filter:blur(12px);
-    box-shadow:0 4px 20px rgba(0,0,0,0.25);
-}
-
-.summary-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:15px;
-}
-
-.summary-box{
-    background:linear-gradient(145deg,#032041,#00152b);
-    padding:20px;
-    border-radius:18px;
-    border:1px solid rgba(0,229,255,0.12);
-    box-shadow:0 0 18px rgba(0,229,255,0.08);
-}
-
-.summary-box h3{
-    margin:0 0 10px;
-    color:#00e5ff;
-    font-size:16px;
-}
-
-.summary-box p{
-    margin:0;
-    font-size:24px;
-    font-weight:700;
+    background:#071a2f;
+    padding:15px;
+    border-radius:15px;
+    margin-bottom:20px;
 }
 
 .horizontal-form{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:12px;
-    margin-bottom:15px;
+    gap:10px;
 }
 
-.section-title{
-    font-size:24px;
-    margin:15px 0;
-    color:#00e5ff;
+.total{
+    background:#0c315d;
     font-weight:700;
-}
-
-/* ================= LEDGER TABLE ================= */
-
-.ledger-table-container{
-    margin-top:10px;
-}
-
-.ledger-table{
-    width:100%;
-    border-collapse:collapse;
-    overflow:hidden;
-    border-radius:18px;
-    background:rgba(255,255,255,0.03);
-}
-
-.ledger-table th{
-    background:#0d2f5c;
-    padding:18px;
-    font-size:18px;
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-.ledger-table td{
-    padding:18px;
-    font-size:17px;
-    border:1px solid rgba(255,255,255,0.05);
-    text-align:center;
-}
-
-.ledger-table tr:nth-child(even){
-    background:rgba(255,255,255,0.03);
-}
-
-.ledger-table tr:hover{
-    background:rgba(0,229,255,0.08);
 }
 
 .positive-balance{
     color:#4dff88;
     font-weight:700;
-    font-size:20px;
 }
 
 .negative-balance{
     color:#ff4d4d;
     font-weight:700;
-    font-size:20px;
 }
 
 .zero-balance{
     color:#00e5ff;
     font-weight:700;
-    font-size:20px;
 }
 
-.ledger-note{
-    margin-top:20px;
-    display:flex;
-    gap:40px;
-    flex-wrap:wrap;
-    align-items:center;
-    font-size:18px;
-}
-
-.positive-dot,
-.negative-dot,
-.zero-dot{
-    width:16px;
-    height:16px;
-    border-radius:50%;
-    display:inline-block;
-    margin-right:10px;
-}
-
-.positive-dot{
-    background:#4dff88;
-}
-
-.negative-dot{
-    background:#ff4d4d;
-}
-
-.zero-dot{
-    background:#00e5ff;
-}
-    
-@media(max-width:768px){
-
-    body{
-        padding:10px;
-    }
-
-    h2{
-        font-size:28px;
-    }
-
-    .tabs{
-        flex-direction:column;
-    }
-
-    .horizontal-form{
-        grid-template-columns:1fr;
-    }
-
-    table{
-        min-width:850px;
-    }
-
-    th,td{
-        font-size:13px;
-        padding:10px;
-    }
-}
 </style>
+
 </head>
+
 <body>
 
 <h2>🏗 Construction System</h2>
 
 <div class="tabs">
-<button onclick="showTab('material')">🧱 Material</button>
-<button onclick="showTab('account')">💰 Account</button>
-<button onclick="showTab('summary')">📒 Ledger</button>
+    <button onclick="showTab('material')">🧱 Material</button>
+    <button onclick="showTab('account')">💰 Payment</button>
+    <button onclick="showTab('summary')">📒 Ledger</button>
 </div>
 
 <!-- MATERIAL -->
+
 <div id="material" class="tab active">
 
 <div class="card">
 
 <div class="horizontal-form">
+
 <input type="date" id="m_date">
+
 <input type="text" id="m_party" placeholder="Party">
+
 <input type="text" id="m_name" placeholder="Material">
+
 <input type="text" id="m_bill" placeholder="Bill No">
+
 <input type="number" id="m_qty" placeholder="Qty">
+
 <input type="number" id="m_rate" placeholder="Rate">
-<input type="number" id="m_gst" placeholder="GST">
+
+<input type="number" id="m_gst" placeholder="GST %">
+
 </div>
 
-<div class="horizontal-form">
 <button onclick="addMaterial()">Add Material</button>
-<button onclick="exportExcel()">⬇ Export Excel</button>
-</div>
 
 </div>
 
 <div class="table-container">
+
 <table>
+
 <thead>
 <tr>
 <th>Date</th>
@@ -367,40 +187,39 @@ tr:hover{
 </tfoot>
 
 </table>
-</div>
 
 </div>
 
-<!-- ACCOUNT -->
+</div>
+
+<!-- PAYMENT -->
+
 <div id="account" class="tab">
 
 <div class="card">
 
 <div class="horizontal-form">
+
 <input type="date" id="a_date">
 
 <input type="text" id="a_party" placeholder="Party">
 
-<select id="a_type">
-<option value="paid">Paid</option>
-<option value="received">Received</option>
-</select>
+<input type="number" id="a_amount" placeholder="Paid Amount">
 
-<input type="number" id="a_amount" placeholder="Amount">
-
-<button onclick="addAccount()">Add Entry</button>
 </div>
+
+<button onclick="addAccount()">Add Payment</button>
 
 </div>
 
 <div class="table-container">
+
 <table>
 
 <thead>
 <tr>
 <th>Date</th>
 <th>Party</th>
-<th>Type</th>
 <th>Amount</th>
 <th>Delete</th>
 </tr>
@@ -409,16 +228,21 @@ tr:hover{
 <tbody id="a_list"></tbody>
 
 </table>
+
 </div>
 
 </div>
 
 <!-- LEDGER -->
+
 <div id="summary" class="tab">
 
 <div class="card">
-<h3 class="section-title">Party Ledger</h3>
+
+<h3>Party Ledger</h3>
+
 <div id="s_list"></div>
+
 </div>
 
 </div>
@@ -426,353 +250,333 @@ tr:hover{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+}
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
-  authDomain: "personal-budget-1cbbe.firebaseapp.com",
-  projectId: "personal-budget-1cbbe"
+
+apiKey: "YOUR_API_KEY",
+authDomain: "YOUR_DOMAIN",
+projectId: "YOUR_PROJECT_ID"
+
 };
 
-const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
-
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
-const auth = getAuth(app);
-
-document.body.style.display = "none";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user || user.uid !== ADMIN_UID) {
-    window.location.href = "index.html";
-  } else {
-    document.body.style.display = "block";
-    startApp();
-  }
-});
 
 const today = new Date().toISOString().split('T')[0];
 
+m_date.value = today;
+a_date.value = today;
+
 function format(n){
-  return Number(n || 0).toLocaleString('en-IN');
+    return Number(n || 0).toLocaleString('en-IN');
 }
 
 window.showTab = function(id){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.tab')
+    .forEach(t=>t.classList.remove('active'));
+
+    document.getElementById(id)
+    .classList.add('active');
 }
 
 // ================= MATERIAL =================
 
 window.addMaterial = async function(){
 
-  let data = {
-    date: m_date.value,
-    party: m_party.value,
-    name: m_name.value,
-    bill: m_bill.value,
-    qty:+m_qty.value || 0,
-    rate:+m_rate.value || 0,
-    gst:+m_gst.value || 0
-  };
+    let data = {
 
-  data.amount =
+        date:m_date.value,
+        party:m_party.value,
+        name:m_name.value,
+        bill:m_bill.value,
+        qty:+m_qty.value || 0,
+        rate:+m_rate.value || 0,
+        gst:+m_gst.value || 0
+
+    };
+
+    data.amount =
     data.qty * data.rate +
     (data.qty * data.rate * data.gst / 100);
 
-  await addDoc(collection(db,"materials"),data);
+    await addDoc(collection(db,"materials"),data);
 
-  // CLEAR FIELDS
-  m_party.value = "";
-  m_name.value = "";
-  m_bill.value = "";
-  m_qty.value = "";
-  m_rate.value = "";
-  m_gst.value = "";
+    m_party.value="";
+    m_name.value="";
+    m_bill.value="";
+    m_qty.value="";
+    m_rate.value="";
+    m_gst.value="";
 
-  loadMaterial();
+    loadMaterial();
+    loadSummary();
 }
 
 window.deleteMaterial = async function(id){
-  await deleteDoc(doc(db,"materials",id));
-  loadMaterial();
+
+    await deleteDoc(doc(db,"materials",id));
+
+    loadMaterial();
+    loadSummary();
 }
 
 async function loadMaterial(){
 
-  const snap = await getDocs(collection(db,"materials"));
+    const snap = await getDocs(collection(db,"materials"));
 
-  m_list.innerHTML = '';
+    m_list.innerHTML='';
 
-  let total = 0;
+    let total=0;
 
-  snap.forEach(d=>{
+    snap.forEach(d=>{
 
-    let x = d.data();
+        let x=d.data();
 
-    total += x.amount;
+        total += x.amount;
 
-    m_list.innerHTML += `
-    <tr>
-      <td>${x.date}</td>
-      <td>${x.party}</td>
-      <td>${x.name}</td>
-      <td>${x.bill}</td>
-      <td>${format(x.qty)}</td>
-      <td>${format(x.rate)}</td>
-      <td>${x.gst}%</td>
-      <td>₹${format(x.amount)}</td>
-      <td>
-        <button onclick="deleteMaterial('${d.id}')">X</button>
-      </td>
-    </tr>`;
-  });
+        m_list.innerHTML += `
 
-  m_total.innerText = "₹" + format(total);
+        <tr>
+
+        <td>${x.date}</td>
+
+        <td>${x.party}</td>
+
+        <td>${x.name}</td>
+
+        <td>${x.bill}</td>
+
+        <td>${format(x.qty)}</td>
+
+        <td>${format(x.rate)}</td>
+
+        <td>${x.gst}%</td>
+
+        <td>₹${format(x.amount)}</td>
+
+        <td>
+        <button onclick="deleteMaterial('${d.id}')">
+        X
+        </button>
+        </td>
+
+        </tr>
+        `;
+    });
+
+    m_total.innerText = "₹"+format(total);
 }
 
-// ================= ACCOUNT =================
+// ================= PAYMENT =================
 
 window.addAccount = async function(){
 
-  await addDoc(collection(db,"accounts"),{
-    date:a_date.value,
-    party:a_party.value,
-    type:a_type.value,
-    amount:+a_amount.value || 0
-  });
+    await addDoc(collection(db,"accounts"),{
 
-  // CLEAR FIELDS
-  a_party.value = "";
-  a_amount.value = "";
-  a_type.value = "paid";
+        date:a_date.value,
+        party:a_party.value,
+        amount:+a_amount.value || 0
 
-  loadAccount();
-  loadSummary();
+    });
+
+    a_party.value="";
+    a_amount.value="";
+
+    loadAccount();
+    loadSummary();
 }
 
 window.deleteAccount = async function(id){
 
-  await deleteDoc(doc(db,"accounts",id));
+    await deleteDoc(doc(db,"accounts",id));
 
-  loadAccount();
-  loadSummary();
+    loadAccount();
+    loadSummary();
 }
 
 async function loadAccount(){
 
-  const snap = await getDocs(collection(db,"accounts"));
+    const snap = await getDocs(collection(db,"accounts"));
 
-  a_list.innerHTML = '';
+    a_list.innerHTML='';
 
-  snap.forEach(d=>{
+    snap.forEach(d=>{
 
-    let x = d.data();
+        let x=d.data();
 
-    a_list.innerHTML += `
-    <tr>
-      <td>${x.date}</td>
-      <td>${x.party}</td>
-      <td>${x.type}</td>
-      <td>₹${format(x.amount)}</td>
-      <td>
-        <button onclick="deleteAccount('${d.id}')">X</button>
-      </td>
-    </tr>`;
-  });
+        a_list.innerHTML += `
+
+        <tr>
+
+        <td>${x.date}</td>
+
+        <td>${x.party}</td>
+
+        <td>₹${format(x.amount)}</td>
+
+        <td>
+        <button onclick="deleteAccount('${d.id}')">
+        X
+        </button>
+        </td>
+
+        </tr>
+        `;
+    });
 }
 
-// ================= AUTO LEDGER =================
+// ================= LEDGER =================
 
 async function loadSummary(){
 
-  const materialSnap = await getDocs(collection(db,"materials"));
-  const accountSnap = await getDocs(collection(db,"accounts"));
+    const materialSnap =
+    await getDocs(collection(db,"materials"));
 
-  let ledger = {};
+    const accountSnap =
+    await getDocs(collection(db,"accounts"));
 
-  // ================= MATERIAL DATA =================
+    let ledger = {};
 
-  materialSnap.forEach(d=>{
+    // MATERIAL
 
-    let x = d.data();
+    materialSnap.forEach(d=>{
 
-    if(!ledger[x.party]){
+        let x=d.data();
 
-      ledger[x.party] = {
-        material:0,
-        paid:0,
-        received:0
-      };
-    }
+        if(!ledger[x.party]){
 
-    ledger[x.party].material += Number(x.amount || 0);
+            ledger[x.party]={
 
-  });
+                material:0,
+                paid:0
 
-  // ================= ACCOUNT DATA =================
+            };
+        }
 
-  accountSnap.forEach(d=>{
+        ledger[x.party].material += Number(x.amount || 0);
 
-    let x = d.data();
+    });
 
-    if(!ledger[x.party]){
+    // PAYMENT
 
-      ledger[x.party] = {
-        material:0,
-        paid:0,
-        received:0
-      };
-    }
+    accountSnap.forEach(d=>{
 
-    if(x.type === "paid"){
+        let x=d.data();
 
-      ledger[x.party].paid += Number(x.amount || 0);
+        if(!ledger[x.party]){
 
-    }else{
+            ledger[x.party]={
 
-      ledger[x.party].received += Number(x.amount || 0);
-    }
+                material:0,
+                paid:0
 
-  });
+            };
+        }
 
-  // ================= UI =================
+        ledger[x.party].paid += Number(x.amount || 0);
 
-  s_list.innerHTML = `
+    });
 
-  <div class="ledger-table-container">
+    // UI
 
-    <table class="ledger-table">
+    s_list.innerHTML = `
 
-      <thead>
-        <tr>
-          <th>👤 Party</th>
-          <th style="color:#ffd54f;">🧱 Material</th>
-          <th style="color:#ff5c5c;">⬇ Paid</th>
-          <th style="color:#4dff88;">⬆ Received</th>
-          <th>⚖ Final Balance</th>
-        </tr>
-      </thead>
+    <div class="table-container">
 
-      <tbody id="ledger_body"></tbody>
+    <table>
 
-    </table>
-
-  </div>
-  `;
-
-  const body = document.getElementById("ledger_body");
-
-  for(let party in ledger){
-
-    let material = ledger[party].material;
-    let paid = ledger[party].paid;
-    let received = ledger[party].received;
-
-    // FINAL AUTO BALANCE
-    let balance = paid + received - material;
-
-    let balanceClass = "zero-balance";
-
-    if(balance > 0){
-      balanceClass = "negative-balance";
-    }
-
-    if(balance < 0){
-      balanceClass = "positive-balance";
-    }
-
-    body.innerHTML += `
+    <thead>
 
     <tr>
 
-      <td>${party}</td>
+    <th>Party</th>
 
-      <td style="color:#ffd54f;font-weight:700;">
-        ₹${format(material)}
-      </td>
+    <th>Material Amount</th>
 
-      <td style="color:#ff5c5c;font-weight:700;">
-        ₹${format(paid)}
-      </td>
+    <th>Paid Amount</th>
 
-      <td style="color:#4dff88;font-weight:700;">
-        ₹${format(received)}
-      </td>
-
-      <td class="${balanceClass}">
-        ₹${format(balance)}
-      </td>
+    <th>Pending Balance</th>
 
     </tr>
+
+    </thead>
+
+    <tbody id="ledger_body"></tbody>
+
+    </table>
+
+    </div>
     `;
-  }
-}
 
-// ================= EXPORT =================
+    const body =
+    document.getElementById("ledger_body");
 
-window.exportExcel = async function(){
+    for(let party in ledger){
 
-  const snap = await getDocs(collection(db,"materials"));
+        let material =
+        ledger[party].material;
 
-  let rows = [];
+        let paid =
+        ledger[party].paid;
 
-  rows.push([
-    "Date",
-    "Party",
-    "Material",
-    "Bill",
-    "Qty",
-    "Rate",
-    "GST",
-    "Amount"
-  ]);
+        let balance =
+        material - paid;
 
-  snap.forEach(d=>{
+        let balanceClass =
+        "zero-balance";
 
-    let x = d.data();
+        if(balance > 0){
 
-    rows.push([
-      x.date,
-      x.party,
-      x.name,
-      x.bill,
-      x.qty,
-      x.rate,
-      x.gst,
-      x.amount
-    ]);
-  });
+            balanceClass =
+            "negative-balance";
+        }
 
-  let csv = "data:text/csv;charset=utf-8,";
+        if(balance < 0){
 
-  rows.forEach(r=>{
-    csv += r.join(",") + "\n";
-  });
+            balanceClass =
+            "positive-balance";
+        }
 
-  const link = document.createElement("a");
+        body.innerHTML += `
 
-  link.href = encodeURI(csv);
+        <tr>
 
-  link.download = "material_data.csv";
+        <td>${party}</td>
 
-  document.body.appendChild(link);
+        <td style="color:#ffd54f;font-weight:700;">
+        ₹${format(material)}
+        </td>
 
-  link.click();
+        <td style="color:#4dff88;font-weight:700;">
+        ₹${format(paid)}
+        </td>
+
+        <td class="${balanceClass}">
+        ₹${format(balance)}
+        </td>
+
+        </tr>
+        `;
+    }
 }
 
 // ================= INIT =================
 
-function startApp(){
-
-  m_date.value = today;
-  a_date.value = today;
-
-  loadMaterial();
-  loadAccount();
-  loadSummary();
-}
+loadMaterial();
+loadAccount();
+loadSummary();
 
 </script>
 
