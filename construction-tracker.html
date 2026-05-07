@@ -223,10 +223,11 @@ th{
 </div>
 
 <input 
-type="text" 
-id="material_filter" 
+type="text"
+id="material_filter"
 placeholder="🔍 Filter Material"
-onkeyup="loadMaterial()"
+style="margin-bottom:10px;"
+oninput="loadMaterial()"
 >
     
 </div>
@@ -410,14 +411,23 @@ window.deleteMaterial = async function(id){
 
 async function loadMaterial(){
 
-    const snap = await getDocs(collection(db,"materials"));
+    const snap =
+    await getDocs(collection(db,"materials"));
 
     m_list.innerHTML = '';
 
     let total = 0;
 
-    let filter =
-    material_filter.value.toLowerCase();
+    // SAFE FILTER
+    let filterInput =
+    document.getElementById("material_filter");
+
+    let filter = "";
+
+    if(filterInput){
+        filter =
+        filterInput.value.toLowerCase().trim();
+    }
 
     snap.forEach(d=>{
 
@@ -426,12 +436,12 @@ async function loadMaterial(){
         let materialName =
         (x.name || "").toLowerCase();
 
-        // FILTER
+        // FILTER CHECK
         if(filter && !materialName.includes(filter)){
             return;
         }
 
-        total += x.amount;
+        total += Number(x.amount || 0);
 
         m_list.innerHTML += `
 
@@ -454,9 +464,9 @@ async function loadMaterial(){
         <td>₹${format(x.amount)}</td>
 
         <td>
-        <button onclick="deleteMaterial('${d.id}')">
-        X
-        </button>
+            <button onclick="deleteMaterial('${d.id}')">
+            X
+            </button>
         </td>
 
         </tr>
