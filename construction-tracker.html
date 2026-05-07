@@ -578,11 +578,11 @@ async function loadSummary(){
 
     materialSnap.forEach(d=>{
 
-        let x=d.data();
+        let x = d.data();
 
         if(!ledger[x.party]){
 
-            ledger[x.party]={
+            ledger[x.party] = {
 
                 material:0,
                 paid:0
@@ -590,7 +590,8 @@ async function loadSummary(){
             };
         }
 
-        ledger[x.party].material += Number(x.amount || 0);
+        ledger[x.party].material +=
+        Number(x.amount || 0);
 
     });
 
@@ -598,11 +599,11 @@ async function loadSummary(){
 
     accountSnap.forEach(d=>{
 
-        let x=d.data();
+        let x = d.data();
 
         if(!ledger[x.party]){
 
-            ledger[x.party]={
+            ledger[x.party] = {
 
                 material:0,
                 paid:0
@@ -610,9 +611,16 @@ async function loadSummary(){
             };
         }
 
-        ledger[x.party].paid += Number(x.amount || 0);
+        ledger[x.party].paid +=
+        Number(x.amount || 0);
 
     });
+
+    // TOTALS
+
+    let totalMaterial = 0;
+    let totalPaid = 0;
+    let totalBalance = 0;
 
     // UI
 
@@ -640,6 +648,22 @@ async function loadSummary(){
 
     <tbody id="ledger_body"></tbody>
 
+    <tfoot>
+
+    <tr class="total">
+
+    <td>TOTAL</td>
+
+    <td id="total_material">₹0</td>
+
+    <td id="total_paid">₹0</td>
+
+    <td id="total_balance">₹0</td>
+
+    </tr>
+
+    </tfoot>
+
     </table>
 
     </div>
@@ -658,6 +682,10 @@ async function loadSummary(){
 
         let balance =
         paid - material;
+
+        totalMaterial += material;
+        totalPaid += paid;
+        totalBalance += balance;
 
         let balanceClass =
         "zero-balance";
@@ -695,6 +723,20 @@ async function loadSummary(){
         </tr>
         `;
     }
+
+    // SHOW TOTALS
+
+    document.getElementById("total_material")
+    .innerText =
+    "₹" + format(totalMaterial);
+
+    document.getElementById("total_paid")
+    .innerText =
+    "₹" + format(totalPaid);
+
+    document.getElementById("total_balance")
+    .innerText =
+    "₹" + format(totalBalance);
 }
 // ================= EXPORT =================
 
