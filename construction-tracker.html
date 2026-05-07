@@ -468,34 +468,71 @@ async function loadAccount(){
 
 // ================= PARTY LEDGER =================
 async function loadSummary(){
+
   const snap = await getDocs(collection(db,"accounts"));
-  let data = [];
+
+  let partyData = {};
 
   snap.forEach(d=>{
-    data.push({...d.data()});
-  });
 
-  data.sort((a,b)=> new Date(a.date) - new Date(b.date));
+    let x = d.data();
 
-  let balanceMap = {};
-  s_list.innerHTML='';
-
-  data.forEach(x=>{
-    if(!balanceMap[x.party]) balanceMap[x.party]=0;
-
-    if(x.type === 'received'){
-      balanceMap[x.party]+=x.amount;
-    } else {
-      balanceMap[x.party]-=x.amount;
+    if(!partyData[x.party]){
+      partyData[x.party] = {
+        paid:0,
+        received:0
+      };
     }
 
-    s_list.innerHTML += `
-    <div style="border:1px solid #ccc;margin:5px;padding:8px;">
-      <b>${x.party}</b> | ${x.date}<br>
-      ${x.type.toUpperCase()} : ₹${format(x.amount)}<br>
-      <b>Balance: ₹${format(balanceMap[x.party])}</b>
-    </div>`;
+    if(x.type === "paid"){
+      partyData[x.party].paid += x.amount;
+    }else{
+      partyData[x.party].received += x.amount;
+    }
+
   });
+
+  s_list.innerHTML = `
+
+  <div class="table-container">
+  <table>
+
+  <thead>
+  <tr>
+    <th>Party Name</th>
+    <th>Paid</th>
+    <th>Received</th>
+    <th>Balance</th>
+  </tr>
+  </thead>
+
+  <tbody id="ledgerBody"></tbody>
+
+  </table>
+  </div>
+  `;
+
+  let output = "";
+
+  for(let party in partyData){
+
+    let paid = partyData[party].paid;
+    let received = partyData[party].received;
+    let balance = received - paid;
+
+    output += `
+    <tr>
+      <td>${party}</td>
+      <td style="color:#ff6b6b;">₹${format(paid)}</td>
+      <td style="color:#00ff9d;">₹${format(received)}</td>
+      <td style="font-weight:700;color:#00e5ff;">
+        ₹${format(balance)}
+      </td>
+    </tr>
+    `;
+  }
+
+  document.getElementById("ledgerBody").innerHTML = output;
 }
 
 // ================= EXPORT EXCEL =================
