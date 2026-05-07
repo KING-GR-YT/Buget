@@ -250,28 +250,31 @@ th{
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-doc
-}
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_DOMAIN",
-projectId: "YOUR_PROJECT_ID"
-
+  apiKey: "AIzaSyCbEX3WU-ojAyc9VrWagDaIt2_gBnPfcj4",
+  authDomain: "personal-budget-1cbbe.firebaseapp.com",
+  projectId: "personal-budget-1cbbe"
 };
 
-const app = initializeApp(firebaseConfig);
+const ADMIN_UID = "7Viwom2PvuOh3l8nOGhIg8rOvj52";
 
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+document.body.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+  if (!user || user.uid !== ADMIN_UID) {
+    window.location.href = "index.html";
+  } else {
+    document.body.style.display = "block";
+    startApp();
+  }
+});
 
 const today = new Date().toISOString().split('T')[0];
 
