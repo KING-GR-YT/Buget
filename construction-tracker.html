@@ -174,7 +174,7 @@ th{
 </div>
 
 <button onclick="addMaterial()">Add Material</button>
-
+<button onclick="exportExcel()">⬇ Export Excel</button>
 </div>
 
 <div class="table-container">
@@ -592,6 +592,57 @@ async function loadSummary(){
         </tr>
         `;
     }
+}
+// ================= EXPORT =================
+
+window.exportExcel = async function(){
+
+  const snap = await getDocs(collection(db,"materials"));
+
+  let rows = [];
+
+  rows.push([
+    "Date",
+    "Party",
+    "Material",
+    "Bill",
+    "Qty",
+    "Rate",
+    "GST",
+    "Amount"
+  ]);
+
+  snap.forEach(d=>{
+
+    let x = d.data();
+
+    rows.push([
+      x.date,
+      x.party,
+      x.name,
+      x.bill,
+      x.qty,
+      x.rate,
+      x.gst,
+      x.amount
+    ]);
+  });
+
+  let csv = "data:text/csv;charset=utf-8,";
+
+  rows.forEach(r=>{
+    csv += r.join(",") + "\n";
+  });
+
+  const link = document.createElement("a");
+
+  link.href = encodeURI(csv);
+
+  link.download = "material_data.csv";
+
+  document.body.appendChild(link);
+
+  link.click();
 }
 
 // ================= INIT =================
