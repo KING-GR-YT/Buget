@@ -671,7 +671,7 @@ async function loadSummary(){
     let received = ledger[party].received;
 
     // FINAL AUTO BALANCE
-    let balance = material - paid + received;
+    let balance = paid + received - material;
 
     let balanceClass = "zero-balance";
 
