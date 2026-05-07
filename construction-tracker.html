@@ -252,11 +252,21 @@ style="margin-bottom:10px;"
 <tbody id="m_list"></tbody>
 
 <tfoot>
+
 <tr class="total">
-<td colspan="7">TOTAL</td>
+
+<td colspan="4">TOTAL</td>
+
+<td id="m_qty_total">0</td>
+
+<td colspan="2"></td>
+
 <td id="m_total">₹0</td>
+
 <td></td>
+
 </tr>
+
 </tfoot>
 
 </table>
@@ -416,26 +426,34 @@ async function loadMaterial(){
     const mTotal =
     document.getElementById("m_total");
 
+    const qtyTotalElement =
+    document.getElementById("m_qty_total");
+
     const filterInput =
     document.getElementById("material_filter");
 
     let filter = "";
 
     if(filterInput){
+
         filter =
-        filterInput.value.toLowerCase().trim();
+        filterInput.value
+        .toLowerCase()
+        .trim();
     }
 
     mList.innerHTML = '';
 
     let total = 0;
+    let qtyTotal = 0;
 
     snap.forEach(d=>{
 
         let x = d.data();
 
         let materialName =
-        String(x.name || "").toLowerCase();
+        String(x.name || "")
+        .toLowerCase();
 
         // FILTER
         if(filter !== ""){
@@ -446,6 +464,8 @@ async function loadMaterial(){
         }
 
         total += Number(x.amount || 0);
+
+        qtyTotal += Number(x.qty || 0);
 
         mList.innerHTML += `
 
@@ -479,6 +499,9 @@ async function loadMaterial(){
 
     mTotal.innerText =
     "₹" + format(total);
+
+    qtyTotalElement.innerText =
+    format(qtyTotal);
 }
 
 // ================= PAYMENT =================
