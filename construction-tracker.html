@@ -334,6 +334,7 @@ tr:hover{
 </div>
 
 <div class="horizontal-form">
+<input type="text" id="m_filter" placeholder="Filter Material" oninput="loadMaterial()">
 <button onclick="addMaterial()">Add Material</button>
 <button onclick="exportExcel()">⬇ Export Excel</button>
 </div>
@@ -551,7 +552,6 @@ async function loadAccount(){
   });
 }
 
-// ================= PARTY LEDGER =================
 // ================= PARTY LEDGER =================
 async function loadSummary(){
 
