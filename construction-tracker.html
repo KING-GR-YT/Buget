@@ -334,7 +334,6 @@ tr:hover{
 </div>
 
 <div class="horizontal-form">
-<input type="text" id="m_filter" placeholder="Filter Material" oninput="loadMaterial()">
 <button onclick="addMaterial()">Add Material</button>
 <button onclick="exportExcel()">⬇ Export Excel</button>
 </div>
@@ -490,7 +489,7 @@ async function loadMaterial(){
   m_list.innerHTML='';
   let total=0;
 
-  let filter = m_filter.value.toLowerCase();
+  let filter = "";
 
   snap.forEach(d=>{
     let x=d.data();
