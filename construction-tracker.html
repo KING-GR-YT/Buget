@@ -194,6 +194,91 @@ tr:hover{
     font-weight:700;
 }
 
+/* ================= LEDGER TABLE ================= */
+
+.ledger-table-container{
+    margin-top:10px;
+}
+
+.ledger-table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:18px;
+    background:rgba(255,255,255,0.03);
+}
+
+.ledger-table th{
+    background:#0d2f5c;
+    padding:18px;
+    font-size:18px;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.ledger-table td{
+    padding:18px;
+    font-size:17px;
+    border:1px solid rgba(255,255,255,0.05);
+    text-align:center;
+}
+
+.ledger-table tr:nth-child(even){
+    background:rgba(255,255,255,0.03);
+}
+
+.ledger-table tr:hover{
+    background:rgba(0,229,255,0.08);
+}
+
+.positive-balance{
+    color:#4dff88;
+    font-weight:700;
+    font-size:20px;
+}
+
+.negative-balance{
+    color:#ff4d4d;
+    font-weight:700;
+    font-size:20px;
+}
+
+.zero-balance{
+    color:#00e5ff;
+    font-weight:700;
+    font-size:20px;
+}
+
+.ledger-note{
+    margin-top:20px;
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    align-items:center;
+    font-size:18px;
+}
+
+.positive-dot,
+.negative-dot,
+.zero-dot{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:10px;
+}
+
+.positive-dot{
+    background:#4dff88;
+}
+
+.negative-dot{
+    background:#ff4d4d;
+}
+
+.zero-dot{
+    background:#00e5ff;
+}
+    
 @media(max-width:768px){
 
     body{
