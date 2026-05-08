@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Salary Dashboard</title>
+
 <link rel="icon" type="image/png" sizes="32x32" href="icon-512.png">
 <link rel="apple-touch-icon" href="icon-512.png">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
 
 *{
@@ -107,30 +113,31 @@ border-bottom:1px solid #1f2937;
 text-align:center;
 }
 
-tr:last-child td{
-border-bottom:none;
-}
-
 /* ===== INPUT ===== */
 
 input{
 width:90px;
-padding:10px;
+padding:6px 4px;
 border:none;
-border-radius:10px;
-background:#0f172a;
+outline:none;
+background:transparent;
 color:#ffffff;
 font-size:14px;
 font-weight:600;
 text-align:center;
-outline:none;
-border:1px solid #334155;
-transition:.3s;
+appearance:textfield;
+transition:.2s;
 }
 
 input:focus{
-border-color:#3b82f6;
-box-shadow:0 0 0 3px rgba(59,130,246,.2);
+background:rgba(255,255,255,.04);
+border-radius:6px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+-webkit-appearance:none;
+margin:0;
 }
 
 /* ===== STATUS ===== */
@@ -155,19 +162,7 @@ background:rgba(34,197,94,.08);
 background:rgba(239,68,68,.08);
 }
 
-/* ===== SCROLLBAR ===== */
-
-::-webkit-scrollbar{
-height:6px;
-width:6px;
-}
-
-::-webkit-scrollbar-thumb{
-background:#334155;
-border-radius:20px;
-}
-
-/* ===== TABLET ===== */
+/* ===== MOBILE ===== */
 
 @media(max-width:900px){
 
@@ -176,8 +171,6 @@ grid-template-columns:1fr;
 }
 
 }
-
-/* ===== MOBILE ===== */
 
 @media(max-width:600px){
 
@@ -189,83 +182,51 @@ h1{
 font-size:20px;
 }
 
-.home-link{
-padding:8px 12px;
-font-size:13px;
-}
-
 .section{
 padding:14px;
-border-radius:18px;
-}
-
-.section h2{
-font-size:16px;
 }
 
 table{
 min-width:500px;
 }
 
-th{
-font-size:12px;
-padding:10px 6px;
-}
-
-td{
+th,td{
 font-size:12px;
 padding:10px 6px;
 }
 
 input{
-width:72px;
-padding:8px;
+width:70px;
 font-size:12px;
 }
 
 }
 
-/* ===== SMALL MOBILE ===== */
-
-@media(max-width:420px){
-
-h1{
-font-size:18px;
-}
-
-.section{
-padding:12px;
-}
-
-table{
-min-width:480px;
-}
-
-input{
-width:65px;
-font-size:11px;
-}
-
-}
 </style>
 </head>
 
 <body>
 
 <div class="header">
+
 <h1>Salary Dashboard</h1>
 
 <a href="main.html" class="home-link">
 🏠 Home
 </a>
+
 </div>
+
 <div class="container">
 
 <!-- LEFT -->
 
 <div class="section">
+
 <h2>Salary Overview</h2>
+
 <div class="table-wrapper">
+
 <table>
 
 <tr>
@@ -278,7 +239,7 @@ font-size:11px;
 
 <tr>
 <td>Salary</td>
-<td>₹ <input type="number" id="salary"></td>
+<td>₹ <input type="text" id="salary"></td>
 <td>-</td>
 <td id="salaryPercent">100%</td>
 <td></td>
@@ -286,7 +247,7 @@ font-size:11px;
 
 <tr>
 <td>EMI</td>
-<td>₹ <input type="number" id="emi"></td>
+<td>₹ <input type="text" id="emi"></td>
 <td id="emiPlan"></td>
 <td id="emiPercent"></td>
 <td id="emiStatus"></td>
@@ -294,7 +255,7 @@ font-size:11px;
 
 <tr>
 <td>Rent</td>
-<td>₹ <input type="number" id="rent"></td>
+<td>₹ <input type="text" id="rent"></td>
 <td id="rentPlan"></td>
 <td id="rentPercent"></td>
 <td id="rentStatus"></td>
@@ -302,7 +263,7 @@ font-size:11px;
 
 <tr>
 <td>Petrol</td>
-<td>₹ <input type="number" id="petrol"></td>
+<td>₹ <input type="text" id="petrol"></td>
 <td id="petrolPlan"></td>
 <td id="petrolPercent"></td>
 <td id="petrolStatus"></td>
@@ -310,7 +271,7 @@ font-size:11px;
 
 <tr>
 <td>Other EXP</td>
-<td>₹ <input type="number" id="other"></td>
+<td>₹ <input type="text" id="other"></td>
 <td id="otherPlan"></td>
 <td id="otherPercent"></td>
 <td id="otherStatus"></td>
@@ -333,15 +294,18 @@ font-size:11px;
 </tr>
 
 </table>
+
 </div>
 </div>
 
-<!-- RIGHT  -->
+<!-- RIGHT -->
 
 <div class="section">
 
 <h2>EMI Calculator</h2>
+
 <div class="table-wrapper">
+
 <table>
 
 <tr>
@@ -360,12 +324,12 @@ font-size:11px;
 
 <tr>
 <td>Total Amount</td>
-<td>₹ <input type="number" id="totalAmount"></td>
+<td>₹ <input type="text" id="totalAmount"></td>
 </tr>
 
 <tr>
 <td>Down Payment</td>
-<td>₹ <input type="number" id="downPayment"></td>
+<td>₹ <input type="text" id="downPayment"></td>
 </tr>
 
 <tr>
@@ -375,12 +339,12 @@ font-size:11px;
 
 <tr>
 <td>Interest Rate %</td>
-<td><input type="number" id="interest"></td>
+<td><input type="text" id="interest"></td>
 </tr>
 
 <tr>
 <td>Tenure Months</td>
-<td><input type="number" id="tenure"></td>
+<td><input type="text" id="tenure"></td>
 </tr>
 
 <tr class="greenbox">
@@ -402,6 +366,7 @@ font-size:11px;
 
 </div>
 </div>
+
 </div>
 
 <script type="module">
@@ -435,39 +400,42 @@ document.body.style.display="block";
 }
 });
 
-/* 🔧 FIXED PLAN VALUES */
-const plans = {
+const plans={
 emi:30,
 rent:30,
 petrol:10,
 other:10
 };
 
+function getNumber(value){
+return parseFloat(String(value).replace(/,/g,''))||0;
+}
+
+function formatNumber(value){
+return Number(value).toLocaleString('en-IN');
+}
+
 function calculate(){
 
-let salaryVal=parseFloat(salary.value)||0;
-let emiVal=parseFloat(emi.value)||0;
-let rentVal=parseFloat(rent.value)||0;
-let petrolVal=parseFloat(petrol.value)||0;
-let otherVal=parseFloat(other.value)||0;
+let salaryVal=getNumber(salary.value);
+let emiVal=getNumber(emi.value);
+let rentVal=getNumber(rent.value);
+let petrolVal=getNumber(petrol.value);
+let otherVal=getNumber(other.value);
 
 if(salaryVal===0)return;
 
-/* Show planned */
 emiPlan.innerHTML=plans.emi+"%";
 rentPlan.innerHTML=plans.rent+"%";
 petrolPlan.innerHTML=plans.petrol+"%";
 otherPlan.innerHTML=plans.other+"%";
-  
-// Planned Total %
-let totalPlanVal = plans.emi + plans.rent + plans.petrol + plans.other;
-totalPlan.innerHTML = totalPlanVal + "%";
 
-// Planned Balance %
-let balancePlanVal = 100 - totalPlanVal;
-balancePlan.innerHTML = balancePlanVal + "%";
-  
-/* Actual */
+let totalPlanVal=plans.emi+plans.rent+plans.petrol+plans.other;
+
+totalPlan.innerHTML=totalPlanVal+"%";
+
+balancePlan.innerHTML=(100-totalPlanVal)+"%";
+
 let emiP=(emiVal/salaryVal)*100;
 let rentP=(rentVal/salaryVal)*100;
 let petrolP=(petrolVal/salaryVal)*100;
@@ -478,7 +446,6 @@ rentPercent.innerHTML=rentP.toFixed(2)+"%";
 petrolPercent.innerHTML=petrolP.toFixed(2)+"%";
 otherPercent.innerHTML=otherP.toFixed(2)+"%";
 
-/* Compare */
 emiStatus.innerHTML=emiP>plans.emi?"Bad":"Good";
 emiStatus.className=emiP>plans.emi?"bad":"good";
 
@@ -491,114 +458,92 @@ petrolStatus.className=petrolP>plans.petrol?"bad":"good";
 otherStatus.innerHTML=otherP>plans.other?"Bad":"Good";
 otherStatus.className=otherP>plans.other?"bad":"good";
 
-
-
 let total=emiVal+rentVal+petrolVal+otherVal;
-totalExp.innerHTML="₹ "+total.toFixed(2);
+
+totalExp.innerHTML="₹ "+formatNumber(total.toFixed(0));
 
 let totalP=(total/salaryVal)*100;
+
 totalPercent.innerHTML=totalP.toFixed(2)+"%";
+
 totalStatus.innerHTML=totalP>80?"Bad":"Good";
 totalStatus.className=totalP>80?"bad":"good";
 
 let balanceVal=salaryVal-total;
+
+balance.innerHTML="₹ "+formatNumber(balanceVal.toFixed(0));
+
 let balanceP=(balanceVal/salaryVal)*100;
 
-balance.innerHTML="₹ "+balanceVal.toFixed(2);
 balancePercent.innerHTML=balanceP.toFixed(2)+"%";
+
 balanceStatus.innerHTML=balanceP>20?"Good":"Bad";
 balanceStatus.className=balanceP>20?"good":"bad";
 
-/* EMI PART  */
+/* EMI */
 
-let loan=parseFloat(totalAmount.value)||0;
-let down=parseFloat(downPayment.value)||0;
-let interestVal=parseFloat(interest.value)||0;
-let tenureVal=parseFloat(tenure.value)||0;
+let loan=getNumber(totalAmount.value);
+let down=getNumber(downPayment.value);
+let interestVal=getNumber(interest.value);
+let tenureVal=getNumber(tenure.value);
 
 let loanAmountVal=loan-down;
-loanAmount.innerHTML="₹ "+loanAmountVal.toFixed(2);
+
+loanAmount.innerHTML="₹ "+formatNumber(loanAmountVal.toFixed(0));
 
 let emiCalcVal=0;
 
 if(loanAmountVal>0 && tenureVal>0){
+
 if(interestVal===0){
+
 emiCalcVal=loanAmountVal/tenureVal;
+
 }else{
+
 let r=interestVal/12/100;
+
 emiCalcVal=(loanAmountVal*r*Math.pow(1+r,tenureVal))/(Math.pow(1+r,tenureVal)-1);
-}
+
 }
 
-emiCalc.innerHTML="₹ "+emiCalcVal.toFixed(2);
+}
+
+emiCalc.innerHTML="₹ "+formatNumber(emiCalcVal.toFixed(0));
 
 let salaryEmi=((emiVal+emiCalcVal)/salaryVal)*100;
+
 salaryEmiPercent.innerHTML=salaryEmi.toFixed(2)+"%";
 
 readyLoan.innerHTML=salaryEmi<20?"YES":"NO";
-emiBalance.innerHTML="₹ "+((salaryVal*0.4)-(emiVal+emiCalcVal)).toFixed(2);
+
+emiBalance.innerHTML="₹ "+formatNumber(((salaryVal*0.4)-(emiVal+emiCalcVal)).toFixed(0));
+
 decision.innerHTML=salaryEmi<40?"GOOD":"BAD";
 
 }
 
-/* ===== FIREBASE  ===== */
+document.querySelectorAll('input').forEach(input=>{
 
-async function saveData(){
+input.addEventListener('focus',()=>{
 
-let data={
-salary:salary.value,
-emi:emi.value,
-rent:rent.value,
-petrol:petrol.value,
-other:other.value,
-totalAmount:totalAmount.value,
-downPayment:downPayment.value,
-interest:interest.value,
-tenure:tenure.value,
-updatedAt:new Date()
-};
+input.value=input.value.replace(/,/g,'');
 
-await setDoc(doc(db,"dashboardData","main"),data);
-
-}
-
-let timer;
-
-function autoSave(){
-clearTimeout(timer);
-timer=setTimeout(()=>{saveData();},1200);
-}
-
-async function loadData(){
-
-const snap=await getDoc(doc(db,"dashboardData","main"));
-
-if(snap.exists()){
-let d=snap.data();
-
-salary.value=d.salary||0;
-emi.value=d.emi||0;
-rent.value=d.rent||0;
-petrol.value=d.petrol||0;
-other.value=d.other||0;
-
-totalAmount.value=d.totalAmount||0;
-downPayment.value=d.downPayment||0;
-interest.value=d.interest||0;
-tenure.value=d.tenure||0;
-}
-
-calculate();
-}
-
-document.querySelectorAll("input").forEach(i=>{
-i.addEventListener("input",()=>{
-calculate();
-autoSave();
-});
 });
 
-loadData();
+input.addEventListener('blur',()=>{
+
+let value=input.value.replace(/,/g,'');
+
+if(value!==""){
+input.value=formatNumber(value);
+}
+
+});
+
+input.addEventListener('input',calculate);
+
+});
 
 </script>
 
