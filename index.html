@@ -190,6 +190,8 @@ button:hover{
 
   <button onclick="login()">ACCESS SYSTEM</button>
 
+  <button id="installBtn" style="display:none;">Install App</button>
+
   <div id="error"></div>
 </div>
 
@@ -406,6 +408,28 @@ document.getElementById("password").addEventListener("keydown", function(e){
   if(e.key === "Enter"){
     login();
   }
+});
+  
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+
+  e.preventDefault();
+
+  deferredPrompt = e;
+
+  document.getElementById("installBtn").style.display = "block";
+});
+
+document.getElementById("installBtn").addEventListener("click", async () => {
+
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
 });
   
 </script>
