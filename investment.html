@@ -601,6 +601,14 @@ font-size:18px;
 </div>
 
 <div class="stat">
+<span>Life Insurance</span>
+<select id="lifeInsuranceStatus" class="neon-select">
+<option value="no">NO</option>
+<option value="yes">YES</option>
+</select>
+</div>
+
+<div class="stat">
     <span>Target Fund</span>
         <b class="editable" data-id="targetFund">₹0</b>
 </div>
@@ -817,6 +825,19 @@ db.collection("investments").doc("main").onSnapshot((doc)=>{
       updateHealthStyle(healthStatus);
   }
 
+const lifeSelect = document.getElementById("lifeInsuranceStatus");
+
+  let lifeStatus = "no";
+
+  if(d.life && d.life.status === true){
+      lifeStatus = "yes";
+  }
+
+  if(lifeSelect){
+      lifeSelect.value = lifeStatus;
+      updatelifeStyle(lifeStatus);
+  }
+    
   render();
 });
 
@@ -850,6 +871,9 @@ function save(){
     emergency: NUM(document.querySelector('[data-id="emergencyFund"]').innerText),
     health:{
       status: document.getElementById("healthInsuranceStatus").value === "yes"
+    },
+    life:{
+      status: document.getElementById("lifeInsuranceStatus").value === "yes"
     },
     dob: document.getElementById("dob").value,
     rows: data
@@ -1132,6 +1156,28 @@ document.getElementById("healthInsuranceStatus").addEventListener("change",funct
   save();
 });
 
+/* ================= Life HEALTH ================= */
+
+function updatelifeStyle(value){
+
+  const select=document.getElementById("lifeInsuranceStatus");
+
+  if(value==="yes"){
+    select.classList.add("yes");
+    select.classList.remove("no");
+  }
+  else{
+    select.classList.add("no");
+    select.classList.remove("yes");
+  }
+
+}
+
+document.getElementById("lifeInsuranceStatus").addEventListener("change",function(){
+  updatelifeStyle(this.value);
+  save();
+});
+    
 /* ================= FINANCIAL HEALTH ================= */
 
 function updateHealthScore(networth, emergency, target, eqP, gP, dP){
