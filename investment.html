@@ -1297,7 +1297,22 @@ function rebalanceSuggestion(total, eq, gd, db, req){
     document.getElementById("rebalanceGold").innerText   = formatDiff(gdDiff);
     document.getElementById("rebalanceDebt").innerText   = formatDiff(dbDiff);
 }
-    
+</script>
+<script>
+  const lastUpdated = new Date(document.lastModified);
+
+  document.getElementById("lastUpdated").innerHTML =
+    "Last Updated: " +
+    lastUpdated.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    }) +
+    " " +
+    lastUpdated.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
 </script>
 </body>
 </html>
