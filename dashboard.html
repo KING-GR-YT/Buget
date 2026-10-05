@@ -671,7 +671,19 @@ fillMonth("jan",previousMonth,data);
 
 function fillMonth(prefix,month,data){
 
-let banks=["YES BANK","HDFC","ONE CARD","ICICI"];
+// Keep the dashboard row order exactly as shown in the page.
+// The expense page stores the bank names used in the Add Entry list.
+let banks=[
+"HDFC Card",
+"UNI Card",
+"One Card",
+"ICICI",
+"Slice Card",
+"BOB-HP Card"
+];
+
+let pInputs=document.querySelectorAll(`.${prefix}P`);
+let sInputs=document.querySelectorAll(`.${prefix}S`);
 
 banks.forEach((bank,index)=>{
 
@@ -684,7 +696,7 @@ if(item.month===month && item.bank===bank){
 
 let amt = Number(item.amount) || 0;
 
-// ✅ STRONG FIX (not toFixed)
+// Keep the amount at 2 decimal places without string arithmetic.
 amt = Math.round(amt * 100) / 100;
 
 if(item.person==="PARDEEP") pTotal += amt;
@@ -694,13 +706,18 @@ if(item.person==="SANDEEP") sTotal += amt;
 
 });
 
-// ✅ FINAL ROUND AGAIN
+// Final rounding to avoid floating-point display errors.
 pTotal = Math.round(pTotal * 100) / 100;
 sTotal = Math.round(sTotal * 100) / 100;
 
-// ✅ FORCE CLEAN STRING
-document.querySelectorAll(`.${prefix}P`)[index].value = pTotal ? pTotal.toFixed(2) : "";
-document.querySelectorAll(`.${prefix}S`)[index].value = sTotal ? sTotal.toFixed(2) : "";
+// Put each bank's data into its matching dashboard row.
+if(pInputs[index]){
+    pInputs[index].value = pTotal ? pTotal.toFixed(2) : "";
+}
+
+if(sInputs[index]){
+    sInputs[index].value = sTotal ? sTotal.toFixed(2) : "";
+}
 
 });
 
@@ -711,15 +728,3 @@ calculate(prefix);
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
