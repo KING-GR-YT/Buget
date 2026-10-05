@@ -543,16 +543,17 @@ minimumFractionDigits:2
 
 function calculate(prefix){
 
-    let P = document.querySelectorAll(`.${prefix}P`);
-    let rows = document.querySelectorAll(`.${prefix}Row`);
-    let exp = document.querySelectorAll(`.${prefix}Exp`);
+    const P = document.querySelectorAll(`.${prefix}P`);
+    const rows = document.querySelectorAll(`.${prefix}Row`);
+    const exp = document.querySelectorAll(`.${prefix}Exp`);
 
     let totalP = 0;
     let expTotal = 0;
 
     for(let i = 0; i < P.length; i++){
 
-        let p = Math.round((Number(P[i].value) || 0) * 100) / 100;
+        const p =
+            Math.round((Number(P[i].value) || 0) * 100) / 100;
 
         rows[i].innerText = formatCurrency(p);
 
@@ -569,26 +570,27 @@ function calculate(prefix){
     document.getElementById(prefix+"TotalP").innerText =
         formatCurrency(totalP);
 
+    // Total is the same as Pardeep because there is only one person
     document.getElementById(prefix+"Grand").innerText =
         formatCurrency(totalP);
 
     document.getElementById(prefix+"ExpTotal").innerText =
         formatCurrency(expTotal);
 
-    let salary =
+    const salary =
         Number(document.getElementById(prefix+"Salary").value) || 0;
 
-    let extra =
+    const extra =
         Number(document.getElementById(prefix+"Extra").value) || 0;
 
-    let bank = salary + extra;
+    const bank = salary + extra;
 
     document.getElementById(prefix+"BankBalance").innerText =
         formatCurrency(bank);
 
-    let net = bank - totalP - expTotal;
+    const net = bank - totalP - expTotal;
 
-    let netEl = document.getElementById(prefix+"Net");
+    const netEl = document.getElementById(prefix+"Net");
 
     netEl.innerText = formatCurrency(net);
 
@@ -597,6 +599,7 @@ function calculate(prefix){
 
     save(prefix);
 }
+
 
 
 
@@ -619,25 +622,56 @@ await setDoc(doc(db,"months",prefix),{values});
 
 async function load(prefix){
 
-let snap=await getDoc(doc(db,"months",prefix));
+    const snap =
+        await getDoc(doc(db,"months",prefix));
 
-if(snap.exists()){
+    if(!snap.exists()){
+        calculate(prefix);
+        return;
+    }
 
-let values=snap.data().values;
+    const values = snap.data().values || [];
 
-let inputs=document.querySelectorAll(`#${prefix}Card input`);
+    const inputs =
+        document.querySelectorAll(`#${prefix}Card input`);
 
-inputs.forEach((i,index)=>{
+    if(values.length >= 22){
 
-i.value=values[index]||"";
+        const newValues = [];
 
-});
+        // Extra + Salary
+        newValues.push(values[0] || "");
+        newValues.push(values[1] || "");
 
+        // Pardeep card values
+        newValues.push(values[2] || "");
+        newValues.push(values[4] || "");
+        newValues.push(values[6] || "");
+        newValues.push(values[8] || "");
+        newValues.push(values[10] || "");
+        newValues.push(values[12] || "");
+
+        // Expenses
+        for(let i = 14; i < 22; i++){
+            newValues.push(values[i] || "");
+        }
+
+        inputs.forEach((input,index)=>{
+            input.value = newValues[index] || "";
+        });
+
+    }else{
+
+        // Already using new structure
+        inputs.forEach((input,index)=>{
+            input.value = values[index] || "";
+        });
+
+    }
+
+    calculate(prefix);
 }
 
-calculate(prefix);
-
-}
 
 
 /* AUTO CALCULATE */
@@ -697,16 +731,17 @@ fillMonth("jan",previousMonth,data);
 
 function fillMonth(prefix, month, data){
 
-    let banks = [
+    const banks = [
         "HDFC Card",
         "UNI Card",
-        "One Card",
-        "ICICI",
+        "ONE Card",
+        "ICICI Card",
         "Slice Card",
         "BOB-HP Card"
     ];
 
-    let pInputs = document.querySelectorAll(`.${prefix}P`);
+    const pInputs =
+        document.querySelectorAll(`.${prefix}P`);
 
     banks.forEach((bank, index) => {
 
@@ -714,20 +749,21 @@ function fillMonth(prefix, month, data){
 
         data.forEach(item => {
 
-            if(item.month === month &&
-               item.bank === bank &&
-               item.person === "PARDEEP"){
+            if(
+                item.month === month &&
+                item.bank === bank &&
+                item.person === "PARDEEP"
+            ){
 
-                let amt = Number(item.amount) || 0;
+                const amount = Number(item.amount) || 0;
 
-                amt = Math.round(amt * 100) / 100;
-
-                pTotal += amt;
+                pTotal += amount;
             }
 
         });
 
-        pTotal = Math.round(pTotal * 100) / 100;
+        pTotal =
+            Math.round(pTotal * 100) / 100;
 
         if(pInputs[index]){
             pInputs[index].value =
@@ -738,6 +774,7 @@ function fillMonth(prefix, month, data){
 
     calculate(prefix);
 }
+
 
 
 </script>
