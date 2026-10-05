@@ -66,8 +66,38 @@ body{
 table{
     width:100%;
     border-collapse:collapse;
-    border:1px solid #1f2937;   /* ✅ full outer border */
+    border:1px solid #1f2937;
 }
+
+.card-table{
+    width:100%;
+    table-layout:fixed;
+}
+
+.card-table th:nth-child(1),
+.card-table td:nth-child(1){
+    width:40%;
+    text-align:left;
+}
+
+.card-table th:nth-child(2),
+.card-table td:nth-child(2){
+    width:30%;
+    text-align:right;
+}
+
+.card-table th:nth-child(3),
+.card-table td:nth-child(3){
+    width:30%;
+    text-align:right;
+}
+
+.card-table input{
+    width:100%;
+    box-sizing:border-box;
+    text-align:right;
+}
+
 
 /* FULL INNER BORDER */
 th, td{
@@ -514,50 +544,61 @@ minimumFractionDigits:2
 
 function calculate(prefix){
 
-let P = document.querySelectorAll(`.${prefix}P`);
-let S = document.querySelectorAll(`.${prefix}S`);
-let rows = document.querySelectorAll(`.${prefix}Row`);
-let exp = document.querySelectorAll(`.${prefix}Exp`);
+    let P = document.querySelectorAll(`.${prefix}P`);
+    let rows = document.querySelectorAll(`.${prefix}Row`);
+    let exp = document.querySelectorAll(`.${prefix}Exp`);
 
-let totalP=0,totalS=0,expTotal=0;
+    let totalP = 0;
+    let expTotal = 0;
 
-for(let i=0;i<P.length;i++){
+    for(let i = 0; i < P.length; i++){
 
-let p = Math.round((Number(P[i].value) || 0) * 100) / 100;
-let s = Math.round((Number(S[i].value) || 0) * 100) / 100;
+        let p = Math.round((Number(P[i].value) || 0) * 100) / 100;
 
-rows[i].innerText=formatCurrency(p+s);
+        rows[i].innerText = formatCurrency(p);
 
-totalP+=p;
-totalS+=s;
+        totalP += p;
+    }
 
+    exp.forEach(e => {
+        expTotal += Number(e.value) || 0;
+    });
+
+    totalP = Math.round(totalP * 100) / 100;
+    expTotal = Math.round(expTotal * 100) / 100;
+
+    document.getElementById(prefix+"TotalP").innerText =
+        formatCurrency(totalP);
+
+    document.getElementById(prefix+"Grand").innerText =
+        formatCurrency(totalP);
+
+    document.getElementById(prefix+"ExpTotal").innerText =
+        formatCurrency(expTotal);
+
+    let salary =
+        Number(document.getElementById(prefix+"Salary").value) || 0;
+
+    let extra =
+        Number(document.getElementById(prefix+"Extra").value) || 0;
+
+    let bank = salary + extra;
+
+    document.getElementById(prefix+"BankBalance").innerText =
+        formatCurrency(bank);
+
+    let net = bank - totalP - expTotal;
+
+    let netEl = document.getElementById(prefix+"Net");
+
+    netEl.innerText = formatCurrency(net);
+
+    netEl.style.color =
+        net >= 0 ? "#00ff99" : "#ff4d4d";
+
+    save(prefix);
 }
 
-exp.forEach(e=>expTotal+=Number(e.value)||0);
-
-document.getElementById(prefix+"TotalP").innerText=formatCurrency(totalP);
-document.getElementById(prefix+"TotalS").innerText=formatCurrency(totalS);
-document.getElementById(prefix+"Grand").innerText=formatCurrency(totalP+totalS);
-document.getElementById(prefix+"ExpTotal").innerText=formatCurrency(expTotal);
-
-let salary=Number(document.getElementById(prefix+"Salary").value)||0;
-let extra=Number(document.getElementById(prefix+"Extra").value)||0;
-
-let bank=salary+extra;
-
-document.getElementById(prefix+"BankBalance").innerText=formatCurrency(bank);
-
-let net=bank-totalP-expTotal;
-
-let netEl=document.getElementById(prefix+"Net");
-
-netEl.innerText=formatCurrency(net);
-
-netEl.style.color = net >=0 ? "#00ff99" : "#ff4d4d";
-
-save(prefix);
-
-}
 
 
 /* SAVE MONTH DATA */
@@ -655,61 +696,50 @@ fillMonth("jan",previousMonth,data);
 
 /* FILL BANK DATA */
 
-function fillMonth(prefix,month,data){
+function fillMonth(prefix, month, data){
 
-// Keep the dashboard row order exactly as shown in the page.
-// The expense page stores the bank names used in the Add Entry list.
-let banks=[
-"HDFC Card",
-"UNI Card",
-"One Card",
-"ICICI",
-"Slice Card",
-"BOB-HP Card"
-];
+    let banks = [
+        "HDFC Card",
+        "UNI Card",
+        "One Card",
+        "ICICI",
+        "Slice Card",
+        "BOB-HP Card"
+    ];
 
-let pInputs=document.querySelectorAll(`.${prefix}P`);
-let sInputs=document.querySelectorAll(`.${prefix}S`);
+    let pInputs = document.querySelectorAll(`.${prefix}P`);
 
-banks.forEach((bank,index)=>{
+    banks.forEach((bank, index) => {
 
-let pTotal = 0;
-let sTotal = 0;
+        let pTotal = 0;
 
-data.forEach(item=>{
+        data.forEach(item => {
 
-if(item.month===month && item.bank===bank){
+            if(item.month === month &&
+               item.bank === bank &&
+               item.person === "PARDEEP"){
 
-let amt = Number(item.amount) || 0;
+                let amt = Number(item.amount) || 0;
 
-// Keep the amount at 2 decimal places without string arithmetic.
-amt = Math.round(amt * 100) / 100;
+                amt = Math.round(amt * 100) / 100;
 
-if(item.person==="PARDEEP") pTotal += amt;
-if(item.person==="SANDEEP") sTotal += amt;
+                pTotal += amt;
+            }
 
+        });
+
+        pTotal = Math.round(pTotal * 100) / 100;
+
+        if(pInputs[index]){
+            pInputs[index].value =
+                pTotal ? pTotal.toFixed(2) : "";
+        }
+
+    });
+
+    calculate(prefix);
 }
 
-});
-
-// Final rounding to avoid floating-point display errors.
-pTotal = Math.round(pTotal * 100) / 100;
-sTotal = Math.round(sTotal * 100) / 100;
-
-// Put each bank's data into its matching dashboard row.
-if(pInputs[index]){
-    pInputs[index].value = pTotal ? pTotal.toFixed(2) : "";
-}
-
-if(sInputs[index]){
-    sInputs[index].value = sTotal ? sTotal.toFixed(2) : "";
-}
-
-});
-
-calculate(prefix);
-
-}
 
 </script>
 </body>
